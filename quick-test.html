@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AInSeconds API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>AInSeconds API Test</h1>
+    
+    <button onclick="testHealth()">Test Health Check</button>
+    <button onclick="testLogin()">Test Login</button>
+    <button onclick="testDirectFunction()">Test Direct Function</button>
+    
+    <div id="results"></div>
+
+    <script>
+        const baseUrl = 'https://ainseconds.shop';
+        
+        function addResult(message, isSuccess = true) {
+            const div = document.createElement('div');
+            div.className = `test-result ${isSuccess ? 'success' : 'error'}`;
+            div.innerHTML = message;
+            document.getElementById('results').appendChild(div);
+        }
+        
+        async function testHealth() {
+            try {
+                const response = await fetch(`${baseUrl}/api/health`);
+                const data = await response.json();
+                addResult(`✅ Health Check: ${response.status} - ${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                addResult(`❌ Health Check Error: ${error.message}`, false);
+            }
+        }
+        
+        async function testLogin() {
+            try {
+                const response = await fetch(`${baseUrl}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: 'ainseconds_admin_2024_secure_key'
+                    })
+                });
+                const data = await response.json();
+                addResult(`✅ Login Test: ${response.status} - ${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                addResult(`❌ Login Error: ${error.message}`, false);
+            }
+        }
+        
+        async function testDirectFunction() {
+            try {
+                const response = await fetch(`${baseUrl}/.netlify/functions/health`);
+                const data = await response.json();
+                addResult(`✅ Direct Function: ${response.status} - ${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                addResult(`❌ Direct Function Error: ${error.message}`, false);
+            }
+        }
+    </script>
+</body>
+</html>
