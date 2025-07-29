@@ -29,6 +29,7 @@ export default function AdminLoginPage() {
     setError(""); // Clear error when user types
   };
 
+  // textelement is a ref to the input element
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);

@@ -31,6 +31,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/upload/video"
+  to = "/.netlify/functions/upload-video"
+  status = 200
+
+[[redirects]]
   from = "/api/auth/login"
   to = "/.netlify/functions/auth-login"
   status = 200

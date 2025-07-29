@@ -174,11 +174,15 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
   const handleImageUpload = async (file: File) => {
     setImageUploading(true);
     try {
+      const token = localStorage.getItem('admin_token');
       const formData = new FormData();
       formData.append('file', file);
 
       const response = await fetch('/api/upload/image', {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
         body: formData
       });
 

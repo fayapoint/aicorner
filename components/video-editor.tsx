@@ -189,11 +189,15 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
   const handleVideoUpload = async (file: File) => {
     setVideoUploading(true);
     try {
+      const token = localStorage.getItem('admin_token');
       const formData = new FormData();
       formData.append('file', file);
 
       const response = await fetch('/api/upload/video', {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
         body: formData
       });
 
@@ -220,11 +224,15 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
   const handleThumbnailUpload = async (file: File) => {
     setThumbnailUploading(true);
     try {
+      const token = localStorage.getItem('admin_token');
       const formData = new FormData();
       formData.append('file', file);
 
       const response = await fetch('/api/upload/image', {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
         body: formData
       });
 
