@@ -28,7 +28,7 @@ export default function QuickStartPage() {
   };
 
   const codeExamples = {
-    curl: `curl -X POST "https://api.aicorner.com/v1/chat/completions" \\
+    curl: `curl -X POST "https://api.ainseconds.com/v1/chat/completions" \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -36,7 +36,7 @@ export default function QuickStartPage() {
     "messages": [
       {
         "role": "user",
-        "content": "Hello, AI Corner!"
+        "content": "Hello, AInSeconds!"
       }
     ],
     "max_tokens": 100
@@ -53,12 +53,12 @@ headers = {
 
 # Make your first API call
 response = requests.post(
-    "https://api.aicorner.com/v1/chat/completions",
+    "https://api.ainseconds.com/v1/chat/completions",
     headers=headers,
     json={
         "model": "gpt-4",
         "messages": [
-            {"role": "user", "content": "Hello, AI Corner!"}
+            {"role": "user", "content": "Hello, AInSeconds!"}
         ],
         "max_tokens": 100
     }
@@ -69,7 +69,7 @@ print(result["choices"][0]["message"]["content"])`,
 
     javascript: `const apiKey = 'YOUR_API_KEY';
 
-const response = await fetch('https://api.aicorner.com/v1/chat/completions', {
+const response = await fetch('https://api.ainseconds.com/v1/chat/completions', {
   method: 'POST',
   headers: {
     'Authorization': \`Bearer \${apiKey}\`,
@@ -78,7 +78,7 @@ const response = await fetch('https://api.aicorner.com/v1/chat/completions', {
   body: JSON.stringify({
     model: 'gpt-4',
     messages: [
-      { role: 'user', content: 'Hello, AI Corner!' }
+      { role: 'user', content: 'Hello, AInSeconds!' }
     ],
     max_tokens: 100
   })
@@ -92,7 +92,7 @@ console.log(data.choices[0].message.content);`
     <DocsLayout
       currentPath="/docs/quick-start"
       title="Quick Start Guide"
-      description="Get up and running with AI Corner API in under 5 minutes"
+      description="Get up and running with AInSeconds API in under 5 minutes"
       difficulty="Beginner"
       readTime="5 min"
       lastUpdated="2024-01-15"
@@ -103,10 +103,10 @@ console.log(data.choices[0].message.content);`
           <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/20 rounded-lg p-6 mb-6">
             <div className="flex items-center gap-3 mb-3">
               <Zap className="w-6 h-6 text-green-400" />
-              <h2 className="text-xl font-bold text-white m-0">Welcome to AI Corner!</h2>
+              <h2 className="text-xl font-bold text-white m-0">Welcome to AInSeconds!</h2>
             </div>
             <p className="text-gray-300 m-0">
-              This guide will help you make your first API call in just a few minutes. 
+              This guide will help you make your first API call in just a few minutes.
               By the end, you'll have successfully generated AI-powered content using our platform.
             </p>
           </div>
@@ -122,7 +122,7 @@ console.log(data.choices[0].message.content);`
             <ul className="space-y-2 text-gray-300">
               <li className="flex items-center gap-3">
                 <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-                An AI Corner account (sign up for free at <a href="/signup" className="text-purple-400 hover:text-purple-300">aicorner.com</a>)
+                An AInSeconds account (sign up for free at <a href="/signup" className="text-purple-400 hover:text-purple-300">ainseconds.com</a>)
               </li>
               <li className="flex items-center gap-3">
                 <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
@@ -145,7 +145,7 @@ console.log(data.choices[0].message.content);`
           
           <div className="space-y-4">
             <p className="text-gray-300">
-              First, you'll need to obtain your API key from the AI Corner dashboard:
+              First, you'll need to obtain your API key from the AInSeconds dashboard:
             </p>
             
             <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
@@ -282,7 +282,7 @@ console.log(data.choices[0].message.content);`
       "index": 0,
       "message": {
         "role": "assistant",
-        "content": "Hello! I'm AI Corner, your AI assistant. How can I help you today?"
+        "content": "Hello! I'm AInSeconds, your AI assistant. How can I help you today?"
       },
       "finish_reason": "stop"
     }

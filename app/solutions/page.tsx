@@ -316,7 +316,7 @@ export default function SolutionsPage() {
           >
             <h2 className="text-5xl font-bold mb-6">
               <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Why Choose AI Corner Solutions?
+                Why Choose AInSeconds Solutions?
               </span>
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">

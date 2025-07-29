@@ -89,8 +89,8 @@ export async function POST(request: NextRequest) {
     const article = new News({
       ...body,
       author: {
-        name: 'AI Corner Team', // Default author
-        avatar: '/images/ai-corner-avatar.png'
+        name: 'AInSeconds Team', // Default author
+        avatar: '/images/ainseconds-avatar.svg'
       }
     });
 

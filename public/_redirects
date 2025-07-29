@@ -1,0 +1,6 @@
+# Redirect all traffic to ensure proper routing
+/* /index.html 200
+
+# Force HTTPS
+http://ainseconds.shop/* https://ainseconds.shop/:splat 301!
+http://www.ainseconds.shop/* https://ainseconds.shop/:splat 301!

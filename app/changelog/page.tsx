@@ -254,7 +254,7 @@ export default function ChangelogPage() {
             </h1>
             
             <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
-              Stay up to date with the latest features, improvements, and fixes to the AI Corner platform.
+              Stay up to date with the latest features, improvements, and fixes to the AInSeconds platform.
             </p>
 
             {/* Search Bar */}

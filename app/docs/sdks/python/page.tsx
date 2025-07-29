@@ -26,44 +26,44 @@ export default function PythonSDKPage() {
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
-  const installationCode = `pip install aicorner`;
+  const installationCode = `pip install ainseconds`;
 
-  const quickStartCode = `from aicorner import AICorner
+  const quickStartCode = `from ainseconds import AInSeconds
 
 # Initialize the client
-client = AICorner(api_key="your-api-key-here")
+client = AInSeconds(api_key="your-api-key-here")
 
 # Create a chat completion
 response = client.chat.completions.create(
     model="gpt-4",
     messages=[
-        {"role": "user", "content": "Hello, AI Corner!"}
+        {"role": "user", "content": "Hello, AInSeconds!"}
     ]
 )
 
 print(response.choices[0].message.content)`;
 
   const asyncCode = `import asyncio
-from aicorner import AsyncAICorner
+from ainseconds import AsyncAInSeconds
 
 async def main():
-    client = AsyncAICorner(api_key="your-api-key-here")
-    
+    client = AsyncAInSeconds(api_key="your-api-key-here")
+
     response = await client.chat.completions.create(
         model="gpt-4",
         messages=[
             {"role": "user", "content": "Hello, async world!"}
         ]
     )
-    
+
     print(response.choices[0].message.content)
     await client.close()
 
 asyncio.run(main())`;
 
-  const streamingCode = `from aicorner import AICorner
+  const streamingCode = `from ainseconds import AInSeconds
 
-client = AICorner(api_key="your-api-key-here")
+client = AInSeconds(api_key="your-api-key-here")
 
 # Stream the response
 stream = client.chat.completions.create(
@@ -78,15 +78,15 @@ for chunk in stream:
     if chunk.choices[0].delta.content is not None:
         print(chunk.choices[0].delta.content, end="")`;
 
-  const errorHandlingCode = `from aicorner import AICorner
-from aicorner.exceptions import (
+  const errorHandlingCode = `from ainseconds import AInSeconds
+from ainseconds.exceptions import (
     APIError,
     RateLimitError,
     AuthenticationError,
     InvalidRequestError
 )
 
-client = AICorner(api_key="your-api-key-here")
+client = AInSeconds(api_key="your-api-key-here")
 
 try:
     response = client.chat.completions.create(
@@ -106,19 +106,19 @@ except InvalidRequestError as e:
 except APIError as e:
     print(f"API error: {e}")`;
 
-  const configurationCode = `from aicorner import AICorner
+  const configurationCode = `from ainseconds import AInSeconds
 
 # Method 1: Pass API key directly
-client = AICorner(api_key="your-api-key-here")
+client = AInSeconds(api_key="your-api-key-here")
 
 # Method 2: Use environment variable
-# Set AICORNER_API_KEY in your environment
-client = AICorner()
+# Set AINSECONDS_API_KEY in your environment
+client = AInSeconds()
 
 # Method 3: Custom configuration
-client = AICorner(
+client = AInSeconds(
     api_key="your-api-key-here",
-    base_url="https://api.aicorner.com/v1",
+    base_url="https://api.ainseconds.com/v1",
     timeout=30.0,
     max_retries=3
 )`;

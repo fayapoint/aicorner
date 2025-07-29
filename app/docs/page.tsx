@@ -77,7 +77,7 @@ export default function DocsPage() {
     },
     {
       title: "Integrations",
-      description: "Connect AI Corner with your favorite tools",
+      description: "Connect AInSeconds with your favorite tools",
       icon: Settings,
       gradient: "from-orange-500 to-red-500",
       docs: [

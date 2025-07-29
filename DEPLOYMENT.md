@@ -1,4 +1,4 @@
-# AI Corner - Deployment Guide
+# AInSeconds - Deployment Guide
 
 ## Environment Variables
 

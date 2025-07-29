@@ -147,7 +147,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                     <Shield className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-lg font-bold">AI Corner</h1>
+                    <h1 className="text-lg font-bold">AInSeconds</h1>
                     <p className="text-xs text-gray-400">Admin Panel</p>
                   </div>
                 </div>

@@ -36,9 +36,9 @@ export default function AdminSettingsPage() {
   });
 
   const [seoSettings, setSeoSettings] = useState({
-    metaTitle: "AI Corner - Your AI Safe Haven",
-    metaDescription: "Discover comprehensive AI solutions, tools, and resources for beginners to experts. Your trusted AI safe haven.",
-    metaKeywords: "AI, artificial intelligence, machine learning, AI tools, AI safe haven",
+    metaTitle: "AInSeconds - AI Solutions in Seconds",
+    metaDescription: "Discover comprehensive AI solutions, tools, and resources for beginners to experts. Get AI solutions implemented in seconds.",
+    metaKeywords: "AI, artificial intelligence, machine learning, AI tools, AI solutions, AInSeconds",
     googleAnalyticsId: "",
     facebookPixelId: "",
     enableSitemap: true,
@@ -50,8 +50,8 @@ export default function AdminSettingsPage() {
     smtpPort: "587",
     smtpUsername: "",
     smtpPassword: "",
-    fromEmail: "noreply@aicorner.com",
-    fromName: "AI Corner",
+    fromEmail: "noreply@ainseconds.com",
+    fromName: "AInSeconds",
     enableEmailNotifications: true
   });
 

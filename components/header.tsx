@@ -162,9 +162,9 @@ export function Header() {
             </div>
             <div>
               <h1 className="text-2xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                AI Corner
+                AInSeconds
               </h1>
-              <p className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors">Your AI Safe Haven</p>
+              <p className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors">AI Solutions in Seconds</p>
             </div>
           </a>
         </div>

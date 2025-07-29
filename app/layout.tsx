@@ -2,8 +2,8 @@ import "./globals.css";
 import type { ReactNode } from "react";
 
 export const metadata = {
-  title: "AI Corner - Your Safe Haven for AI Solutions",
-  description: "From AI beginners to experts - find your perfect AI solution in our comprehensive, safe, and supportive ecosystem. Start your AI journey today.",
+  title: "AInSeconds - AI Solutions in Seconds",
+  description: "From AI beginners to experts - get AI solutions implemented in seconds. Your comprehensive, safe, and supportive AI ecosystem. Start your AI journey today.",
 };
 
 import { Header } from "@/components/header";

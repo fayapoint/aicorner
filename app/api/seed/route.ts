@@ -28,8 +28,8 @@ const sampleNews = [
       alt: "AI neural network visualization"
     },
     author: {
-      name: "AI Corner Team",
-      avatar: "/images/ai-corner-avatar.png"
+      name: "AInSeconds Team",
+      avatar: "/images/ainseconds-avatar.svg"
     },
     category: "AI Technology",
     tags: ["Machine Learning", "AGI", "Research", "Breakthrough"],
@@ -102,10 +102,10 @@ const sampleNews = [
     views: 2100
   },
   {
-    title: "AI Corner Platform Update: New Features and Improvements",
-    slug: "ai-corner-platform-update-new-features-and-improvements",
-    excerpt: "Discover the latest enhancements to the AI Corner platform, including new AI models, improved performance, and enhanced user experience features.",
-    content: `<p>We're excited to announce a major update to the AI Corner platform, bringing you new capabilities, improved performance, and an enhanced user experience. This update represents months of development and incorporates valuable feedback from our community.</p>
+    title: "AInSeconds Platform Update: New Features and Improvements",
+    slug: "ainseconds-platform-update-new-features-and-improvements",
+    excerpt: "Discover the latest enhancements to the AInSeconds platform, including new AI models, improved performance, and enhanced user experience features.",
+    content: `<p>We're excited to announce a major update to the AInSeconds platform, bringing you new capabilities, improved performance, and an enhanced user experience. This update represents months of development and incorporates valuable feedback from our community.</p>
 
 <h2>New AI Models</h2>
 <p>We've added several cutting-edge AI models to our platform:</p>
@@ -210,12 +210,12 @@ const sampleNews = [
 
 const sampleVideos = [
   {
-    title: "Introduction to AI Corner Platform",
-    slug: "introduction-to-ai-corner-platform",
-    description: "Get started with AI Corner and discover how our platform can transform your AI workflow. This comprehensive introduction covers all the essential features and capabilities.",
+    title: "Introduction to AInSeconds Platform",
+    slug: "introduction-to-ainseconds-platform",
+    description: "Get started with AInSeconds and discover how our platform can transform your AI workflow. This comprehensive introduction covers all the essential features and capabilities.",
     videoUrl: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
     thumbnailUrl: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&h=450&fit=crop",
-    publicId: "intro-ai-corner-platform",
+    publicId: "intro-ainseconds-platform",
     duration: 180, // 3 minutes
     category: "Getting Started",
     tags: ["Introduction", "Platform", "Tutorial"],
@@ -271,8 +271,8 @@ export async function POST(request: NextRequest) {
       const newsWithAuthor = {
         ...newsData,
         author: newsData.author || {
-          name: "AI Corner Team",
-          avatar: "/images/ai-corner-avatar.svg"
+          name: "AInSeconds Team",
+          avatar: "/images/ainseconds-avatar.svg"
         }
       };
       const news = new News(newsWithAuthor);

@@ -59,7 +59,7 @@ export default function IntegrationsPage() {
     {
       id: 2,
       name: "Zapier",
-      description: "Connect AI Corner with 5,000+ apps through automated workflows",
+      description: "Connect AInSeconds with 5,000+ apps through automated workflows",
       category: "productivity",
       icon: Zap,
       gradient: "from-orange-500 to-red-500",
@@ -226,7 +226,7 @@ export default function IntegrationsPage() {
             </h1>
             
             <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
-              Connect AI Corner with your favorite tools and platforms. Seamless integration, powerful automation.
+              Connect AInSeconds with your favorite tools and platforms. Seamless integration, powerful automation.
             </p>
 
             {/* Search Bar */}

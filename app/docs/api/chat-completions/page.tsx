@@ -184,7 +184,7 @@ print(result["choices"][0]["message"]["content"])`;
               <h2 className="text-xl font-bold text-white m-0">Chat Completions API</h2>
             </div>
             <p className="text-gray-300 m-0">
-              The chat completions endpoint is the most versatile way to interact with AI Corner's language models. 
+              The chat completions endpoint is the most versatile way to interact with AInSeconds' language models.
               It supports both single-turn and multi-turn conversations with system prompts, user messages, and assistant responses.
             </p>
           </div>
@@ -197,7 +197,7 @@ print(result["choices"][0]["message"]["content"])`;
             <div className="flex items-center gap-3">
               <Badge className="bg-green-500/20 text-green-400 border-green-500/30">POST</Badge>
               <code className="text-purple-300 font-mono text-lg">
-                https://api.aicorner.com/v1/chat/completions
+                https://api.ainseconds.com/v1/chat/completions
               </code>
             </div>
           </div>

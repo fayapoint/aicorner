@@ -31,17 +31,17 @@ export default function AuthenticationPage() {
   };
 
   const codeExamples = {
-    headers: `Authorization: Bearer sk-aicorner-1234567890abcdef...`,
-    
+    headers: `Authorization: Bearer sk-ainseconds-1234567890abcdef...`,
+
     curl: `curl -H "Authorization: Bearer YOUR_API_KEY" \\
      -H "Content-Type: application/json" \\
-     https://api.aicorner.com/v1/models`,
-    
+     https://api.ainseconds.com/v1/models`,
+
     python: `import os
 import requests
 
 # Load API key from environment variable
-api_key = os.getenv('AICORNER_API_KEY')
+api_key = os.getenv('AINSECONDS_API_KEY')
 
 headers = {
     'Authorization': f'Bearer {api_key}',
@@ -49,24 +49,24 @@ headers = {
 }
 
 response = requests.get(
-    'https://api.aicorner.com/v1/models',
+    'https://api.ainseconds.com/v1/models',
     headers=headers
 )`,
 
     javascript: `// Using environment variables
-const apiKey = process.env.AICORNER_API_KEY;
+const apiKey = process.env.AINSECONDS_API_KEY;
 
 const headers = {
   'Authorization': \`Bearer \${apiKey}\`,
   'Content-Type': 'application/json'
 };
 
-const response = await fetch('https://api.aicorner.com/v1/models', {
+const response = await fetch('https://api.ainseconds.com/v1/models', {
   headers: headers
 });`,
 
     env: `# .env file
-AICORNER_API_KEY=sk-aicorner-1234567890abcdef...
+AINSECONDS_API_KEY=sk-ainseconds-1234567890abcdef...
 
 # Never commit this file to version control!
 # Add .env to your .gitignore file`
@@ -104,13 +104,13 @@ AICORNER_API_KEY=sk-aicorner-1234567890abcdef...
           </h2>
           
           <p className="text-gray-300 mb-4">
-            AI Corner API keys follow this format:
+            AInSeconds API keys follow this format:
           </p>
-          
+
           <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4 mb-4">
             <div className="flex items-center justify-between">
               <code className="text-purple-300 font-mono">
-                {showApiKey ? 'sk-aicorner-1234567890abcdef...' : 'sk-aicorner-••••••••••••••••••••'}
+                {showApiKey ? 'sk-ainseconds-1234567890abcdef...' : 'sk-ainseconds-••••••••••••••••••••'}
               </code>
               <Button
                 size="sm"
@@ -125,7 +125,7 @@ AICORNER_API_KEY=sk-aicorner-1234567890abcdef...
 
           <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
             <ul className="space-y-2 text-gray-300 text-sm">
-              <li><strong>sk-aicorner-</strong> - Prefix identifying AI Corner secret keys</li>
+              <li><strong>sk-ainseconds-</strong> - Prefix identifying AInSeconds secret keys</li>
               <li><strong>64 characters</strong> - Random alphanumeric string</li>
               <li><strong>Case sensitive</strong> - Must be used exactly as provided</li>
             </ul>

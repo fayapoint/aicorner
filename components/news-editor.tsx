@@ -122,8 +122,8 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
           ...articleData,
           status,
           author: {
-            name: 'AI Corner Team',
-            avatar: '/images/ai-corner-avatar.png'
+            name: 'AInSeconds Team',
+            avatar: '/images/ainseconds-avatar.svg'
           }
         })
       });

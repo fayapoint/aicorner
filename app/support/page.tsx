@@ -90,7 +90,7 @@ export default function SupportPage() {
     {
       id: 1,
       category: "getting-started",
-      question: "How do I get started with AI Corner?",
+      question: "How do I get started with AInSeconds?",
       answer: "Getting started is simple! Sign up for our free 14-day trial, complete the onboarding questionnaire to help us understand your needs, and we'll recommend the perfect AI solutions for your business. Our team will guide you through the setup process step by step.",
       popular: true
     },
@@ -98,7 +98,7 @@ export default function SupportPage() {
       id: 2,
       category: "getting-started",
       question: "I'm completely new to AI. Is this platform right for me?",
-      answer: "Absolutely! AI Corner is specifically designed for beginners. We provide simple explanations, step-by-step tutorials, and a supportive community. You don't need any technical background - we'll teach you everything you need to know.",
+      answer: "Absolutely! AInSeconds is specifically designed for beginners. We provide simple explanations, step-by-step tutorials, and a supportive community. You don't need any technical background - we'll teach you everything you need to know.",
       popular: true
     },
     {

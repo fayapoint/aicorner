@@ -374,7 +374,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-300 mb-4">
-                "I was terrified of AI, but AI Corner made it so simple. Now my bakery uses AI for inventory and I've increased profits by 40%!"
+                "I was terrified of AI, but AInSeconds made it so simple. Now my bakery uses AI for inventory and I've increased profits by 40%!"
               </p>
               <div className="flex text-yellow-400">
                 ⭐⭐⭐⭐⭐
@@ -447,7 +447,7 @@ export default function Home() {
     </section>
   );
 
-  // Why Choose AI Corner Section
+  // Why Choose AInSeconds Section
   const WhyChooseSection = () => (
     <section className="py-24 bg-gradient-to-b from-slate-900 to-slate-800">
       <div className="max-w-7xl mx-auto px-4">
