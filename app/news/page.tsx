@@ -72,9 +72,14 @@ export default function NewsPage() {
       const response = await fetch(`/api/news?${params}`);
       if (response.ok) {
         const data: NewsResponse = await response.json();
-        setNews(data.articles);
-        setTotalPages(data.totalPages);
-        setTotalCount(data.totalCount);
+        setNews(data.articles || []);
+        setTotalPages(data.totalPages || 1);
+        setTotalCount(data.totalCount || 0);
+      } else {
+        console.error('Failed to fetch news:', response.status);
+        setNews([]);
+        setTotalPages(1);
+        setTotalCount(0);
       }
     } catch (error) {
       console.error("Error fetching news:", error);

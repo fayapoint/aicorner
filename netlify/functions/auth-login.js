@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET || process.env.ADMIN_SECRET_KEY || 'fallback-secret-key-for-development';
 const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'admin-secret';
 
 // Simple admin user for demo purposes

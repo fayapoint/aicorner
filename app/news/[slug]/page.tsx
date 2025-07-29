@@ -70,10 +70,14 @@ export default function NewsArticlePage() {
       const response = await fetch(`/api/news?category=${category}&limit=3&status=published`);
       if (response.ok) {
         const data = await response.json();
-        setRelatedArticles(data.articles.filter((a: NewsArticle) => a._id !== excludeId));
+        const articles = data.articles || [];
+        setRelatedArticles(articles.filter((a: NewsArticle) => a._id !== excludeId));
+      } else {
+        setRelatedArticles([]);
       }
     } catch (error) {
       console.error("Error fetching related articles:", error);
+      setRelatedArticles([]);
     }
   };
 

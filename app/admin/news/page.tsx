@@ -57,9 +57,14 @@ export default function AdminNewsPage() {
       const response = await fetch(`/api/news?${params}`);
       if (response.ok) {
         const data = await response.json();
-        setArticles(data.articles);
-        setTotalPages(data.totalPages);
-        setTotalCount(data.totalCount);
+        setArticles(data.articles || []);
+        setTotalPages(data.totalPages || 1);
+        setTotalCount(data.totalCount || 0);
+      } else {
+        console.error('Failed to fetch articles:', response.status);
+        setArticles([]);
+        setTotalPages(1);
+        setTotalCount(0);
       }
     } catch (error) {
       console.error("Error fetching articles:", error);

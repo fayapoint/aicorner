@@ -55,11 +55,11 @@ export default function AdminDashboard() {
       
       // Fetch news stats
       const newsResponse = await fetch("/api/news?limit=1000");
-      const newsData = await newsResponse.json();
+      const newsData = newsResponse.ok ? await newsResponse.json() : { articles: [], totalCount: 0 };
 
       // Fetch video stats
       const videosResponse = await fetch("/api/videos?limit=1000");
-      const videosData = await videosResponse.json();
+      const videosData = videosResponse.ok ? await videosResponse.json() : { videos: [], totalCount: 0 };
 
       // Calculate stats
       const totalViews = [

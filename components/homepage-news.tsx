@@ -28,10 +28,14 @@ export function HomepageNews() {
       const response = await fetch('/api/news?limit=6&status=published');
       if (response.ok) {
         const data = await response.json();
-        setNews(data.articles);
+        setNews(data.articles || []);
+      } else {
+        console.error('Failed to fetch news:', response.status);
+        setNews([]);
       }
     } catch (error) {
       console.error('Error fetching news:', error);
+      setNews([]);
     } finally {
       setIsLoadingNews(false);
     }
@@ -42,10 +46,14 @@ export function HomepageNews() {
       const response = await fetch('/api/videos?limit=6&status=published');
       if (response.ok) {
         const data = await response.json();
-        setVideos(data.videos);
+        setVideos(data.videos || []);
+      } else {
+        console.error('Failed to fetch videos:', response.status);
+        setVideos([]);
       }
     } catch (error) {
       console.error('Error fetching videos:', error);
+      setVideos([]);
     } finally {
       setIsLoadingVideos(false);
     }

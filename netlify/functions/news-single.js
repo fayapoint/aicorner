@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET || process.env.ADMIN_SECRET_KEY || 'fallback-secret-key-for-development';
 
 exports.handler = async (event, context) => {
   // Set CORS headers
@@ -59,6 +59,7 @@ exports.handler = async (event, context) => {
     category: 'AI Basics',
     tags: ['AI', 'Machine Learning', 'Beginner'],
     status: 'published',
+    slug: 'getting-started-with-ai-2024',
     featuredImage: {
       url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjM2NmYxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5BSSBJbGx1c3RyYXRpb248L3RleHQ+PC9zdmc+',
       alt: 'AI illustration',
@@ -76,11 +77,20 @@ exports.handler = async (event, context) => {
   };
 
   if (event.httpMethod === 'GET') {
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify(mockArticle),
-    };
+    try {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify(mockArticle),
+      };
+    } catch (error) {
+      console.error('Error fetching article:', error);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Internal server error' }),
+      };
+    }
   }
 
   if (event.httpMethod === 'PUT') {

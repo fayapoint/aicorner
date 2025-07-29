@@ -133,6 +133,12 @@ exports.handler = async (event, context) => {
       statusCode: 500,
       headers,
       body: JSON.stringify({
+        videos: [],
+        totalCount: 0,
+        totalPages: 1,
+        currentPage: 1,
+        hasNextPage: false,
+        hasPrevPage: false,
         error: 'Internal server error',
         message: error.message
       })
