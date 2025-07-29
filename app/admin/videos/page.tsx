@@ -1,0 +1,357 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { AdminLayout } from "@/components/admin-layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Plus, 
+  Search, 
+  Filter, 
+  Edit, 
+  Trash2, 
+  Eye, 
+  Calendar,
+  Play,
+  Clock,
+  Heart,
+  Video as VideoIcon
+} from "lucide-react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import Image from "next/image";
+import { Video } from "@/types/news";
+
+export default function AdminVideosPage() {
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+
+  useEffect(() => {
+    fetchVideos();
+  }, [searchTerm, selectedStatus, currentPage]);
+
+  const fetchVideos = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: "10",
+        sortBy: "createdAt",
+        sortOrder: "desc"
+      });
+
+      if (searchTerm) {
+        params.append("search", searchTerm);
+      }
+
+      if (selectedStatus !== "all") {
+        params.append("status", selectedStatus);
+      }
+
+      const response = await fetch(`/api/videos?${params}`);
+      if (response.ok) {
+        const data = await response.json();
+        setVideos(data.videos);
+        setTotalPages(data.totalPages);
+        setTotalCount(data.totalCount);
+      }
+    } catch (error) {
+      console.error("Error fetching videos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this video?")) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("admin_token");
+      const response = await fetch(`/api/videos/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        fetchVideos();
+      } else {
+        alert("Failed to delete video");
+      }
+    } catch (error) {
+      console.error("Error deleting video:", error);
+      alert("Failed to delete video");
+    }
+  };
+
+  const formatDate = (date: Date | string) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
+  const formatDuration = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  return (
+    <AdminLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-white">Videos</h1>
+            <p className="text-gray-400 mt-2">Manage your video content and uploads</p>
+          </div>
+          <Link href="/admin/videos/new">
+            <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+              <Plus className="w-4 h-4 mr-2" />
+              New Video
+            </Button>
+          </Link>
+        </div>
+
+        {/* Filters */}
+        <Card className="bg-slate-800/50 border-gray-700">
+          <CardContent className="p-6">
+            <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+              {/* Search */}
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  placeholder="Search videos..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 bg-slate-700/50 border-gray-600 text-white placeholder-gray-400"
+                />
+              </div>
+
+              {/* Status Filter */}
+              <div className="flex gap-2">
+                {["all", "published", "draft"].map((status) => (
+                  <Button
+                    key={status}
+                    variant={selectedStatus === status ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedStatus(status)}
+                    className={
+                      selectedStatus === status
+                        ? "bg-purple-600 text-white"
+                        : "border-gray-600 text-gray-300 hover:bg-gray-700"
+                    }
+                  >
+                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                  </Button>
+                ))}
+              </div>
+
+              {/* Results Count */}
+              <div className="text-sm text-gray-400">
+                {totalCount} videos total
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Videos List */}
+        {loading ? (
+          <div className="space-y-4">
+            {[...Array(5)].map((_, i) => (
+              <Card key={i} className="bg-slate-800/50 border-gray-700">
+                <CardContent className="p-6">
+                  <div className="animate-pulse">
+                    <div className="flex gap-4">
+                      <div className="w-32 h-20 bg-gray-700 rounded"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-gray-700 rounded w-3/4"></div>
+                        <div className="h-3 bg-gray-700 rounded w-1/2"></div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : videos.length > 0 ? (
+          <div className="space-y-4">
+            {videos.map((video, index) => (
+              <motion.div
+                key={video._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <Card className="bg-slate-800/50 border-gray-700 hover:border-purple-400/40 transition-all duration-300">
+                  <CardContent className="p-6">
+                    <div className="flex gap-4">
+                      {/* Thumbnail */}
+                      <div className="w-32 h-20 bg-gray-700 rounded overflow-hidden flex-shrink-0 relative">
+                        <Image
+                          src={video.thumbnailUrl}
+                          alt={video.title}
+                          width={128}
+                          height={80}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                          <Play className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="absolute bottom-1 right-1">
+                          <Badge className="bg-black/70 text-white border-0 text-xs">
+                            <Clock className="w-2 h-2 mr-1" />
+                            {formatDuration(video.duration)}
+                          </Badge>
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-lg font-semibold text-white line-clamp-1 mb-2">
+                              {video.title}
+                            </h3>
+                            <p className="text-gray-400 text-sm line-clamp-2 mb-3">
+                              {video.description}
+                            </p>
+                            <div className="flex items-center gap-4 text-xs text-gray-500">
+                              <div className="flex items-center gap-1">
+                                <Calendar className="w-3 h-3" />
+                                <span>{formatDate(video.createdAt)}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Eye className="w-3 h-3" />
+                                <span>{video.views} views</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Heart className="w-3 h-3" />
+                                <span>{video.likes} likes</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex items-center gap-2 ml-4">
+                            <Badge
+                              className={
+                                video.status === "published"
+                                  ? "bg-green-600/20 text-green-400 border-green-600/30"
+                                  : "bg-yellow-600/20 text-yellow-400 border-yellow-600/30"
+                              }
+                            >
+                              {video.status}
+                            </Badge>
+                            <Badge variant="outline" className="border-gray-600 text-gray-400">
+                              {video.category}
+                            </Badge>
+                            <div className="flex gap-1">
+                              <Button variant="ghost" size="sm">
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                              <Link href={`/admin/videos/${video._id}/edit`}>
+                                <Button variant="ghost" size="sm">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                              </Link>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDelete(video._id)}
+                                className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <Card className="bg-slate-800/50 border-gray-700">
+            <CardContent className="p-12 text-center">
+              <VideoIcon className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-400 mb-2">No Videos Found</h3>
+              <p className="text-gray-500 mb-6">
+                {searchTerm || selectedStatus !== "all"
+                  ? "Try adjusting your search or filter criteria."
+                  : "Get started by uploading your first video."
+                }
+              </p>
+              <Link href="/admin/videos/new">
+                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Upload First Video
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+              className="border-gray-600 text-gray-300 hover:bg-gray-700"
+            >
+              Previous
+            </Button>
+            
+            <div className="flex gap-1">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                const page = i + 1;
+                return (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setCurrentPage(page)}
+                    className={
+                      currentPage === page
+                        ? "bg-purple-600 text-white"
+                        : "border-gray-600 text-gray-300 hover:bg-gray-700"
+                    }
+                  >
+                    {page}
+                  </Button>
+                );
+              })}
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+              className="border-gray-600 text-gray-300 hover:bg-gray-700"
+            >
+              Next
+            </Button>
+          </div>
+        )}
+      </div>
+    </AdminLayout>
+  );
+}

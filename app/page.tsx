@@ -1,468 +1,1312 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { HomepageNews } from "@/components/homepage-news";
 import {
-  Menu,
-  X,
-  ChevronRight,
-  Play,
-  Zap,
-  Smartphone,
-  Globe,
-  BarChart3,
-  Users,
   Shield,
-  Rocket,
   Brain,
-  Database,
-  Cloud,
-  Workflow,
-  Bot,
-  MessageSquare,
-  Calendar,
-  Headphones,
-  Star,
-  ArrowRight,
+  Users,
+  Zap,
   CheckCircle,
-  Sparkles,
+  ArrowRight,
+  Bot,
+  Code,
+  BarChart3,
+  Heart,
+  Lightbulb,
   Target,
   TrendingUp,
   Award,
   Clock,
-} from "lucide-react"
+  DollarSign
+} from "lucide-react";
 
 export default function Home() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [scrollY, setScrollY] = useState(0)
-  const [activeService, setActiveService] = useState(0)
 
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY)
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveService((prev) => (prev + 1) % 12)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const services = [
-    {
-      icon: <Globe className="w-8 h-8" />,
-      title: "Desenvolvimento Web Avançado",
-      description:
-        "Sites responsivos, PWAs, e-commerce, landing pages otimizadas para conversão com tecnologias modernas",
-      features: ["React/Next.js", "SEO Avançado", "Performance 100%", "Mobile First"],
-      color: "from-blue-500 to-cyan-500",
-      gradient: "bg-gradient-to-br from-blue-50 to-cyan-50",
-    },
-    {
-      icon: <Bot className="w-8 h-8" />,
-      title: "Automação & Chatbots IA",
-      description: "Bots inteligentes para WhatsApp, Telegram, atendimento 24/7 com IA conversacional avançada",
-      features: ["GPT Integration", "Multi-plataforma", "Analytics", "CRM Integration"],
-      color: "from-green-500 to-emerald-500",
-      gradient: "bg-gradient-to-br from-green-50 to-emerald-50",
-    },
-    {
-      icon: <Brain className="w-8 h-8" />,
-      title: "Consultoria Estratégica Digital",
-      description:
-        "Diagnóstico completo, estratégias personalizadas, mentoria executiva e acompanhamento de resultados",
-      features: ["Análise 360°", "Roadmap Personalizado", "KPIs Definidos", "Suporte Contínuo"],
-      color: "from-purple-500 to-violet-500",
-      gradient: "bg-gradient-to-br from-purple-50 to-violet-50",
-    },
-    {
-      icon: <Workflow className="w-8 h-8" />,
-      title: "Gestão de Projetos Inteligente",
-      description: "Sistemas completos de gestão com automações, relatórios em tempo real e integração total",
-      features: ["Kanban Avançado", "Time Tracking", "Relatórios BI", "API Integrations"],
-      color: "from-orange-500 to-red-500",
-      gradient: "bg-gradient-to-br from-orange-50 to-red-50",
-    },
-    {
-      icon: <Database className="w-8 h-8" />,
-      title: "Soluções em Dados & Analytics",
-      description: "Dashboards interativos, análise preditiva, Big Data e inteligência de negócios avançada",
-      features: ["Power BI", "Machine Learning", "Data Mining", "Visualizações"],
-      color: "from-indigo-500 to-blue-500",
-      gradient: "bg-gradient-to-br from-indigo-50 to-blue-50",
-    },
-    {
-      icon: <Cloud className="w-8 h-8" />,
-      title: "Infraestrutura Cloud & DevOps",
-      description: "Migração para nuvem, CI/CD, monitoramento, escalabilidade automática e segurança avançada",
-      features: ["AWS/Azure", "Docker/K8s", "Monitoring", "Auto-scaling"],
-      color: "from-teal-500 to-green-500",
-      gradient: "bg-gradient-to-br from-teal-50 to-green-50",
-    },
-    {
-      icon: <Smartphone className="w-8 h-8" />,
-      title: "Aplicativos Mobile Nativos",
-      description: "Apps iOS/Android, React Native, Flutter, integração com APIs e sistemas existentes",
-      features: ["Cross-platform", "Push Notifications", "Offline Mode", "App Store"],
-      color: "from-pink-500 to-rose-500",
-      gradient: "bg-gradient-to-br from-pink-50 to-rose-50",
-    },
-    {
-      icon: <Shield className="w-8 h-8" />,
-      title: "Segurança & Compliance",
-      description: "Auditoria de segurança, implementação LGPD, pentest, monitoramento de ameaças 24/7",
-      features: ["LGPD Compliance", "Pentest", "Monitoring", "Backup Seguro"],
-      color: "from-gray-600 to-gray-800",
-      gradient: "bg-gradient-to-br from-gray-50 to-slate-50",
-    },
-    {
-      icon: <Zap className="w-8 h-8" />,
-      title: "Integração de Sistemas",
-      description: "APIs customizadas, webhooks, sincronização de dados, middleware e arquitetura de microsserviços",
-      features: ["REST/GraphQL", "Webhooks", "Real-time", "Microservices"],
-      color: "from-yellow-500 to-orange-500",
-      gradient: "bg-gradient-to-br from-yellow-50 to-orange-50",
-    },
-    {
-      icon: <BarChart3 className="w-8 h-8" />,
-      title: "Marketing Digital & Growth",
-      description: "SEO/SEM, automação de marketing, funis de conversão, análise de performance e growth hacking",
-      features: ["SEO/SEM", "Marketing Automation", "A/B Testing", "Growth Hacking"],
-      color: "from-emerald-500 to-teal-500",
-      gradient: "bg-gradient-to-br from-emerald-50 to-teal-50",
-    },
-    {
-      icon: <Users className="w-8 h-8" />,
-      title: "Treinamento & Capacitação",
-      description: "Cursos personalizados, workshops, certificações, plataforma EAD e acompanhamento pedagógico",
-      features: ["LMS Customizado", "Certificações", "Gamificação", "Progress Tracking"],
-      color: "from-violet-500 to-purple-500",
-      gradient: "bg-gradient-to-br from-violet-50 to-purple-50",
-    },
-    {
-      icon: <Headphones className="w-8 h-8" />,
-      title: "Suporte Premium 24/7",
-      description: "Atendimento especializado, SLA garantido, suporte proativo, monitoramento contínuo",
-      features: ["24/7 Support", "SLA 99.9%", "Proactive Care", "Dedicated Team"],
-      color: "from-cyan-500 to-blue-500",
-      gradient: "bg-gradient-to-br from-cyan-50 to-blue-50",
-    },
-  ]
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-x-hidden">
+  // Hero Section with Strong Value Proposition
+  const HeroSection = () => (
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -inset-10 opacity-50">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-          <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-        </div>
-
-        {/* Floating particles */}
-        <div className="absolute inset-0">
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-white rounded-full opacity-20 animate-float"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 20}s`,
-                animationDuration: `${20 + Math.random() * 20}s`,
-              }}
-            />
-          ))}
-        </div>
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
       </div>
 
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-6 pt-20">
-        <div className="max-w-6xl mx-auto text-center">
-          {/* Status badges */}
-          <div className="flex flex-wrap justify-center gap-3 mb-8 animate-fade-in">
-            <Badge className="bg-green-500/20 text-green-300 border-green-500/30 px-4 py-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-              Sistema Online
-            </Badge>
-            <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 px-4 py-2">
-              <Star className="w-4 h-4 mr-2" />
-              +500 Projetos Entregues
-            </Badge>
-            <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30 px-4 py-2">
-              <Award className="w-4 h-4 mr-2" />
-              Certificado ISO 27001
-            </Badge>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
+        <div className="mb-8">
+          <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 text-sm font-medium">
+            🛡️ Your AI Safety Haven
+          </Badge>
+        </div>
+        
+        <h1 className="text-6xl md:text-8xl font-black mb-8">
+          <span className="bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+            AI Solutions
+          </span>
+          <br />
+          <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            For Everyone
+          </span>
+        </h1>
+
+        <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+          Whether you're afraid of AI or you're an expert - this is your safe space to explore, learn, and implement AI solutions that actually work.
+          <span className="text-purple-300 font-semibold"> Join thousands who've transformed their lives and businesses with AI.</span>
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+          <a href="/trial">
+            <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300">
+              Start Your AI Journey <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </a>
+          <a href="/solutions">
+            <Button variant="outline" size="lg" className="border-purple-400 text-purple-300 hover:bg-purple-500/10 px-8 py-4 text-lg rounded-xl">
+              Explore Solutions
+            </Button>
+          </a>
+        </div>
+
+        {/* Trust Indicators */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="flex items-center justify-center space-x-3">
+            <Shield className="w-8 h-8 text-green-400" />
+            <div className="text-center">
+              <span className="text-gray-300 font-medium block">100% Safe & Secure</span>
+              <span className="text-gray-500 text-sm">No scary tech jargon</span>
+            </div>
           </div>
+          <div className="flex items-center justify-center space-x-3">
+            <Users className="w-8 h-8 text-blue-400" />
+            <div className="text-center">
+              <span className="text-gray-300 font-medium block">15,000+ Success Stories</span>
+              <span className="text-gray-500 text-sm">From beginners to experts</span>
+            </div>
+          </div>
+          <div className="flex items-center justify-center space-x-3">
+            <Award className="w-8 h-8 text-yellow-400" />
+            <div className="text-center">
+              <span className="text-gray-300 font-medium block">97% Success Rate</span>
+              <span className="text-gray-500 text-sm">Real results guaranteed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 
-          {/* Main headline */}
-          <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight animate-fade-in-up">
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
-              Transformação Digital
+  // Skill Level Navigation
+  const SkillLevelSection = () => (
+    <section className="py-24 bg-gradient-to-b from-slate-900 to-slate-800">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Find Your Perfect Fit
             </span>
-            <br />
-            <span className="text-white">Sem Limites</span>
-          </h1>
-
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
-            Soluções tecnológicas completas para empresas que querem liderar o futuro.
-            <span className="text-purple-400 font-semibold"> IA, automação, cloud e muito mais.</span>
+          </h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            No matter where you are in your AI journey, we have the right solution waiting for you
           </p>
+        </div>
 
-          {/* Interactive demo preview */}
-          <div className="relative mb-12 animate-fade-in-up animation-delay-400">
-            <div className="relative max-w-4xl mx-auto">
-              <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl p-8 backdrop-blur-sm border border-purple-500/30">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <CheckCircle className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="font-bold text-lg mb-2">Análise Completa</h3>
-                    <p className="text-gray-400 text-sm">Diagnóstico 360° do seu negócio</p>
+        <Tabs defaultValue="beginner" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-12 bg-slate-800/50 p-2 rounded-2xl">
+            <TabsTrigger value="beginner" className="text-lg py-4 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-500">
+              🌱 AI Beginner
+            </TabsTrigger>
+            <TabsTrigger value="intermediate" className="text-lg py-4 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500">
+              🚀 Growing Fast
+            </TabsTrigger>
+            <TabsTrigger value="expert" className="text-lg py-4 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500">
+              🎯 AI Expert
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="beginner" className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20 hover:border-green-400/40 transition-all duration-300 hover:scale-105">
+                <CardHeader>
+                  <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                    <Lightbulb className="w-8 h-8 text-white" />
                   </div>
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-violet-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Rocket className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="font-bold text-lg mb-2">Implementação</h3>
-                    <p className="text-gray-400 text-sm">Soluções personalizadas e escaláveis</p>
+                  <CardTitle className="text-2xl text-white">AI Basics Course</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Start from zero. Learn what AI really is and how it can help you.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 text-gray-300 mb-6">
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Simple explanations</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Hands-on practice</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Personal guidance</li>
+                  </ul>
+                  <a href="/courses">
+                    <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600">
+                      Start Learning
+                    </Button>
+                  </a>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20 hover:border-green-400/40 transition-all duration-300 hover:scale-105">
+                <CardHeader>
+                  <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                    <Bot className="w-8 h-8 text-white" />
                   </div>
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <TrendingUp className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="font-bold text-lg mb-2">Resultados</h3>
-                    <p className="text-gray-400 text-sm">Crescimento sustentável garantido</p>
+                  <CardTitle className="text-2xl text-white">Ready-Made AI Tools</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Use powerful AI tools without any technical knowledge required.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 text-gray-300 mb-6">
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> One-click solutions</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> No coding needed</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Instant results</li>
+                  </ul>
+                  <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600">
+                    Try Tools
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20 hover:border-green-400/40 transition-all duration-300 hover:scale-105">
+                <CardHeader>
+                  <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                    <Heart className="w-8 h-8 text-white" />
                   </div>
+                  <CardTitle className="text-2xl text-white">Safe Space Community</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Join thousands learning AI in a supportive, judgment-free environment.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 text-gray-300 mb-6">
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Ask any question</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Get real help</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Make friends</li>
+                  </ul>
+                  <a href="/community">
+                    <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600">
+                      Join Community
+                    </Button>
+                  </a>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="intermediate" className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20 hover:border-blue-400/40 transition-all duration-300 hover:scale-105">
+                <CardHeader>
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl flex items-center justify-center mb-4">
+                    <Target className="w-8 h-8 text-white" />
+                  </div>
+                  <CardTitle className="text-2xl text-white">Custom AI Solutions</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Tailored AI implementations for your specific business needs.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 text-gray-300 mb-6">
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Business analysis</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Custom development</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Full support</li>
+                  </ul>
+                  <Button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                    Get Custom Solution
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20 hover:border-blue-400/40 transition-all duration-300 hover:scale-105">
+                <CardHeader>
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl flex items-center justify-center mb-4">
+                    <TrendingUp className="w-8 h-8 text-white" />
+                  </div>
+                  <CardTitle className="text-2xl text-white">Scale Your Business</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Advanced automation and AI integration for growing companies.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 text-gray-300 mb-6">
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Process automation</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> AI integration</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> ROI tracking</li>
+                  </ul>
+                  <Button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                    Scale Now
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20 hover:border-blue-400/40 transition-all duration-300 hover:scale-105">
+                <CardHeader>
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl flex items-center justify-center mb-4">
+                    <Code className="w-8 h-8 text-white" />
+                  </div>
+                  <CardTitle className="text-2xl text-white">Advanced Training</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Deep-dive courses for serious AI implementation and strategy.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 text-gray-300 mb-6">
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Expert mentorship</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Real projects</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Certification</li>
+                  </ul>
+                  <Button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                    Advanced Training
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="expert" className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:scale-105">
+                <CardHeader>
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mb-4">
+                    <Brain className="w-8 h-8 text-white" />
+                  </div>
+                  <CardTitle className="text-2xl text-white">Enterprise AI Architecture</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Complex AI system design and implementation for large organizations.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 text-gray-300 mb-6">
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> System architecture</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Team leadership</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Strategic planning</li>
+                  </ul>
+                  <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                    Enterprise Solutions
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:scale-105">
+                <CardHeader>
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mb-4">
+                    <Users className="w-8 h-8 text-white" />
+                  </div>
+                  <CardTitle className="text-2xl text-white">Expert Network</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Connect with top AI professionals and collaborate on cutting-edge projects.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 text-gray-300 mb-6">
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Exclusive network</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> High-value projects</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Industry insights</li>
+                  </ul>
+                  <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                    Join Network
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:scale-105">
+                <CardHeader>
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mb-4">
+                    <Zap className="w-8 h-8 text-white" />
+                  </div>
+                  <CardTitle className="text-2xl text-white">Cutting-Edge Research</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Access to latest AI research, beta tools, and experimental technologies.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 text-gray-300 mb-6">
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Early access</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Research collaboration</li>
+                    <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Innovation labs</li>
+                  </ul>
+                  <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                    Access Research
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </section>
+  );
+
+  // Testimonials Section
+  const TestimonialsSection = () => (
+    <section className="py-24 bg-gradient-to-b from-slate-800 to-slate-900">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Real People, Real Results
+            </span>
+          </h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            See how AI Corner has transformed lives and businesses across the globe
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20">
+            <CardContent className="p-8">
+              <div className="flex items-center mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                  M
+                </div>
+                <div className="ml-4">
+                  <h4 className="text-white font-semibold">Maria Santos</h4>
+                  <p className="text-gray-400 text-sm">Small Business Owner</p>
+                </div>
+              </div>
+              <p className="text-gray-300 mb-4">
+                "I was terrified of AI, but AI Corner made it so simple. Now my bakery uses AI for inventory and I've increased profits by 40%!"
+              </p>
+              <div className="flex text-yellow-400">
+                ⭐⭐⭐⭐⭐
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20">
+            <CardContent className="p-8">
+              <div className="flex items-center mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                  J
+                </div>
+                <div className="ml-4">
+                  <h4 className="text-white font-semibold">João Silva</h4>
+                  <p className="text-gray-400 text-sm">Marketing Manager</p>
+                </div>
+              </div>
+              <p className="text-gray-300 mb-4">
+                "The custom AI solutions saved my company $50k annually. The team understood exactly what we needed."
+              </p>
+              <div className="flex text-yellow-400">
+                ⭐⭐⭐⭐⭐
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20">
+            <CardContent className="p-8">
+              <div className="flex items-center mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                  A
+                </div>
+                <div className="ml-4">
+                  <h4 className="text-white font-semibold">Ana Costa</h4>
+                  <p className="text-gray-400 text-sm">AI Consultant</p>
+                </div>
+              </div>
+              <p className="text-gray-300 mb-4">
+                "Even as an AI expert, I found incredible value in the community and cutting-edge research access."
+              </p>
+              <div className="flex text-yellow-400">
+                ⭐⭐⭐⭐⭐
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="text-center mt-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            <div>
+              <div className="text-4xl font-bold text-purple-400 mb-2">15,000+</div>
+              <div className="text-gray-300">Happy Users</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-blue-400 mb-2">97%</div>
+              <div className="text-gray-300">Success Rate</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-green-400 mb-2">$2.5M+</div>
+              <div className="text-gray-300">Saved by Clients</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-yellow-400 mb-2">24/7</div>
+              <div className="text-gray-300">Support</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  // Why Choose AI Corner Section
+  const WhyChooseSection = () => (
+    <section className="py-24 bg-gradient-to-b from-slate-900 to-slate-800">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Your Safe Haven in the AI World
+            </span>
+          </h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            We understand AI can feel overwhelming. That's why we created a judgment-free space where everyone can learn and grow.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20 hover:border-green-400/40 transition-all duration-300">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                <Shield className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">No Judgment Zone</CardTitle>
+              <CardDescription className="text-gray-300">
+                Ask any question, no matter how basic. Our community celebrates every step of your AI journey.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20 hover:border-blue-400/40 transition-all duration-300">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl flex items-center justify-center mb-4">
+                <Heart className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">Human-First Approach</CardTitle>
+              <CardDescription className="text-gray-300">
+                Real humans behind every solution. We explain AI in simple terms and always put your needs first.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20 hover:border-purple-400/40 transition-all duration-300">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mb-4">
+                <Clock className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">Start Small, Dream Big</CardTitle>
+              <CardDescription className="text-gray-300">
+                Begin with just $3/month and grow at your own pace. No pressure, no overwhelming commitments.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-yellow-500/20 hover:border-yellow-400/40 transition-all duration-300">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mb-4">
+                <Lightbulb className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">Practical Solutions</CardTitle>
+              <CardDescription className="text-gray-300">
+                No theoretical fluff. Every tool and lesson is designed to solve real problems and create real value.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-pink-500/10 to-red-500/10 border-pink-500/20 hover:border-pink-400/40 transition-all duration-300">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-pink-400 to-red-500 rounded-2xl flex items-center justify-center mb-4">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">Supportive Community</CardTitle>
+              <CardDescription className="text-gray-300">
+                Connect with like-minded people on the same journey. Share wins, get help, make friends.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-indigo-500/20 hover:border-indigo-400/40 transition-all duration-300">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center mb-4">
+                <DollarSign className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">Proven ROI</CardTitle>
+              <CardDescription className="text-gray-300">
+                Our clients typically see 300%+ return on investment within 90 days. Your success is our success.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      </div>
+    </section>
+  );
+
+  // Comprehensive Services Section
+  const ServicesSection = () => (
+    <section className="py-24 bg-gradient-to-b from-slate-800 to-slate-900">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Complete AI Solutions Ecosystem
+            </span>
+          </h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Everything you need to succeed with AI - from your first steps to enterprise-level implementations
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          {/* Ready-Made AI Tools */}
+          <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20 hover:border-green-400/40 transition-all duration-300 hover:scale-105">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                <Bot className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">Ready-Made AI Tools</CardTitle>
+              <CardDescription className="text-gray-300">
+                Plug-and-play AI solutions you can use immediately - no technical knowledge required.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-gray-300 mb-6">
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> ChatFlow AI - WhatsApp automation</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> LocalSEO Master - Google ranking</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> WebBuilder Pro - Instant websites</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Content Generator - AI writing</li>
+              </ul>
+              <a href="/tools-dashboard">
+                <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600">
+                  Try Free Tools
+                </Button>
+              </a>
+            </CardContent>
+          </Card>
+
+          {/* Custom AI Development */}
+          <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20 hover:border-blue-400/40 transition-all duration-300 hover:scale-105">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl flex items-center justify-center mb-4">
+                <Code className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">Custom AI Development</CardTitle>
+              <CardDescription className="text-gray-300">
+                Tailored AI solutions built specifically for your business needs and challenges.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-gray-300 mb-6">
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Business process automation</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Custom chatbots & AI assistants</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Data analysis & insights</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> API integrations</li>
+              </ul>
+              <Button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                Get Custom Solution
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* AI Training & Education */}
+          <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:scale-105">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mb-4">
+                <Brain className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">AI Training & Education</CardTitle>
+              <CardDescription className="text-gray-300">
+                Comprehensive learning programs from absolute beginner to AI expert level.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-gray-300 mb-6">
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> AI Basics for beginners</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Business AI implementation</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Advanced AI strategies</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Certification programs</li>
+              </ul>
+              <a href="/courses">
+                <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                  Start Learning
+                </Button>
+              </a>
+            </CardContent>
+          </Card>
+
+          {/* Consulting Services */}
+          <Card className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-yellow-500/20 hover:border-yellow-400/40 transition-all duration-300 hover:scale-105">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mb-4">
+                <Target className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">AI Consulting</CardTitle>
+              <CardDescription className="text-gray-300">
+                Strategic guidance from AI experts to transform your business with artificial intelligence.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-gray-300 mb-6">
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-yellow-400 mr-2" /> AI strategy development</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-yellow-400 mr-2" /> Implementation roadmaps</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-yellow-400 mr-2" /> ROI optimization</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-yellow-400 mr-2" /> Team training</li>
+              </ul>
+              <Button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600">
+                Book Consultation
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Community Access */}
+          <Card className="bg-gradient-to-br from-pink-500/10 to-red-500/10 border-pink-500/20 hover:border-pink-400/40 transition-all duration-300 hover:scale-105">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-pink-400 to-red-500 rounded-2xl flex items-center justify-center mb-4">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">Exclusive Community</CardTitle>
+              <CardDescription className="text-gray-300">
+                Join our supportive community of AI enthusiasts, beginners, and experts.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-gray-300 mb-6">
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-pink-400 mr-2" /> 24/7 community support</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-pink-400 mr-2" /> Weekly expert Q&A sessions</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-pink-400 mr-2" /> Exclusive resources</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-pink-400 mr-2" /> Networking opportunities</li>
+              </ul>
+              <a href="/community">
+                <Button className="w-full bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600">
+                  Join Community
+                </Button>
+              </a>
+            </CardContent>
+          </Card>
+
+          {/* Enterprise Solutions */}
+          <Card className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-indigo-500/20 hover:border-indigo-400/40 transition-all duration-300 hover:scale-105">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center mb-4">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">Enterprise Solutions</CardTitle>
+              <CardDescription className="text-gray-300">
+                Large-scale AI implementations with dedicated support and custom architecture.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-gray-300 mb-6">
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-indigo-400 mr-2" /> Dedicated account manager</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-indigo-400 mr-2" /> Custom AI architecture</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-indigo-400 mr-2" /> Priority support</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-indigo-400 mr-2" /> Scalable solutions</li>
+              </ul>
+              <Button className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600">
+                Contact Sales
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </section>
+  );
+
+  // Pricing Section
+  const PricingSection = () => (
+    <section className="py-24 bg-gradient-to-b from-slate-900 to-slate-800">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Start Small, Scale Big
+            </span>
+          </h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Begin your AI journey for just $3/month and grow at your own pace. No long-term commitments, cancel anytime.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Starter Plan */}
+          <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20 hover:border-green-400/40 transition-all duration-300 relative">
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-1">
+                MOST POPULAR
+              </Badge>
+            </div>
+            <CardHeader className="text-center pt-8">
+              <CardTitle className="text-3xl text-white mb-2">Starter</CardTitle>
+              <div className="mb-4">
+                <span className="text-5xl font-bold text-green-400">$3</span>
+                <span className="text-gray-400">/month</span>
+              </div>
+              <CardDescription className="text-gray-300">
+                Perfect for AI beginners who want to dip their toes in the water
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-gray-300 mb-8">
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Access to basic AI tools</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Community support</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Weekly AI tips</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Basic templates</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Quick consultations</li>
+              </ul>
+              <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600">
+                Start Free Trial
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Growth Plan */}
+          <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20 hover:border-blue-400/40 transition-all duration-300">
+            <CardHeader className="text-center">
+              <CardTitle className="text-3xl text-white mb-2">Growth</CardTitle>
+              <div className="mb-4">
+                <span className="text-5xl font-bold text-blue-400">$47</span>
+                <span className="text-gray-400">/month</span>
+              </div>
+              <CardDescription className="text-gray-300">
+                For businesses ready to implement AI solutions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-gray-300 mb-8">
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Everything in Starter</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Advanced AI tools</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Priority support</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Monthly consultations</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Custom integrations</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-blue-400 mr-2" /> Analytics dashboard</li>
+              </ul>
+              <Button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                Upgrade to Growth
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Professional Plan */}
+          <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20 hover:border-purple-400/40 transition-all duration-300">
+            <CardHeader className="text-center">
+              <CardTitle className="text-3xl text-white mb-2">Professional</CardTitle>
+              <div className="mb-4">
+                <span className="text-5xl font-bold text-purple-400">$147</span>
+                <span className="text-gray-400">/month</span>
+              </div>
+              <CardDescription className="text-gray-300">
+                For serious businesses scaling with AI
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-gray-300 mb-8">
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Everything in Growth</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Custom AI development</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Dedicated support</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Weekly consultations</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Advanced automations</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> White-label solutions</li>
+              </ul>
+              <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                Go Professional
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Enterprise Plan */}
+          <Card className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-yellow-500/20 hover:border-yellow-400/40 transition-all duration-300">
+            <CardHeader className="text-center">
+              <CardTitle className="text-3xl text-white mb-2">Enterprise</CardTitle>
+              <div className="mb-4">
+                <span className="text-5xl font-bold text-yellow-400">$497</span>
+                <span className="text-gray-400">/month</span>
+              </div>
+              <CardDescription className="text-gray-300">
+                For large organizations with complex AI needs
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-gray-300 mb-8">
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-yellow-400 mr-2" /> Everything in Professional</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-yellow-400 mr-2" /> Unlimited consultations</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-yellow-400 mr-2" /> Account manager</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-yellow-400 mr-2" /> Custom architecture</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-yellow-400 mr-2" /> 24/7 priority support</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-yellow-400 mr-2" /> SLA guarantees</li>
+              </ul>
+              <Button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600">
+                Contact Sales
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="text-center mt-16">
+          <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-8 max-w-4xl mx-auto">
+            <h3 className="text-3xl font-bold text-white mb-4">Not Sure Which Plan is Right?</h3>
+            <p className="text-gray-300 mb-6">
+              Start with our $3 Starter plan and upgrade anytime as your needs grow. No penalties, no hassles.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                Start Free 14-Day Trial
+              </Button>
+              <Button variant="outline" size="lg" className="border-purple-400 text-purple-300 hover:bg-purple-500/10">
+                Schedule a Demo
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  // AI Tools Demo Section
+  const ToolsDemoSection = () => (
+    <section className="py-24 bg-gradient-to-b from-slate-800 to-slate-900">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Try Our AI Tools Right Now
+            </span>
+          </h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Don't just take our word for it - experience the power of AI with these free interactive demos
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* ROI Calculator */}
+          <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20 hover:border-green-400/40 transition-all duration-300">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                <BarChart3 className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">AI ROI Calculator</CardTitle>
+              <CardDescription className="text-gray-300">
+                Calculate how much money AI can save your business in the first year
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="block text-sm text-gray-300 mb-2">Monthly Revenue ($)</label>
+                  <input
+                    type="number"
+                    placeholder="10000"
+                    className="w-full bg-slate-800 border border-gray-600 rounded-lg px-3 py-2 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-300 mb-2">Employees</label>
+                  <input
+                    type="number"
+                    placeholder="10"
+                    className="w-full bg-slate-800 border border-gray-600 rounded-lg px-3 py-2 text-white"
+                  />
+                </div>
+                <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-4">
+                  <div className="text-green-400 font-bold text-xl">Potential Savings:</div>
+                  <div className="text-white text-2xl font-bold">$24,000/year</div>
+                </div>
+              </div>
+              <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600">
+                Get Detailed Report
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Content Generator */}
+          <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20 hover:border-blue-400/40 transition-all duration-300">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl flex items-center justify-center mb-4">
+                <Brain className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">AI Content Generator</CardTitle>
+              <CardDescription className="text-gray-300">
+                Generate professional content for your business in seconds
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="block text-sm text-gray-300 mb-2">Content Type</label>
+                  <select className="w-full bg-slate-800 border border-gray-600 rounded-lg px-3 py-2 text-white">
+                    <option>Social Media Post</option>
+                    <option>Email Subject Line</option>
+                    <option>Product Description</option>
+                    <option>Blog Title</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-300 mb-2">Topic</label>
+                  <input
+                    type="text"
+                    placeholder="AI for small businesses"
+                    className="w-full bg-slate-800 border border-gray-600 rounded-lg px-3 py-2 text-white"
+                  />
+                </div>
+                <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4">
+                  <div className="text-blue-400 font-bold text-sm mb-2">Generated Content:</div>
+                  <div className="text-white text-sm">"Transform your small business with AI - Start saving time and money today! 🚀 #AIForBusiness"</div>
+                </div>
+              </div>
+              <Button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                Generate More Content
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Business Automation Planner */}
+          <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20 hover:border-purple-400/40 transition-all duration-300">
+            <CardHeader>
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mb-4">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white">Automation Planner</CardTitle>
+              <CardDescription className="text-gray-300">
+                Discover which business processes you can automate with AI
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="block text-sm text-gray-300 mb-2">Business Type</label>
+                  <select className="w-full bg-slate-800 border border-gray-600 rounded-lg px-3 py-2 text-white">
+                    <option>E-commerce</option>
+                    <option>Service Business</option>
+                    <option>Restaurant</option>
+                    <option>Real Estate</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-300 mb-2">Biggest Challenge</label>
+                  <select className="w-full bg-slate-800 border border-gray-600 rounded-lg px-3 py-2 text-white">
+                    <option>Customer Support</option>
+                    <option>Lead Generation</option>
+                    <option>Inventory Management</option>
+                    <option>Scheduling</option>
+                  </select>
+                </div>
+                <div className="bg-purple-500/20 border border-purple-500/30 rounded-lg p-4">
+                  <div className="text-purple-400 font-bold text-sm mb-2">Recommended Automation:</div>
+                  <div className="text-white text-sm">AI Chatbot for 24/7 customer support - Save 15 hours/week</div>
+                </div>
+              </div>
+              <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                Get Full Automation Plan
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="text-center mt-16">
+          <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-gray-600 rounded-2xl p-8 max-w-4xl mx-auto">
+            <h3 className="text-3xl font-bold text-white mb-4">Ready to See What AI Can Do for You?</h3>
+            <p className="text-gray-300 mb-6">
+              These are just a taste of the 50+ AI tools available to our members. Start your free trial and unlock the full suite.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="/trial">
+                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                  Access All Tools - Start $3 Trial
+                </Button>
+              </a>
+              <a href="/tools-dashboard">
+                <Button variant="outline" size="lg" className="border-purple-400 text-purple-300 hover:bg-purple-500/10">
+                  View All 50+ Tools
+                </Button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  // Community & Support Section
+  const CommunitySection = () => (
+    <section className="py-24 bg-gradient-to-b from-slate-900 to-slate-800">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              You're Never Alone in Your AI Journey
+            </span>
+          </h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Join our supportive community where questions are welcomed, success is celebrated, and everyone helps each other grow.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+          {/* Community Features */}
+          <div>
+            <h3 className="text-3xl font-bold text-white mb-8">Supportive Community</h3>
+            <div className="space-y-6">
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="text-xl font-semibold text-white mb-2">15,000+ Active Members</h4>
+                  <p className="text-gray-300">Connect with AI enthusiasts from beginners to experts, all learning and growing together.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Heart className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="text-xl font-semibold text-white mb-2">No Judgment Zone</h4>
+                  <p className="text-gray-300">Ask any question, share any concern. Our community celebrates every step of your journey.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Clock className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="text-xl font-semibold text-white mb-2">24/7 Support</h4>
+                  <p className="text-gray-300">Get help anytime with our round-the-clock community support and expert moderators.</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 animate-fade-in-up animation-delay-600">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold px-8 py-4 text-lg rounded-xl shadow-2xl hover:scale-105 transition-all duration-300"
-            >
-              <Play className="w-5 h-5 mr-2" />
-              Ver Demonstração
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-purple-500/50 text-purple-300 hover:bg-purple-500/20 px-8 py-4 text-lg rounded-xl"
-            >
-              Consultoria Gratuita
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </div>
-
-          {/* Trust indicators */}
-          <div className="flex flex-wrap justify-center items-center gap-8 opacity-60 animate-fade-in-up animation-delay-800">
-            <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-green-400" />
-              <span className="text-sm">Segurança Garantida</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-blue-400" />
-              <span className="text-sm">Suporte 24/7</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Target className="w-5 h-5 text-purple-400" />
-              <span className="text-sm">ROI Comprovado</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section id="servicos" className="py-20 px-6 relative">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black mb-6">
-              <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Nossas Soluções
-              </span>
-            </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Tecnologias de ponta para transformar completamente seu negócio digital
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {services.map((service, index) => (
-              <Card
-                key={index}
-                className={`group relative overflow-hidden border-0 bg-slate-800/50 backdrop-blur-sm hover:bg-slate-700/50 transition-all duration-500 hover:scale-105 hover:shadow-2xl cursor-pointer ${
-                  activeService === index ? "ring-2 ring-purple-500 shadow-2xl shadow-purple-500/25" : ""
-                }`}
-                onMouseEnter={() => setActiveService(index)}
-              >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
-                ></div>
-
-                <CardHeader className="relative z-10">
-                  <div
-                    className={`w-16 h-16 rounded-xl bg-gradient-to-br ${service.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    <div className="text-white">{service.icon}</div>
+          {/* Support Channels */}
+          <div>
+            <h3 className="text-3xl font-bold text-white mb-8">Multiple Support Channels</h3>
+            <div className="space-y-4">
+              <Card className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-green-500/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-emerald-500 rounded-lg flex items-center justify-center">
+                      <span className="text-white font-bold">💬</span>
+                    </div>
+                    <div>
+                      <h4 className="text-white font-semibold">Live Chat Support</h4>
+                      <p className="text-gray-300 text-sm">Instant help when you need it most</p>
+                    </div>
                   </div>
-                  <CardTitle className="text-xl font-bold text-white group-hover:text-purple-300 transition-colors">
-                    {service.title}
-                  </CardTitle>
-                  <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors">
-                    {service.description}
-                  </CardDescription>
-                </CardHeader>
-
-                <CardContent className="relative z-10">
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {service.features.map((feature, i) => (
-                      <Badge key={i} variant="secondary" className="bg-slate-700/50 text-gray-300 text-xs">
-                        {feature}
-                      </Badge>
-                    ))}
-                  </div>
-                  <Button
-                    variant="ghost"
-                    className="w-full text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 group-hover:bg-purple-500/20 transition-all"
-                  >
-                    Saiba Mais
-                    <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
                 </CardContent>
               </Card>
-            ))}
+
+              <Card className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-500/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-lg flex items-center justify-center">
+                      <span className="text-white font-bold">📚</span>
+                    </div>
+                    <div>
+                      <h4 className="text-white font-semibold">Knowledge Base</h4>
+                      <p className="text-gray-300 text-sm">Comprehensive guides and tutorials</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-500 rounded-lg flex items-center justify-center">
+                      <span className="text-white font-bold">🎯</span>
+                    </div>
+                    <div>
+                      <h4 className="text-white font-semibold">Expert Consultations</h4>
+                      <p className="text-gray-300 text-sm">One-on-one guidance from AI specialists</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-yellow-500/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                      <span className="text-white font-bold">🎥</span>
+                    </div>
+                    <div>
+                      <h4 className="text-white font-semibold">Weekly Webinars</h4>
+                      <p className="text-gray-300 text-sm">Live sessions with AI experts and Q&A</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
-      </section>
 
-      {/* Technology Stack */}
-      <section className="py-20 px-6 bg-slate-800/30">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-black mb-12">
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-              Tecnologias de Ponta
-            </span>
-          </h2>
+        {/* FAQ Preview */}
+        <div className="mb-16">
+          <h3 className="text-3xl font-bold text-white text-center mb-12">Frequently Asked Questions</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border-gray-600">
+              <CardContent className="p-6">
+                <h4 className="text-white font-semibold mb-3">Is AI really safe for my business?</h4>
+                <p className="text-gray-300 text-sm">Absolutely! We only recommend proven, secure AI solutions and guide you through safe implementation practices. Your data security is our top priority.</p>
+              </CardContent>
+            </Card>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8">
-            {[
-              { name: "React", icon: "⚛️" },
-              { name: "Node.js", icon: "🟢" },
-              { name: "Python", icon: "🐍" },
-              { name: "AWS", icon: "☁️" },
-              { name: "Docker", icon: "🐳" },
-              { name: "AI/ML", icon: "🤖" },
-              { name: "Blockchain", icon: "⛓️" },
-              { name: "IoT", icon: "📡" },
-              { name: "GraphQL", icon: "📊" },
-              { name: "Kubernetes", icon: "☸️" },
-              { name: "MongoDB", icon: "🍃" },
-              { name: "Redis", icon: "🔴" },
-            ].map((tech, index) => (
-              <div
-                key={index}
-                className="group flex flex-col items-center p-4 rounded-xl bg-slate-700/30 hover:bg-slate-600/50 transition-all duration-300 hover:scale-110"
-              >
-                <div className="text-4xl mb-2 group-hover:scale-125 transition-transform duration-300">{tech.icon}</div>
-                <span className="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">
-                  {tech.name}
-                </span>
-              </div>
-            ))}
+            <Card className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border-gray-600">
+              <CardContent className="p-6">
+                <h4 className="text-white font-semibold mb-3">I know nothing about AI. Can I still benefit?</h4>
+                <p className="text-gray-300 text-sm">Perfect! That's exactly who we built this for. Our beginner-friendly approach means you'll be using AI confidently within days, not months.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border-gray-600">
+              <CardContent className="p-6">
+                <h4 className="text-white font-semibold mb-3">What if I need help implementing solutions?</h4>
+                <p className="text-gray-300 text-sm">We provide step-by-step guidance, live support, and even done-for-you implementation services. You're never left to figure things out alone.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border-gray-600">
+              <CardContent className="p-6">
+                <h4 className="text-white font-semibold mb-3">Can I cancel anytime?</h4>
+                <p className="text-gray-300 text-sm">Yes! No long-term contracts or cancellation fees. We're confident you'll love the value, but you're free to leave anytime.</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      </section>
 
-      {/* FAQ Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-black mb-6">
-              <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-                Perguntas Frequentes
-              </span>
-            </h2>
+        <div className="text-center">
+          <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-8 max-w-4xl mx-auto">
+            <h3 className="text-3xl font-bold text-white mb-4">Ready to Join Our AI Family?</h3>
+            <p className="text-gray-300 mb-6">
+              Start with our $3 trial and experience the most supportive AI community on the internet.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="/trial">
+                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                  Join Community - $3 Trial
+                </Button>
+              </a>
+              <a href="/community">
+                <Button variant="outline" size="lg" className="border-purple-400 text-purple-300 hover:bg-purple-500/10">
+                  Browse Community
+                </Button>
+              </a>
+            </div>
           </div>
-
-          <Accordion type="single" collapsible className="space-y-4">
-            {[
-              {
-                question: "Como funciona o processo de desenvolvimento?",
-                answer:
-                  "Seguimos uma metodologia ágil com sprints de 2 semanas, entregas incrementais e feedback contínuo. Você acompanha todo o progresso em tempo real através do nosso dashboard.",
-              },
-              {
-                question: "Qual o prazo médio para entrega dos projetos?",
-                answer:
-                  "Varia conforme a complexidade: sites simples (1-2 semanas), sistemas complexos (2-6 meses), automações (1-4 semanas). Sempre com cronograma detalhado e marcos bem definidos.",
-              },
-              {
-                question: "Vocês oferecem suporte pós-entrega?",
-                answer:
-                  "Sim! Todos os projetos incluem 3 meses de suporte gratuito. Depois oferecemos planos de manutenção com SLA garantido e suporte 24/7 para sistemas críticos.",
-              },
-              {
-                question: "Como garantem a segurança dos dados?",
-                answer:
-                  "Seguimos as melhores práticas de segurança: criptografia end-to-end, compliance LGPD, auditorias regulares, backups automatizados e monitoramento 24/7.",
-              },
-              {
-                question: "Trabalham com empresas de todos os portes?",
-                answer:
-                  "Sim! Atendemos desde startups até grandes corporações. Nossas soluções são escaláveis e se adaptam ao crescimento do seu negócio.",
-              },
-            ].map((item, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="border border-slate-700 rounded-xl bg-slate-800/30 px-6"
-              >
-                <AccordionTrigger className="text-left text-white hover:text-purple-400 transition-colors">
-                  {item.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-gray-300 leading-relaxed">{item.answer}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
         </div>
-      </section>
+      </div>
+    </section>
+  );
 
-      {/* CTA Section */}
-      <section className="py-20 px-6 bg-gradient-to-r from-purple-900/50 to-pink-900/50">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-black mb-6">Pronto para Transformar seu Negócio?</h2>
-          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Agende uma consultoria gratuita e descubra como podemos acelerar seus resultados
+  // Final CTA Section
+  const FinalCTASection = () => (
+    <section className="py-24 bg-gradient-to-b from-slate-800 to-slate-900 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+        <div className="mb-8">
+          <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-2 text-sm font-medium mb-6">
+            🚀 Limited Time: 50% Off First Month
+          </Badge>
+        </div>
+
+        <h2 className="text-5xl md:text-6xl font-black mb-8">
+          <span className="bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+            Your AI Journey
+          </span>
+          <br />
+          <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Starts Today
+          </span>
+        </h2>
+
+        <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+          Don't let AI pass you by. Join thousands who've already transformed their lives and businesses.
+          <span className="text-purple-300 font-semibold"> Start for just $1.50/month (50% off) - cancel anytime.</span>
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+          <a href="/trial">
+            <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-6 text-xl font-bold rounded-2xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105">
+              Start Your $1.50 Trial Now <ArrowRight className="ml-3 w-6 h-6" />
+            </Button>
+          </a>
+          <div className="text-center">
+            <div className="text-gray-400 text-sm">✓ No credit card required</div>
+            <div className="text-gray-400 text-sm">✓ Cancel anytime</div>
+            <div className="text-gray-400 text-sm">✓ 14-day money-back guarantee</div>
+          </div>
+        </div>
+
+        {/* Urgency Elements */}
+        <div className="bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-2xl p-6 mb-12">
+          <div className="flex items-center justify-center space-x-4 mb-4">
+            <Clock className="w-6 h-6 text-red-400" />
+            <span className="text-red-400 font-bold text-lg">Limited Time Offer</span>
+          </div>
+          <p className="text-gray-300">
+            This 50% discount expires in <span className="text-red-400 font-bold">48 hours</span>.
+            Over 500 people joined yesterday - don't miss out!
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold px-8 py-4 text-lg rounded-xl shadow-2xl hover:scale-105 transition-all duration-300"
-            >
-              <Calendar className="w-5 h-5 mr-2" />
-              Agendar Consultoria
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-purple-500/50 text-purple-300 hover:bg-purple-500/20 px-8 py-4 text-lg rounded-xl"
-            >
-              <MessageSquare className="w-5 h-5 mr-2" />
-              Falar no WhatsApp
-            </Button>
+        </div>
+
+        {/* Social Proof */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="text-center">
+            <div className="text-4xl font-bold text-green-400 mb-2">15,000+</div>
+            <div className="text-gray-300">Members Transformed</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl font-bold text-blue-400 mb-2">$2.5M+</div>
+            <div className="text-gray-300">Saved by Our Clients</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl font-bold text-purple-400 mb-2">97%</div>
+            <div className="text-gray-300">Success Rate</div>
           </div>
         </div>
-      </section>
+
+        {/* Final Reassurance */}
+        <div className="mt-16 text-center">
+          <p className="text-gray-400 text-lg mb-4">
+            Still not sure? Here's what you get with zero risk:
+          </p>
+          <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-300">
+            <div className="flex items-center">
+              <CheckCircle className="w-4 h-4 text-green-400 mr-2" />
+              14-day free trial
+            </div>
+            <div className="flex items-center">
+              <CheckCircle className="w-4 h-4 text-green-400 mr-2" />
+              Money-back guarantee
+            </div>
+            <div className="flex items-center">
+              <CheckCircle className="w-4 h-4 text-green-400 mr-2" />
+              Cancel anytime
+            </div>
+            <div className="flex items-center">
+              <CheckCircle className="w-4 h-4 text-green-400 mr-2" />
+              24/7 support
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  return (
+    <div className="min-h-screen bg-slate-900 text-white">
+      <HeroSection />
+      <HomepageNews />
+      <SkillLevelSection />
+      <TestimonialsSection />
+      <WhyChooseSection />
+      <ServicesSection />
+      <PricingSection />
+      <ToolsDemoSection />
+      <CommunitySection />
+      <FinalCTASection />
     </div>
-  )
+  );
 }

@@ -244,3 +244,250 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(139, 92, 246, 0.7);
 }
+
+/* Advanced Animations */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes particle-float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.7;
+  }
+  33% {
+    transform: translateY(-20px) rotate(120deg);
+    opacity: 1;
+  }
+  66% {
+    transform: translateY(-10px) rotate(240deg);
+    opacity: 0.8;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(168, 85, 247, 0.6);
+  }
+}
+
+/* Advanced Animation Classes */
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+.animate-particle {
+  animation: particle-float 4s ease-in-out infinite;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Glassmorphism Effects */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Advanced Hover Effects */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+  transform: scale(1.02);
+}
+
+.hover-gradient {
+  background-size: 200% 200%;
+  transition: all 0.3s ease;
+}
+
+.hover-gradient:hover {
+  background-position: right center;
+}
+
+/* Typography Enhancements */
+.text-gradient {
+  background: linear-gradient(135deg, #8b5cf6, #ec4899, #06b6d4);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 3s ease infinite;
+}
+
+.text-shadow-glow {
+  text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+}
+
+/* Interactive Elements */
+.interactive-border {
+  position: relative;
+  overflow: hidden;
+}
+
+.interactive-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.interactive-border:hover::before {
+  left: 100%;
+}
+
+/* Performance Optimizations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .text-6xl {
+    font-size: 3rem;
+  }
+
+  .text-7xl {
+    font-size: 4rem;
+  }
+
+  .px-12 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .py-6 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .animate-float {
+    animation-duration: 2s;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Dropdown with working backdrop blur */
+  .dropdown-backdrop-blur {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dropdown-backdrop-blur::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: blur(80px) saturate(200%) brightness(1.1);
+    -webkit-backdrop-filter: blur(80px) saturate(200%) brightness(1.1);
+    background: rgba(15, 23, 42, 0.1);
+    border-radius: inherit;
+    z-index: 1;
+  }
+
+  .dropdown-backdrop-blur > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Ensure backdrop-filter works by forcing compositing */
+  .dropdown-backdrop-blur::before {
+    transform: translateZ(0);
+    will-change: backdrop-filter;
+    isolation: isolate;
+  }
+}

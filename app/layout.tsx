@@ -2,8 +2,8 @@ import "./globals.css";
 import type { ReactNode } from "react";
 
 export const metadata = {
-  title: "Portal Tech",
-  description: "Transformação Digital Sem Limites",
+  title: "AI Corner - Your Safe Haven for AI Solutions",
+  description: "From AI beginners to experts - find your perfect AI solution in our comprehensive, safe, and supportive ecosystem. Start your AI journey today.",
 };
 
 import { Header } from "@/components/header";
