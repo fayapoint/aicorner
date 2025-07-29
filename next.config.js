@@ -29,8 +29,10 @@ const nextConfig = {
     ],
   },
   experimental: {
-    serverComponentsExternalPackages: ['mongoose']
-  }
+    serverComponentsExternalPackages: ['mongoose', 'bcryptjs', 'jsonwebtoken']
+  },
+  // Ensure API routes work properly on Netlify
+  trailingSlash: false
 }
 
 module.exports = nextConfig
