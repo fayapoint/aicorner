@@ -159,7 +159,7 @@ export default function NewsArticlePage() {
               <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400">
                 <div className="flex items-center gap-2">
                   <User className="w-4 h-4" />
-                  <span>{article.author.name}</span>
+                  <span>{article.author?.name || 'AInSeconds Team'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />

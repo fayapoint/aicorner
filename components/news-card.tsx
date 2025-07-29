@@ -107,16 +107,16 @@ export function NewsCard({ article, index = 0 }: NewsCardProps) {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {article.author.avatar && (
+                  {article.author?.avatar && (
                     <Image
                       src={article.author.avatar}
-                      alt={article.author.name}
+                      alt={article.author.name || 'Author'}
                       width={20}
                       height={20}
                       className="rounded-full"
                     />
                   )}
-                  <span className="text-xs text-gray-400">{article.author.name}</span>
+                  <span className="text-xs text-gray-400">{article.author?.name || 'AInSeconds Team'}</span>
                 </div>
               </div>
             </div>

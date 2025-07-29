@@ -215,7 +215,7 @@ export default function AdminNewsPage() {
                             <div className="flex items-center gap-4 text-xs text-gray-500">
                               <div className="flex items-center gap-1">
                                 <User className="w-3 h-3" />
-                                <span>{article.author.name}</span>
+                                <span>{article.author?.name || 'AInSeconds Team'}</span>
                               </div>
                               <div className="flex items-center gap-1">
                                 <Calendar className="w-3 h-3" />
