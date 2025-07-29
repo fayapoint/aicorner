@@ -7,7 +7,11 @@ const mockArticles = [
     slug: 'getting-started-with-ai-2024',
     excerpt: 'A comprehensive guide to understanding artificial intelligence.',
     content: '<p>Mock content for local development</p>',
-    featuredImage: null,
+    featuredImage: {
+      url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjM2NmYxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5BSSBJbGx1c3RyYXRpb248L3RleHQ+PC9zdmc+',
+      alt: 'AI illustration',
+      publicId: 'sample-image-1'
+    },
     category: 'AI Basics',
     tags: ['AI', 'Beginner', '2024'],
     status: 'published',
@@ -22,7 +26,11 @@ const mockArticles = [
     slug: 'advanced-ml-techniques',
     excerpt: 'Explore cutting-edge ML algorithms and their applications.',
     content: '<p>Mock content for local development</p>',
-    featuredImage: null,
+    featuredImage: {
+      url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjOGI1Y2Y2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5NTCBJbGx1c3RyYXRpb248L3RleHQ+PC9zdmc+',
+      alt: 'ML illustration',
+      publicId: 'sample-image-2'
+    },
     category: 'Machine Learning',
     tags: ['ML', 'Advanced', 'Algorithms'],
     status: 'draft',
