@@ -24,10 +24,10 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000"
 
-# Specific API route redirects
+# Specific API route redirects (order matters - most specific first)
 [[redirects]]
-  from = "/api/health"
-  to = "/.netlify/functions/health"
+  from = "/api/upload/image"
+  to = "/.netlify/functions/upload-image"
   status = 200
 
 [[redirects]]
@@ -41,13 +41,28 @@
   status = 200
 
 [[redirects]]
+  from = "/api/news/*"
+  to = "/.netlify/functions/news-single"
+  status = 200
+
+[[redirects]]
   from = "/api/news"
   to = "/.netlify/functions/news"
   status = 200
 
 [[redirects]]
+  from = "/api/videos/*"
+  to = "/.netlify/functions/videos-single"
+  status = 200
+
+[[redirects]]
   from = "/api/videos"
   to = "/.netlify/functions/videos"
+  status = 200
+
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/health"
   status = 200
 
 # Fallback for other API routes (if any)
