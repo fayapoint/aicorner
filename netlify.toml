@@ -35,6 +35,21 @@
   to = "/.netlify/functions/auth-login"
   status = 200
 
+[[redirects]]
+  from = "/api/auth/verify"
+  to = "/.netlify/functions/auth-verify"
+  status = 200
+
+[[redirects]]
+  from = "/api/news"
+  to = "/.netlify/functions/news"
+  status = 200
+
+[[redirects]]
+  from = "/api/videos"
+  to = "/.netlify/functions/videos"
+  status = 200
+
 # Fallback for other API routes (if any)
 [[redirects]]
   from = "/api/*"
