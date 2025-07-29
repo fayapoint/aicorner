@@ -16,6 +16,66 @@ exports.handler = async (event, context) => {
     };
   }
 
+  // Handle POST requests (create new article)
+  if (event.httpMethod === 'POST') {
+    try {
+      // Check authentication
+      const authHeader = event.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return {
+          statusCode: 401,
+          headers,
+          body: JSON.stringify({ error: 'No token provided' }),
+        };
+      }
+
+      const token = authHeader.substring(7);
+      const jwt = require('jsonwebtoken');
+      const JWT_SECRET = process.env.JWT_SECRET || process.env.ADMIN_SECRET_KEY || 'fallback-secret-key-for-development';
+
+      try {
+        jwt.verify(token, JWT_SECRET);
+      } catch (error) {
+        return {
+          statusCode: 401,
+          headers,
+          body: JSON.stringify({ error: 'Invalid token' }),
+        };
+      }
+
+      // Parse the request body
+      const articleData = JSON.parse(event.body);
+
+      // Create mock article response
+      const newArticle = {
+        _id: Date.now().toString(),
+        ...articleData,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        publishedAt: articleData.status === 'published' ? new Date().toISOString() : null,
+        views: 0,
+        slug: articleData.title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-')
+      };
+
+      console.log('Mock article created:', newArticle.title);
+
+      return {
+        statusCode: 201,
+        headers,
+        body: JSON.stringify(newArticle),
+      };
+
+    } catch (error) {
+      console.error('Error creating article:', error);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Failed to create article' }),
+      };
+    }
+  }
+
+  // Handle GET requests (existing code)
   try {
     // Parse query parameters
     const queryParams = event.queryStringParameters || {};
