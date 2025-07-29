@@ -111,7 +111,7 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
   const fetchArticle = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/news/${articleId}`);
+      const response = await fetch(`/.netlify/functions/news-single?id=${articleId}`);
       if (response.ok) {
         const article = await response.json();
         setArticleData({
@@ -137,7 +137,8 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
     try {
       const token = localStorage.getItem('admin_token');
       const method = articleId ? 'PUT' : 'POST';
-      const url = articleId ? `/api/news/${articleId}` : '/api/news';
+      // Use direct Netlify function calls instead of API routes
+      const url = articleId ? `/.netlify/functions/news-single?id=${articleId}` : '/.netlify/functions/news';
 
       const response = await fetch(url, {
         method,
@@ -178,7 +179,7 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/upload/image', {
+      const response = await fetch('/.netlify/functions/upload-image', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`

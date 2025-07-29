@@ -111,7 +111,7 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
   const fetchVideo = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/videos/${videoId}`);
+      const response = await fetch(`/.netlify/functions/videos-single?id=${videoId}`);
       if (response.ok) {
         const video = await response.json();
         setVideoData({
@@ -140,7 +140,7 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
     try {
       const token = localStorage.getItem('admin_token');
       const method = videoId ? 'PUT' : 'POST';
-      const url = videoId ? `/api/videos/${videoId}` : '/api/videos';
+      const url = videoId ? `/.netlify/functions/videos-single?id=${videoId}` : '/.netlify/functions/videos';
 
       // Prepare data with proper defaults
       const dataToSave = {
@@ -193,7 +193,7 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/upload/video', {
+      const response = await fetch('/.netlify/functions/upload-video', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`
@@ -228,7 +228,7 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/upload/image', {
+      const response = await fetch('/.netlify/functions/upload-image', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`
