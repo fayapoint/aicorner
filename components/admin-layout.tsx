@@ -115,7 +115,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     }
   ];
 
-  if (loading) {
+  if (loading || !user) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-white">Loading...</div>

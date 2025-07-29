@@ -3,9 +3,71 @@ import connectDB from '@/lib/mongodb';
 import Video from '@/models/Video';
 import { VideoFilters } from '@/types/news';
 
+// Mock data for development/fallback
+const mockVideos = [
+  {
+    _id: '1',
+    title: 'Introduction to Neural Networks',
+    description: 'Learn the basics of neural networks and how they work in AI systems.',
+    videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
+    thumbnailUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQwIiBoZWlnaHQ9IjM2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjM2NmYxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5OZXVyYWwgTmV0d29ya3M8L3RleHQ+PC9zdmc+',
+    publicId: 'sample-video-1',
+    duration: 300,
+    category: 'AI Education',
+    tags: ['Neural Networks', 'AI', 'Education'],
+    status: 'published',
+    views: 2150,
+    likes: 89,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    publishedAt: new Date().toISOString()
+  },
+  {
+    _id: '2',
+    title: 'Deep Learning Fundamentals',
+    description: 'Explore the core concepts of deep learning and its applications.',
+    videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4',
+    thumbnailUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQwIiBoZWlnaHQ9IjM2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjOGI1Y2Y2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EZWVwIExlYXJuaW5nPC90ZXh0Pjwvc3ZnPg==',
+    publicId: 'sample-video-2',
+    duration: 450,
+    category: 'Deep Learning',
+    tags: ['Deep Learning', 'AI', 'Advanced'],
+    status: 'published',
+    views: 1890,
+    likes: 76,
+    createdAt: new Date(Date.now() - 86400000).toISOString(),
+    updatedAt: new Date(Date.now() - 86400000).toISOString(),
+    publishedAt: new Date(Date.now() - 86400000).toISOString()
+  },
+  {
+    _id: '3',
+    title: 'Computer Vision Basics',
+    description: 'Understanding how computers can interpret and analyze visual information.',
+    videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_5mb.mp4',
+    thumbnailUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQwIiBoZWlnaHQ9IjM2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMTBiOTgxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Db21wdXRlciBWaXNpb248L3RleHQ+PC9zdmc+',
+    publicId: 'sample-video-3',
+    duration: 600,
+    category: 'Computer Vision',
+    tags: ['Computer Vision', 'Image Processing', 'AI'],
+    status: 'draft',
+    views: 0,
+    likes: 0,
+    createdAt: new Date(Date.now() - 172800000).toISOString(),
+    updatedAt: new Date(Date.now() - 172800000).toISOString(),
+    publishedAt: new Date(Date.now() - 172800000).toISOString()
+  }
+];
+
 export async function GET(request: NextRequest) {
   try {
-    await connectDB();
+    // Try to connect to MongoDB, but fallback to mock data if it fails
+    let useDatabase = true;
+    try {
+      await connectDB();
+    } catch (dbError) {
+      console.warn('Database connection failed, using mock data:', dbError);
+      useDatabase = false;
+    }
 
     const { searchParams } = new URL(request.url);
     
@@ -50,15 +112,42 @@ export async function GET(request: NextRequest) {
       sort[filters.sortBy] = filters.sortOrder === 'asc' ? 1 : -1;
     }
 
-    // Execute query
-    const [videos, totalCount] = await Promise.all([
-      (Video as any).find(query)
-        .sort(sort)
-        .skip(skip)
-        .limit(limit)
-        .lean(),
-      (Video as any).countDocuments(query)
-    ]);
+    let videos, totalCount;
+
+    if (useDatabase) {
+      // Execute database query
+      [videos, totalCount] = await Promise.all([
+        (Video as any).find(query)
+          .sort(sort)
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+        (Video as any).countDocuments(query)
+      ]);
+    } else {
+      // Use mock data
+      let filteredVideos = mockVideos;
+
+      // Apply filters to mock data
+      if (filters.status && filters.status !== 'published') {
+        filteredVideos = filteredVideos.filter(video => video.status === filters.status);
+      }
+
+      if (filters.category) {
+        filteredVideos = filteredVideos.filter(video => video.category === filters.category);
+      }
+
+      if (filters.search) {
+        filteredVideos = filteredVideos.filter(video =>
+          video.title.toLowerCase().includes(filters.search!.toLowerCase()) ||
+          video.description.toLowerCase().includes(filters.search!.toLowerCase())
+        );
+      }
+
+      // Apply pagination to mock data
+      totalCount = filteredVideos.length;
+      videos = filteredVideos.slice(skip, skip + limit);
+    }
 
     const totalPages = Math.ceil(totalCount / limit);
 

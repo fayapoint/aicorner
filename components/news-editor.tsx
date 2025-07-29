@@ -65,6 +65,7 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
   const [saving, setSaving] = useState(false);
   const [newTag, setNewTag] = useState('');
   const [imageUploading, setImageUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
 
   const categories = [
     'AI Technology',
@@ -80,6 +81,32 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
       fetchArticle();
     }
   }, [articleId]);
+
+  // Add global paste event listener for featured image
+  useEffect(() => {
+    const handleGlobalPaste = async (e: ClipboardEvent) => {
+      // Only handle paste if we're focused on this component and no featured image exists
+      if (!articleData.featuredImage.url && document.activeElement?.closest('.news-editor')) {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          if (item.type.indexOf('image') !== -1) {
+            e.preventDefault();
+            const file = item.getAsFile();
+            if (file) {
+              await handleImageUpload(file);
+            }
+            break;
+          }
+        }
+      }
+    };
+
+    document.addEventListener('paste', handleGlobalPaste);
+    return () => document.removeEventListener('paste', handleGlobalPaste);
+  }, [articleData.featuredImage.url]);
 
   const fetchArticle = async () => {
     setLoading(true);
@@ -177,6 +204,48 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
     }
   };
 
+  // Handle clipboard paste
+  const handlePaste = async (e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.type.indexOf('image') !== -1) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) {
+          await handleImageUpload(file);
+        }
+        break;
+      }
+    }
+  };
+
+  // Handle drag and drop
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith('image/')) {
+        await handleImageUpload(file);
+      }
+    }
+  };
+
   const addTag = () => {
     if (newTag.trim() && !articleData.tags.includes(newTag.trim())) {
       setArticleData(prev => ({
@@ -214,7 +283,7 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="news-editor max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -344,9 +413,23 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
                   />
                 </div>
               ) : (
-                <div className="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center">
+                <div
+                  className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                    dragOver
+                      ? 'border-purple-400 bg-purple-500/10'
+                      : 'border-gray-600'
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onPaste={handlePaste}
+                  tabIndex={0}
+                >
                   <ImageIcon className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-gray-400 mb-3">Upload featured image</p>
+                  <p className="text-gray-400 mb-2">Upload featured image</p>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Click to upload, drag & drop, or paste (Ctrl+V) an image
+                  </p>
                   <input
                     type="file"
                     accept="image/*"

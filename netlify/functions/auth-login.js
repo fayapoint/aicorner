@@ -8,7 +8,13 @@ const ADMIN_USER = {
   id: 'admin',
   username: 'admin',
   email: 'admin@ainseconds.com',
-  role: 'admin'
+  role: 'admin',
+  avatar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjM2NmYxIiByeD0iNzUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjQ4IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkE8L3RleHQ+PC9zdmc+',
+  firstName: 'Admin',
+  lastName: 'User',
+  createdAt: new Date().toISOString(),
+  lastLogin: new Date().toISOString(),
+  permissions: ['read', 'write', 'delete', 'admin']
 };
 
 function authenticateAdmin(credentials) {
@@ -24,11 +30,14 @@ function authenticateAdmin(credentials) {
 
 function generateToken(user) {
   return jwt.sign(
-    { 
-      id: user.id, 
-      username: user.username, 
-      email: user.email, 
-      role: user.role 
+    {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+      firstName: user.firstName,
+      lastName: user.lastName
     },
     JWT_SECRET,
     { expiresIn: '24h' }

@@ -66,7 +66,10 @@ exports.handler = async (event, context) => {
           id: decoded.id,
           username: decoded.username,
           email: decoded.email,
-          role: decoded.role
+          role: decoded.role,
+          avatar: decoded.avatar || 'https://via.placeholder.com/150x150/6366f1/ffffff?text=Admin',
+          firstName: decoded.firstName || 'Admin',
+          lastName: decoded.lastName || 'User'
         },
         message: 'Token is valid'
       })
