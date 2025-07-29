@@ -69,7 +69,7 @@ export default function NewsPage() {
         params.append("category", selectedCategory);
       }
 
-      const response = await fetch(`/.netlify/functions/news?${params}`);
+      const response = await fetch(`/api/news?${params}`);
       if (response.ok) {
         const data: NewsResponse = await response.json();
         setNews(data.articles || []);

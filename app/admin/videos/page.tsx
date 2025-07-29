@@ -55,7 +55,7 @@ export default function AdminVideosPage() {
         params.append("status", selectedStatus);
       }
 
-      const response = await fetch(`/.netlify/functions/videos?${params}`);
+      const response = await fetch(`/api/videos?${params}`);
       if (response.ok) {
         const data = await response.json();
         setVideos(data.videos);
@@ -76,7 +76,7 @@ export default function AdminVideosPage() {
 
     try {
       const token = localStorage.getItem("admin_token");
-      const response = await fetch(`/.netlify/functions/videos-single?id=${id}`, {
+      const response = await fetch(`/api/videos-single?id=${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`

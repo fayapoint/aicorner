@@ -54,7 +54,7 @@ export default function AdminNewsPage() {
         params.append("status", selectedStatus);
       }
 
-      const response = await fetch(`/.netlify/functions/news?${params}`);
+      const response = await fetch(`/api/news?${params}`);
       if (response.ok) {
         const data = await response.json();
         setArticles(data.articles || []);
@@ -80,7 +80,7 @@ export default function AdminNewsPage() {
 
     try {
       const token = localStorage.getItem("admin_token");
-      const response = await fetch(`/.netlify/functions/news-single?id=${id}`, {
+      const response = await fetch(`/api/news-single?id=${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`

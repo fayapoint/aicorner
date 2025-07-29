@@ -52,13 +52,13 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     try {
       const token = localStorage.getItem("admin_token");
-      
+
       // Fetch news stats
-      const newsResponse = await fetch("/.netlify/functions/news?limit=1000");
+      const newsResponse = await fetch("/api/news?limit=1000");
       const newsData = newsResponse.ok ? await newsResponse.json() : { articles: [], totalCount: 0 };
 
       // Fetch video stats
-      const videosResponse = await fetch("/.netlify/functions/videos?limit=1000");
+      const videosResponse = await fetch("/api/videos?limit=1000");
       const videosData = videosResponse.ok ? await videosResponse.json() : { videos: [], totalCount: 0 };
 
       // Calculate stats
