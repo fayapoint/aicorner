@@ -168,14 +168,7 @@ export default function AdminLoginPage() {
               </Button>
             </form>
 
-            {/* Demo Credentials Info */}
-            <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-              <h4 className="text-sm font-semibold text-blue-300 mb-2">Demo Credentials</h4>
-              <div className="text-xs text-blue-200 space-y-1">
-                <p><strong>Username:</strong> admin</p>
-                <p><strong>Password:</strong> {process.env.NODE_ENV === 'development' ? 'aicorner_admin_2024_secure_key' : '[Contact Admin]'}</p>
-              </div>
-            </div>
+
           </CardContent>
         </Card>
 
