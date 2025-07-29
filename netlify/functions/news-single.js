@@ -141,6 +141,50 @@ exports.handler = async (event, context) => {
     }
   }
 
+  // Handle DELETE requests
+  if (event.httpMethod === 'DELETE') {
+    try {
+      // Check authentication
+      const authHeader = event.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return {
+          statusCode: 401,
+          headers,
+          body: JSON.stringify({ error: 'No token provided' }),
+        };
+      }
+
+      const token = authHeader.substring(7);
+      const jwt = require('jsonwebtoken');
+      const JWT_SECRET = process.env.JWT_SECRET || process.env.ADMIN_SECRET_KEY || 'fallback-secret-key-for-development';
+
+      try {
+        jwt.verify(token, JWT_SECRET);
+      } catch (error) {
+        return {
+          statusCode: 401,
+          headers,
+          body: JSON.stringify({ error: 'Invalid token' }),
+        };
+      }
+
+      console.log(`Mock article deleted: ${articleId}`);
+
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ message: 'Article deleted successfully' }),
+      };
+    } catch (error) {
+      console.error('Error deleting article:', error);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Internal server error' }),
+      };
+    }
+  }
+
   return {
     statusCode: 405,
     headers,
