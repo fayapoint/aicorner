@@ -18,8 +18,8 @@ CLOUDINARY_API_SECRET=your_api_secret
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
 
 # Admin Authentication
-ADMIN_SECRET_KEY=your_secure_admin_password
-JWT_SECRET=your_jwt_secret_key
+ADMIN_SECRET_KEY=ainseconds_admin_2024_secure_key
+JWT_SECRET=your_jwt_secret_key_here_make_it_long_and_secure
 ```
 
 ## Netlify Deployment
@@ -73,6 +73,45 @@ After deployment, access the admin panel at:
 2. Get your cloud name, API key, and API secret from the dashboard
 3. Set up upload presets if needed
 4. Use the credentials in your environment variables
+
+## Admin Panel Access
+
+### Default Admin Credentials
+- **Username**: `admin`
+- **Password**: The value you set for `ADMIN_SECRET_KEY` environment variable
+
+### Admin Panel URL
+- Production: `https://ainseconds.shop/admin`
+- Local: `http://localhost:3000/admin`
+
+## Troubleshooting API Issues
+
+### 404 Errors on API Routes
+If you're getting 404 errors on `/api/*` routes in production:
+
+1. **Check Environment Variables**: Ensure all required environment variables are set in Netlify
+2. **Test Health Check**: Visit `/api/health` to verify API routes are working
+3. **Check Build Logs**: Look for any build errors in Netlify's deploy logs
+4. **Verify Netlify Configuration**: Ensure `netlify.toml` is properly configured
+
+### Admin Login Issues
+If admin login fails with 404 or JSON parsing errors:
+
+1. **Verify Environment Variables**:
+   ```bash
+   # In Netlify dashboard, ensure these are set:
+   ADMIN_SECRET_KEY=ainseconds_admin_2024_secure_key
+   JWT_SECRET=your_jwt_secret_key_here_make_it_long_and_secure
+   ```
+
+2. **Test API Endpoint**: Visit `/api/health` to check if API routes are working
+
+3. **Check Network Tab**: In browser dev tools, verify the API calls are reaching the correct endpoints
+
+### Common Solutions
+- **Redeploy**: Sometimes a fresh deployment resolves API routing issues
+- **Clear Cache**: Clear browser cache and try again
+- **Check Logs**: Review Netlify function logs for detailed error messages
 
 ## Security Notes
 

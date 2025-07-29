@@ -8,7 +8,7 @@ const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'admin-secret';
 const ADMIN_USER = {
   id: 'admin',
   username: 'admin',
-  email: 'admin@aicorner.com',
+  email: 'admin@ainseconds.com',
   role: 'admin'
 };
 
