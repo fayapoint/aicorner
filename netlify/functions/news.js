@@ -35,7 +35,7 @@ exports.handler = async (event, context) => {
         tags: ['AI', 'Machine Learning', 'Beginner'],
         status: 'published',
         featuredImage: {
-          url: 'https://via.placeholder.com/600x400',
+          url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjM2NmYxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5BSSBJbGx1c3RyYXRpb248L3RleHQ+PC9zdmc+',
           alt: 'AI illustration',
           publicId: 'sample-image'
         },
@@ -53,7 +53,7 @@ exports.handler = async (event, context) => {
         tags: ['Machine Learning', 'Deep Learning', 'Advanced'],
         status: 'published',
         featuredImage: {
-          url: 'https://via.placeholder.com/600x400',
+          url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjOGI1Y2Y2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5NTCBJbGx1c3RyYXRpb248L3RleHQ+PC9zdmc+',
           alt: 'ML illustration',
           publicId: 'sample-image-2'
         },
@@ -71,7 +71,7 @@ exports.handler = async (event, context) => {
         tags: ['Ethics', 'Responsible AI', 'Guidelines'],
         status: 'draft',
         featuredImage: {
-          url: 'https://via.placeholder.com/600x400',
+          url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMTBiOTgxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5FdGhpY3MgSWxsdXN0cmF0aW9uPC90ZXh0Pjwvc3ZnPg==',
           alt: 'Ethics illustration',
           publicId: 'sample-image-3'
         },

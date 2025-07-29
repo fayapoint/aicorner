@@ -67,7 +67,22 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         return;
       }
 
-      setUser(JSON.parse(userData));
+      // Parse and validate user data
+      try {
+        const parsedUser = JSON.parse(userData);
+        // Ensure user has required properties
+        if (parsedUser && parsedUser.username) {
+          setUser(parsedUser);
+        } else {
+          throw new Error('Invalid user data');
+        }
+      } catch (parseError) {
+        console.error('Error parsing user data:', parseError);
+        localStorage.removeItem("admin_token");
+        localStorage.removeItem("admin_user");
+        router.push("/admin/login");
+        return;
+      }
     } catch (error) {
       console.error("Auth check failed:", error);
       router.push("/admin/login");
@@ -187,11 +202,13 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               <div className="p-4 border-t border-gray-700">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-                    <span className="text-sm font-bold">{user.username[0].toUpperCase()}</span>
+                    <span className="text-sm font-bold">
+                      {user?.username?.[0]?.toUpperCase() || 'A'}
+                    </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{user.username}</p>
-                    <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                    <p className="text-sm font-medium truncate">{user?.username || 'Admin'}</p>
+                    <p className="text-xs text-gray-400 truncate">{user?.email || 'admin@ainseconds.com'}</p>
                   </div>
                 </div>
                 <Button

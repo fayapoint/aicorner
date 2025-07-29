@@ -67,7 +67,7 @@ exports.handler = async (event, context) => {
           username: decoded.username,
           email: decoded.email,
           role: decoded.role,
-          avatar: decoded.avatar || 'https://via.placeholder.com/150x150/6366f1/ffffff?text=Admin',
+          avatar: decoded.avatar || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjM2NmYxIiByeD0iNzUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjQ4IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkE8L3RleHQ+PC9zdmc+',
           firstName: decoded.firstName || 'Admin',
           lastName: decoded.lastName || 'User'
         },
