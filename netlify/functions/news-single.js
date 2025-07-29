@@ -19,9 +19,8 @@ exports.handler = async (event, context) => {
     };
   }
 
-  // Extract article ID from path
-  const pathParts = event.path.split('/');
-  const articleId = pathParts[pathParts.length - 1];
+  // Extract article ID from query parameter or path
+  const articleId = event.queryStringParameters?.id || event.path.split('/').pop();
 
   // Mock article data
   const mockArticle = {

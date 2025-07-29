@@ -15,18 +15,8 @@ exports.handler = async (event, context) => {
     };
   }
 
-  // Only allow GET requests for now
-  if (event.httpMethod !== 'GET') {
-    return {
-      statusCode: 405,
-      headers,
-      body: JSON.stringify({ error: 'Method not allowed' }),
-    };
-  }
-
-  // Extract video ID from path
-  const pathParts = event.path.split('/');
-  const videoId = pathParts[pathParts.length - 1];
+  // Extract video ID from query parameter or path
+  const videoId = event.queryStringParameters?.id || event.path.split('/').pop();
 
   // Mock video data
   const mockVideo = {
@@ -46,18 +36,124 @@ exports.handler = async (event, context) => {
     publishedAt: new Date().toISOString()
   };
 
-  try {
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify(mockVideo),
-    };
-  } catch (error) {
-    console.error('Error fetching video:', error);
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: 'Internal server error' }),
-    };
+  // Handle GET requests
+  if (event.httpMethod === 'GET') {
+    try {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify(mockVideo),
+      };
+    } catch (error) {
+      console.error('Error fetching video:', error);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Internal server error' }),
+      };
+    }
   }
+
+  // Handle PUT requests (update video)
+  if (event.httpMethod === 'PUT') {
+    try {
+      // Check authentication
+      const authHeader = event.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return {
+          statusCode: 401,
+          headers,
+          body: JSON.stringify({ error: 'No token provided' }),
+        };
+      }
+
+      const token = authHeader.substring(7);
+      const jwt = require('jsonwebtoken');
+      const JWT_SECRET = process.env.JWT_SECRET || process.env.ADMIN_SECRET_KEY || 'fallback-secret-key-for-development';
+
+      try {
+        jwt.verify(token, JWT_SECRET);
+      } catch (error) {
+        return {
+          statusCode: 401,
+          headers,
+          body: JSON.stringify({ error: 'Invalid token' }),
+        };
+      }
+
+      const updateData = JSON.parse(event.body);
+      console.log(`Mock video updated: ${updateData.title}`);
+
+      // Return updated video
+      const updatedVideo = {
+        ...mockVideo,
+        ...updateData,
+        _id: videoId,
+        updatedAt: new Date().toISOString()
+      };
+
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify(updatedVideo),
+      };
+    } catch (error) {
+      console.error('Error updating video:', error);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Internal server error' }),
+      };
+    }
+  }
+
+  // Handle DELETE requests
+  if (event.httpMethod === 'DELETE') {
+    try {
+      // Check authentication
+      const authHeader = event.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return {
+          statusCode: 401,
+          headers,
+          body: JSON.stringify({ error: 'No token provided' }),
+        };
+      }
+
+      const token = authHeader.substring(7);
+      const jwt = require('jsonwebtoken');
+      const JWT_SECRET = process.env.JWT_SECRET || process.env.ADMIN_SECRET_KEY || 'fallback-secret-key-for-development';
+
+      try {
+        jwt.verify(token, JWT_SECRET);
+      } catch (error) {
+        return {
+          statusCode: 401,
+          headers,
+          body: JSON.stringify({ error: 'Invalid token' }),
+        };
+      }
+
+      console.log(`Mock video deleted: ${videoId}`);
+
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ message: 'Video deleted successfully' }),
+      };
+    } catch (error) {
+      console.error('Error deleting video:', error);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Internal server error' }),
+      };
+    }
+  }
+
+  return {
+    statusCode: 405,
+    headers,
+    body: JSON.stringify({ error: 'Method not allowed' }),
+  };
 };
