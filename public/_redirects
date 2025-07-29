@@ -1,6 +1,17 @@
-# Redirect all traffic to ensure proper routing
-/* /index.html 200
+# API redirects - MUST come before catch-all
+/api/upload/image /.netlify/functions/upload-image 200
+/api/upload/video /.netlify/functions/upload-video 200
+/api/auth/login /.netlify/functions/auth-login 200
+/api/auth/verify /.netlify/functions/auth-verify 200
+/api/news/* /.netlify/functions/news-single 200
+/api/news /.netlify/functions/news 200
+/api/videos/* /.netlify/functions/videos-single 200
+/api/videos /.netlify/functions/videos 200
+/api/health /.netlify/functions/health 200
 
 # Force HTTPS
 http://ainseconds.shop/* https://ainseconds.shop/:splat 301!
 http://www.ainseconds.shop/* https://ainseconds.shop/:splat 301!
+
+# SPA fallback - MUST be last
+/* /index.html 200
