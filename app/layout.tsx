@@ -4,6 +4,9 @@ import type { ReactNode } from "react";
 export const metadata = {
   title: "AInSeconds - AI Solutions in Seconds",
   description: "From AI beginners to experts - get AI solutions implemented in seconds. Your comprehensive, safe, and supportive AI ecosystem. Start your AI journey today.",
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 import { Header } from "@/components/header";

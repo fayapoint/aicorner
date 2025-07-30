@@ -10,10 +10,7 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
-  external_node_modules = ["mongoose", "bcryptjs", "jsonwebtoken"]
+
 
 [[headers]]
   for = "/_next/static/*"
@@ -25,70 +22,6 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000"
 
-# Specific API route redirects (order matters - most specific first)
-# Force redirects with higher priority
-[[redirects]]
-  from = "/api/upload/image"
-  to = "/.netlify/functions/upload-image"
-  status = 200
-  force = true
+# Let Next.js handle API routes natively
 
-[[redirects]]
-  from = "/api/upload/video"
-  to = "/.netlify/functions/upload-video"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/auth/login"
-  to = "/.netlify/functions/auth-login"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/auth/verify"
-  to = "/.netlify/functions/auth-verify"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/news/*"
-  to = "/.netlify/functions/news-single"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/news"
-  to = "/.netlify/functions/news"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/videos/*"
-  to = "/.netlify/functions/videos-single"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/videos"
-  to = "/.netlify/functions/videos"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/health"
-  to = "/.netlify/functions/health"
-  status = 200
-  force = true
-
-# Fallback for other API routes (if any)
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/___netlify-server-handler"
-  status = 200
-
-# Catch-all for SPA routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Let Next.js handle all routing including API routes

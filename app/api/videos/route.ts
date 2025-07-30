@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('MongoDB connection failed, using fallback data:', error.message);
+    console.error('MongoDB connection failed, using fallback data:', error);
 
     // Fallback to mock data when MongoDB is unavailable
     let filteredVideos = mockVideos;
