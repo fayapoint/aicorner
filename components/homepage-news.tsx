@@ -71,30 +71,52 @@ export function HomepageNews() {
 
   const fetchNews = async () => {
     try {
-      console.log('Fetching news from:', '/api/news?limit=6&status=published');
-      const response = await fetch('/api/news?limit=6&status=published');
-      console.log('News response status:', response.status);
-      if (response.ok) {
-        const data = await response.json();
-        console.log('News data received:', data);
-        // Handle both array response and single object response
-        if (data.articles) {
-          setNews(data.articles);
-        } else if (Array.isArray(data)) {
-          setNews(data);
-        } else if (data._id) {
-          // Single object from database - convert to array
-          setNews([data]);
-        } else {
-          setNews([]);
+      // First try to get featured news
+      console.log('Fetching featured news from:', '/api/featured?type=news');
+      const featuredResponse = await fetch('/api/featured?type=news');
+      console.log('Featured news response status:', featuredResponse.status);
+
+      let featuredNews: NewsArticle[] = [];
+      if (featuredResponse.ok) {
+        const featuredData = await featuredResponse.json();
+        console.log('Featured news data received:', featuredData);
+        if (featuredData.success && featuredData.data) {
+          featuredNews = featuredData.data;
         }
-      } else {
-        console.error('Failed to fetch news:', response.status, response.statusText);
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        console.log('Using fallback news data');
-        setNews(fallbackNews);
       }
+
+      // If we have fewer than 6 featured articles, fill with regular articles
+      let allNews = [...featuredNews];
+      if (allNews.length < 6) {
+        const remainingLimit = 6 - allNews.length;
+        console.log(`Fetching ${remainingLimit} additional news from:`, `/api/news?limit=${remainingLimit}&status=published`);
+        const response = await fetch(`/api/news?limit=${remainingLimit}&status=published`);
+        console.log('Regular news response status:', response.status);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Regular news data received:', data);
+
+          let regularNews: NewsArticle[] = [];
+          if (data.articles) {
+            regularNews = data.articles;
+          } else if (Array.isArray(data)) {
+            regularNews = data;
+          } else if (data._id) {
+            regularNews = [data];
+          }
+
+          // Filter out articles that are already in featured news
+          const featuredIds = featuredNews.map(article => article._id);
+          const filteredRegularNews = regularNews.filter(article => !featuredIds.includes(article._id));
+
+          allNews = [...featuredNews, ...filteredRegularNews.slice(0, remainingLimit)];
+        }
+      }
+
+      console.log('Final news array:', allNews);
+      setNews(allNews.slice(0, 6)); // Ensure we don't exceed 6 articles
+
     } catch (error) {
       console.error('Error fetching news:', error);
       console.log('Using fallback news data due to error');
@@ -106,34 +128,55 @@ export function HomepageNews() {
 
   const fetchVideos = async () => {
     try {
-      console.log('Fetching videos from:', '/api/videos?limit=6&status=published');
-      const response = await fetch('/api/videos?limit=6&status=published');
-      console.log('Videos response status:', response.status);
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Videos data received:', data);
-        // Handle both array response and single object response
-        if (data.videos) {
-          setVideos(data.videos);
-        } else if (Array.isArray(data)) {
-          setVideos(data);
-        } else if (data._id) {
-          // Single object from database - convert to array
-          setVideos([data]);
-        } else {
-          setVideos([]);
+      // First try to get featured videos
+      console.log('Fetching featured videos from:', '/api/featured?type=videos');
+      const featuredResponse = await fetch('/api/featured?type=videos');
+      console.log('Featured videos response status:', featuredResponse.status);
+
+      let featuredVideos: Video[] = [];
+      if (featuredResponse.ok) {
+        const featuredData = await featuredResponse.json();
+        console.log('Featured videos data received:', featuredData);
+        if (featuredData.success && featuredData.data) {
+          featuredVideos = featuredData.data;
         }
-      } else {
-        console.error('Failed to fetch videos:', response.status, response.statusText);
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        console.log('Using fallback videos data');
-        setVideos(fallbackVideos);
       }
+
+      // If we have fewer than 6 featured videos, fill with regular videos
+      let allVideos = [...featuredVideos];
+      if (allVideos.length < 6) {
+        const remainingLimit = 6 - allVideos.length;
+        console.log(`Fetching ${remainingLimit} additional videos from:`, `/api/videos?limit=${remainingLimit}&status=published`);
+        const response = await fetch(`/api/videos?limit=${remainingLimit}&status=published`);
+        console.log('Regular videos response status:', response.status);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Regular videos data received:', data);
+
+          let regularVideos: Video[] = [];
+          if (data.videos) {
+            regularVideos = data.videos;
+          } else if (Array.isArray(data)) {
+            regularVideos = data;
+          } else if (data._id) {
+            regularVideos = [data];
+          }
+
+          // Filter out videos that are already in featured videos
+          const featuredIds = featuredVideos.map(video => video._id);
+          const filteredRegularVideos = regularVideos.filter(video => !featuredIds.includes(video._id));
+
+          allVideos = [...featuredVideos, ...filteredRegularVideos.slice(0, remainingLimit)];
+        }
+      }
+
+      console.log('Final videos array:', allVideos);
+      setVideos(allVideos.slice(0, 6)); // Ensure we don't exceed 6 videos
+
     } catch (error) {
       console.error('Error fetching videos:', error);
-      console.log('Using fallback videos data due to error');
-      setVideos(fallbackVideos);
+      setVideos([]);
     } finally {
       setIsLoadingVideos(false);
     }
@@ -166,7 +209,7 @@ export function HomepageNews() {
                 <Newspaper className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-white mb-2">Latest AI News</h2>
+                <h2 className="text-3xl font-bold text-white mb-2">Featured AI News</h2>
                 <p className="text-gray-400">Stay updated with the latest developments in AI technology</p>
               </div>
             </div>
@@ -211,7 +254,7 @@ export function HomepageNews() {
                 <Play className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-white mb-2">Video Gallery</h2>
+                <h2 className="text-3xl font-bold text-white mb-2">Featured Video Gallery</h2>
                 <p className="text-gray-400">Watch tutorials, demos, and AI insights</p>
               </div>
             </div>
