@@ -170,7 +170,6 @@ export class ContentScheduler {
         console.error('Scheduled aggregation failed:', error);
       }
     }, {
-      scheduled: true,
       timezone: "America/New_York"
     });
 

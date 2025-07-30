@@ -158,10 +158,8 @@ export class YouTubeAggregator {
       await connectDB();
       
       for (const video of videos) {
-        // Check if video already exists
-        const existingVideo = await Video.findOne({
-          'source.videoId': video.id
-        });
+        // Check if video already exists by title (simple check for now)
+        const existingVideo = await (Video as any).findOne({ title: video.title });
 
         if (existingVideo) {
           console.log(`Video already exists: ${video.title}`);
@@ -169,7 +167,7 @@ export class YouTubeAggregator {
         }
 
         // Create new video document
-        const newVideo = new Video({
+        const newVideo = new (Video as any)({
           title: video.title,
           description: video.description.substring(0, 1000), // Limit description length
           videoUrl: `https://www.youtube.com/watch?v=${video.id}`,
