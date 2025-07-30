@@ -67,9 +67,31 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    console.log('Updating article with data:', JSON.stringify(updateData, null, 2));
+
+    // Ensure featured field has proper structure
+    const processedUpdateData = {
+      ...updateData,
+      updatedAt: new Date(),
+      featured: {
+        isFeatured: updateData.featured?.isFeatured || false,
+        order: updateData.featured?.isFeatured ? (updateData.featured?.order || null) : null
+      },
+      // Ensure featuredImage has required fields if provided
+      ...(updateData.featuredImage && {
+        featuredImage: {
+          url: updateData.featuredImage?.url || '/images/default-ai-news.jpg',
+          publicId: updateData.featuredImage?.publicId || 'default-ai-news',
+          alt: updateData.featuredImage?.alt || updateData.title || 'Article image'
+        }
+      })
+    };
+
+    console.log('Processed update data:', JSON.stringify(processedUpdateData, null, 2));
+
     const updatedArticle = await (News as any).findByIdAndUpdate(
       id,
-      { ...updateData, updatedAt: new Date() },
+      processedUpdateData,
       { new: true, runValidators: true }
     );
 
@@ -80,13 +102,15 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    console.log('Article updated:', updatedArticle.title);
+    console.log('Article updated successfully:', updatedArticle.title);
 
     return NextResponse.json(updatedArticle);
   } catch (error) {
     console.error('Error updating article:', error);
+    console.error('Error details:', error.message);
+    console.error('Error stack:', error.stack);
     return NextResponse.json(
-      { error: 'Failed to update article' },
+      { error: 'Failed to update article', details: error.message },
       { status: 500 }
     );
   }

@@ -186,21 +186,61 @@ export async function POST(request: NextRequest) {
 
     const articleData = await request.json();
 
-    // Create new article
-    const article = new News({
+    console.log('Received article data:', JSON.stringify(articleData, null, 2));
+
+    // Generate slug from title if not provided
+    const generateSlug = (title: string) => {
+      return title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '')
+        .substring(0, 100);
+    };
+
+    // Generate unique slug
+    let baseSlug = articleData.slug || generateSlug(articleData.title || 'untitled-article');
+    let finalSlug = baseSlug;
+    let counter = 1;
+
+    // Check for existing slugs and add suffix if needed
+    while (await (News as any).findOne({ slug: finalSlug })) {
+      finalSlug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+
+    // Ensure featured field has proper structure
+    const processedData = {
       ...articleData,
-      views: 0
-    });
+      views: 0,
+      slug: finalSlug,
+      featured: {
+        isFeatured: articleData.featured?.isFeatured || false,
+        order: articleData.featured?.isFeatured ? (articleData.featured?.order || null) : null
+      },
+      // Ensure featuredImage has required fields
+      featuredImage: {
+        url: articleData.featuredImage?.url || '/images/default-ai-news.jpg',
+        publicId: articleData.featuredImage?.publicId || 'default-ai-news',
+        alt: articleData.featuredImage?.alt || articleData.title || 'Article image'
+      }
+    };
+
+    console.log('Processed article data:', JSON.stringify(processedData, null, 2));
+
+    // Create new article
+    const article = new (News as any)(processedData);
 
     const savedArticle = await article.save();
 
-    console.log('Article created:', savedArticle.title);
+    console.log('Article created successfully:', savedArticle.title);
 
     return NextResponse.json(savedArticle, { status: 201 });
   } catch (error) {
     console.error('Error creating article:', error);
+    console.error('Error details:', error.message);
+    console.error('Error stack:', error.stack);
     return NextResponse.json(
-      { error: 'Failed to create article' },
+      { error: 'Failed to create article', details: error.message },
       { status: 500 }
     );
   }
