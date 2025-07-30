@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Play, Clock, Eye, Heart, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 interface VideoCardProps {
@@ -31,11 +32,15 @@ export function VideoCard({ video, index = 0, onPlay }: VideoCardProps) {
     });
   };
 
-  const handlePlay = () => {
+  const handlePlay = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (onPlay) {
       onPlay(video);
     }
   };
+
+  // Create a slug from the video title or use the ID
+  const videoSlug = video.slug || video.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || video._id;
 
   const getVideoType = (url: string) => {
     if (url.includes('youtube.com') || url.includes('youtu.be')) {
@@ -57,12 +62,13 @@ export function VideoCard({ video, index = 0, onPlay }: VideoCardProps) {
       whileHover={{ y: -5 }}
       className="h-full"
     >
-      <Card 
-        className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border-gray-600 hover:border-purple-400/40 transition-all duration-300 cursor-pointer group h-full overflow-hidden backdrop-blur-sm"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <div className="relative overflow-hidden" onClick={handlePlay}>
+      <Link href={`/videos/${videoSlug}`}>
+        <Card
+          className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border-gray-600 hover:border-purple-400/40 transition-all duration-300 cursor-pointer group h-full overflow-hidden backdrop-blur-sm"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+        <div className="relative overflow-hidden">
           <Image
             src={video.thumbnailUrl}
             alt={video.title}
@@ -81,6 +87,7 @@ export function VideoCard({ video, index = 0, onPlay }: VideoCardProps) {
               animate={{ scale: isHovered ? 1.1 : 1 }}
               transition={{ duration: 0.2 }}
               className="bg-purple-600/90 rounded-full p-4 backdrop-blur-sm"
+              onClick={onPlay ? handlePlay : undefined}
             >
               {videoType === 'youtube' || videoType === 'vimeo' ? (
                 <ExternalLink className="w-8 h-8 text-white" />
@@ -155,11 +162,11 @@ export function VideoCard({ video, index = 0, onPlay }: VideoCardProps) {
               <div className="flex items-center gap-4 text-xs text-gray-400">
                 <div className="flex items-center gap-1">
                   <Eye className="w-3 h-3" />
-                  {(video.views || 0).toLocaleString()}
+                  {(video.views ?? 0).toLocaleString()}
                 </div>
                 <div className="flex items-center gap-1">
                   <Heart className="w-3 h-3" />
-                  {(video.likes || 0).toLocaleString()}
+                  {(video.likes ?? 0).toLocaleString()}
                 </div>
               </div>
 
@@ -169,7 +176,8 @@ export function VideoCard({ video, index = 0, onPlay }: VideoCardProps) {
             </div>
           </div>
         </CardContent>
-      </Card>
+        </Card>
+      </Link>
     </motion.div>
   );
 }
