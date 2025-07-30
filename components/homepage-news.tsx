@@ -10,6 +10,52 @@ import { ArrowRight, Newspaper, Play, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
+// Fallback data in case API fails
+const fallbackNews: NewsArticle[] = [
+  {
+    _id: 'fallback-1',
+    title: 'Getting Started with AI in 2024',
+    slug: 'getting-started-with-ai-2024',
+    excerpt: 'A comprehensive guide to understanding artificial intelligence and how it can transform your workflow.',
+    content: '',
+    featuredImage: {
+      url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjM2NmYxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5BSSBOZXdzPC90ZXh0Pjwvc3ZnPg==',
+      publicId: 'fallback-news',
+      alt: 'AI News'
+    },
+    author: { name: 'AI Corner Team' },
+    category: 'AI Basics',
+    tags: ['AI', 'Beginner'],
+    status: 'published' as const,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    seo: {},
+    readTime: 5,
+    views: 0
+  }
+];
+
+const fallbackVideos: Video[] = [
+  {
+    _id: 'fallback-video-1',
+    title: 'Introduction to AI Corner Platform',
+    slug: 'introduction-to-ai-corner-platform',
+    description: 'Get started with AI Corner and discover how our platform can transform your AI workflow.',
+    videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
+    thumbnailUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQwIiBoZWlnaHQ9IjM2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjM2NmYxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5BSSBWaWRlbzwvdGV4dD48L3N2Zz4=',
+    publicId: 'fallback-video',
+    duration: 180,
+    category: 'Getting Started',
+    tags: ['Introduction', 'Platform'],
+    status: 'published' as const,
+    views: 520,
+    likes: 45,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    publishedAt: new Date()
+  }
+];
+
 export function HomepageNews() {
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
@@ -25,17 +71,24 @@ export function HomepageNews() {
 
   const fetchNews = async () => {
     try {
+      console.log('Fetching news from:', '/api/news?limit=6&status=published');
       const response = await fetch('/api/news?limit=6&status=published');
+      console.log('News response status:', response.status);
       if (response.ok) {
         const data = await response.json();
+        console.log('News data received:', data);
         setNews(data.articles || []);
       } else {
-        console.error('Failed to fetch news:', response.status);
-        setNews([]);
+        console.error('Failed to fetch news:', response.status, response.statusText);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        console.log('Using fallback news data');
+        setNews(fallbackNews);
       }
     } catch (error) {
       console.error('Error fetching news:', error);
-      setNews([]);
+      console.log('Using fallback news data due to error');
+      setNews(fallbackNews);
     } finally {
       setIsLoadingNews(false);
     }
@@ -43,17 +96,24 @@ export function HomepageNews() {
 
   const fetchVideos = async () => {
     try {
+      console.log('Fetching videos from:', '/api/videos?limit=6&status=published');
       const response = await fetch('/api/videos?limit=6&status=published');
+      console.log('Videos response status:', response.status);
       if (response.ok) {
         const data = await response.json();
+        console.log('Videos data received:', data);
         setVideos(data.videos || []);
       } else {
-        console.error('Failed to fetch videos:', response.status);
-        setVideos([]);
+        console.error('Failed to fetch videos:', response.status, response.statusText);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        console.log('Using fallback videos data');
+        setVideos(fallbackVideos);
       }
     } catch (error) {
       console.error('Error fetching videos:', error);
-      setVideos([]);
+      console.log('Using fallback videos data due to error');
+      setVideos(fallbackVideos);
     } finally {
       setIsLoadingVideos(false);
     }
