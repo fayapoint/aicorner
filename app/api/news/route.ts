@@ -112,8 +112,11 @@ export async function GET(request: NextRequest) {
 
     const totalPages = Math.ceil(totalCount / limit);
 
+    // Ensure we always return an array
+    const articlesArray = Array.isArray(articles) ? articles : [articles].filter(Boolean);
+
     return NextResponse.json({
-      articles,
+      articles: articlesArray,
       totalCount,
       currentPage: page,
       totalPages,

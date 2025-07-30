@@ -87,8 +87,11 @@ export async function GET(request: NextRequest) {
 
     const totalPages = Math.ceil(totalCount / limit);
 
+    // Ensure we always return an array
+    const videosArray = Array.isArray(videos) ? videos : [videos].filter(Boolean);
+
     return NextResponse.json({
-      videos,
+      videos: videosArray,
       totalCount,
       currentPage: page,
       totalPages,

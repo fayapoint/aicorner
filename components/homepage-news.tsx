@@ -77,7 +77,17 @@ export function HomepageNews() {
       if (response.ok) {
         const data = await response.json();
         console.log('News data received:', data);
-        setNews(data.articles || []);
+        // Handle both array response and single object response
+        if (data.articles) {
+          setNews(data.articles);
+        } else if (Array.isArray(data)) {
+          setNews(data);
+        } else if (data._id) {
+          // Single object from database - convert to array
+          setNews([data]);
+        } else {
+          setNews([]);
+        }
       } else {
         console.error('Failed to fetch news:', response.status, response.statusText);
         const errorText = await response.text();
@@ -102,7 +112,17 @@ export function HomepageNews() {
       if (response.ok) {
         const data = await response.json();
         console.log('Videos data received:', data);
-        setVideos(data.videos || []);
+        // Handle both array response and single object response
+        if (data.videos) {
+          setVideos(data.videos);
+        } else if (Array.isArray(data)) {
+          setVideos(data);
+        } else if (data._id) {
+          // Single object from database - convert to array
+          setVideos([data]);
+        } else {
+          setVideos([]);
+        }
       } else {
         console.error('Failed to fetch videos:', response.status, response.statusText);
         const errorText = await response.text();
