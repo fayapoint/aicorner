@@ -10,6 +10,10 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+# Ensure API routes work properly
+[functions]
+  external_node_modules = ["mongoose"]
+
 
 
 [[headers]]
@@ -24,4 +28,10 @@
 
 # Let Next.js handle API routes natively
 
-# Let Next.js handle all routing including API routes
+# Explicit API route handling
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/___netlify-server-handler"
+  status = 200
+
+# Let Next.js handle all other routing

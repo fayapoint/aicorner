@@ -29,9 +29,14 @@ async function connectDB() {
       socketTimeoutMS: 45000,
     };
 
+    console.log('Attempting MongoDB connection...');
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       console.log('MongoDB connected successfully');
       return mongoose;
+    }).catch((error) => {
+      console.error('MongoDB connection failed:', error.message);
+      console.error('MongoDB URI (masked):', MONGODB_URI.replace(/\/\/.*@/, '//***:***@'));
+      throw error;
     });
   }
 
@@ -39,7 +44,8 @@ async function connectDB() {
     cached.conn = await cached.promise;
   } catch (e) {
     cached.promise = null;
-    console.error('MongoDB connection failed:', e.message);
+    console.error('MongoDB connection failed in connectDB:', e.message);
+    console.error('Full error:', e);
     throw e;
   }
 
