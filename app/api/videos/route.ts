@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import connectDB from '@/lib/mongodb';
+import Video from '@/models/Video';
 
+// Fallback mock data when MongoDB is unavailable
 const mockVideos = [
   {
     _id: '1',
@@ -13,6 +16,7 @@ const mockVideos = [
     tags: ['Neural Networks', 'AI', 'Beginner'],
     status: 'published',
     views: 1500,
+    likes: 120,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     publishedAt: new Date().toISOString()
@@ -27,11 +31,12 @@ const mockVideos = [
     duration: 450,
     category: 'Deep Learning',
     tags: ['Deep Learning', 'AI', 'Advanced'],
-    status: 'draft',
-    views: 0,
+    status: 'published',
+    views: 850,
+    likes: 67,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    publishedAt: null
+    publishedAt: new Date().toISOString()
   }
 ];
 
@@ -40,26 +45,100 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(searchParams.get('limit') || '10');
   const page = parseInt(searchParams.get('page') || '1');
   const status = searchParams.get('status');
-  
-  let filteredVideos = mockVideos;
-  if (status) {
-    filteredVideos = mockVideos.filter(video => video.status === status);
+  const search = searchParams.get('search');
+  const category = searchParams.get('category');
+  const sortBy = searchParams.get('sortBy') || 'createdAt';
+  const sortOrder = searchParams.get('sortOrder') || 'desc';
+
+  try {
+    await connectDB();
+
+    // Build query
+    const query: any = {};
+
+    if (status) {
+      query.status = status;
+    }
+
+    if (category) {
+      query.category = category;
+    }
+
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { tags: { $in: [new RegExp(search, 'i')] } }
+      ];
+    }
+
+    // Build sort object
+    const sort: any = {};
+    sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+
+    // Get total count for pagination
+    const totalCount = await Video.countDocuments(query);
+
+    // Get videos with pagination
+    const videos = await Video.find(query)
+      .sort(sort)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return NextResponse.json({
+      videos,
+      totalCount,
+      currentPage: page,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1
+    });
+
+  } catch (error) {
+    console.error('MongoDB connection failed, using fallback data:', error.message);
+
+    // Fallback to mock data when MongoDB is unavailable
+    let filteredVideos = mockVideos;
+
+    if (status) {
+      filteredVideos = mockVideos.filter(video => video.status === status);
+    }
+
+    if (search) {
+      filteredVideos = filteredVideos.filter(video =>
+        video.title.toLowerCase().includes(search.toLowerCase()) ||
+        video.description.toLowerCase().includes(search.toLowerCase()) ||
+        video.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase()))
+      );
+    }
+
+    if (category) {
+      filteredVideos = filteredVideos.filter(video => video.category === category);
+    }
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedVideos = filteredVideos.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(filteredVideos.length / limit);
+
+    return NextResponse.json({
+      videos: paginatedVideos,
+      totalCount: filteredVideos.length,
+      currentPage: page,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1
+    });
   }
-  
-  const startIndex = (page - 1) * limit;
-  const endIndex = startIndex + limit;
-  const paginatedVideos = filteredVideos.slice(startIndex, endIndex);
-  
-  return NextResponse.json({
-    videos: paginatedVideos,
-    totalCount: filteredVideos.length,
-    currentPage: page,
-    totalPages: Math.ceil(filteredVideos.length / limit)
-  });
 }
 
 export async function POST(request: NextRequest) {
   try {
+    await connectDB();
+
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
@@ -67,23 +146,34 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
-    
+
+    const token = authHeader.replace('Bearer ', '');
+    // For development, accept the mock token
+    if (token !== 'mock-jwt-token-for-local-development') {
+      return NextResponse.json(
+        { error: 'Invalid token' },
+        { status: 401 }
+      );
+    }
+
     const videoData = await request.json();
-    const newVideo = {
-      _id: Date.now().toString(),
+
+    // Create new video
+    const video = new Video({
       ...videoData,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      publishedAt: videoData.status === 'published' ? new Date().toISOString() : null,
-      views: 0
-    };
-    
-    console.log('Mock video created:', newVideo.title);
-    
-    return NextResponse.json(newVideo, { status: 201 });
+      views: 0,
+      likes: 0
+    });
+
+    const savedVideo = await video.save();
+
+    console.log('Video created:', savedVideo.title);
+
+    return NextResponse.json(savedVideo, { status: 201 });
   } catch (error) {
+    console.error('Error creating video:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to create video' },
       { status: 500 }
     );
   }

@@ -1,34 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-const mockVideo = {
-  _id: '1',
-  title: 'Introduction to Neural Networks',
-  description: 'Learn the basics of neural networks and how they work.',
-  videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
-  thumbnailUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQwIiBoZWlnaHQ9IjM2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjM2NmYxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5OZXVyYWwgTmV0d29ya3M8L3RleHQ+PC9zdmc+',
-  publicId: 'sample-video-1',
-  duration: 300,
-  category: 'Neural Networks',
-  tags: ['Neural Networks', 'AI', 'Beginner'],
-  status: 'published',
-  views: 1500,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-  publishedAt: new Date().toISOString()
-};
+import connectDB from '@/lib/mongodb';
+import Video from '@/models/Video';
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get('id');
-  
-  return NextResponse.json({
-    ...mockVideo,
-    _id: id || '1'
-  });
+  try {
+    await connectDB();
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Video ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const video = await Video.findById(id).lean();
+
+    if (!video) {
+      return NextResponse.json(
+        { error: 'Video not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(video);
+  } catch (error) {
+    console.error('Error fetching video:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch video' },
+      { status: 500 }
+    );
+  }
 }
 
 export async function PUT(request: NextRequest) {
   try {
+    await connectDB();
+
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
@@ -36,24 +46,47 @@ export async function PUT(request: NextRequest) {
         { status: 401 }
       );
     }
-    
+
+    const token = authHeader.replace('Bearer ', '');
+    // For development, accept the mock token
+    if (token !== 'mock-jwt-token-for-local-development') {
+      return NextResponse.json(
+        { error: 'Invalid token' },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     const updateData = await request.json();
-    
-    const updatedVideo = {
-      ...mockVideo,
-      ...updateData,
-      _id: id || '1',
-      updatedAt: new Date().toISOString()
-    };
-    
-    console.log('Mock video updated:', updatedVideo.title);
-    
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Video ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const updatedVideo = await Video.findByIdAndUpdate(
+      id,
+      { ...updateData, updatedAt: new Date() },
+      { new: true, runValidators: true }
+    ).lean();
+
+    if (!updatedVideo) {
+      return NextResponse.json(
+        { error: 'Video not found' },
+        { status: 404 }
+      );
+    }
+
+    console.log('Video updated:', updatedVideo.title);
+
     return NextResponse.json(updatedVideo);
   } catch (error) {
+    console.error('Error updating video:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to update video' },
       { status: 500 }
     );
   }
@@ -61,6 +94,8 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    await connectDB();
+
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
@@ -68,16 +103,42 @@ export async function DELETE(request: NextRequest) {
         { status: 401 }
       );
     }
-    
+
+    const token = authHeader.replace('Bearer ', '');
+    // For development, accept the mock token
+    if (token !== 'mock-jwt-token-for-local-development') {
+      return NextResponse.json(
+        { error: 'Invalid token' },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    
-    console.log('Mock video deleted:', id);
-    
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Video ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const deletedVideo = await Video.findByIdAndDelete(id);
+
+    if (!deletedVideo) {
+      return NextResponse.json(
+        { error: 'Video not found' },
+        { status: 404 }
+      );
+    }
+
+    console.log('Video deleted:', deletedVideo.title);
+
     return NextResponse.json({ message: 'Video deleted successfully' });
   } catch (error) {
+    console.error('Error deleting video:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to delete video' },
       { status: 500 }
     );
   }

@@ -155,11 +155,11 @@ export function VideoCard({ video, index = 0, onPlay }: VideoCardProps) {
               <div className="flex items-center gap-4 text-xs text-gray-400">
                 <div className="flex items-center gap-1">
                   <Eye className="w-3 h-3" />
-                  {video.views.toLocaleString()}
+                  {(video.views || 0).toLocaleString()}
                 </div>
                 <div className="flex items-center gap-1">
                   <Heart className="w-3 h-3" />
-                  {video.likes.toLocaleString()}
+                  {(video.likes || 0).toLocaleString()}
                 </div>
               </div>
 
