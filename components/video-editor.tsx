@@ -19,7 +19,8 @@ import {
   Video as VideoIcon,
   Image as ImageIcon,
   Link,
-  Play
+  Play,
+  Download
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -43,6 +44,10 @@ interface VideoData {
   status: 'draft' | 'published';
   views: number;
   likes: number;
+  featured: {
+    isFeatured: boolean;
+    order?: number;
+  };
 }
 
 export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
@@ -57,7 +62,11 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
     tags: [],
     status: 'draft',
     views: 0,
-    likes: 0
+    likes: 0,
+    featured: {
+      isFeatured: false,
+      order: undefined
+    }
   });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -66,6 +75,9 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
   const [thumbnailUploading, setThumbnailUploading] = useState(false);
   const [uploadMethod, setUploadMethod] = useState<'upload' | 'url'>('upload');
   const [dragOver, setDragOver] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
+  const [urlParsing, setUrlParsing] = useState(false);
+  const [parseSuccess, setParseSuccess] = useState(false);
 
   const categories = [
     'Getting Started',
@@ -125,7 +137,8 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
           tags: video.tags || [],
           status: video.status || 'draft',
           views: video.views || 0,
-          likes: video.likes || 0
+          likes: video.likes || 0,
+          featured: video.featured || { isFeatured: false, order: undefined }
         });
       }
     } catch (error) {
@@ -313,6 +326,60 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
     }));
   };
 
+  const handleUrlParse = async () => {
+    if (!urlInput.trim()) return;
+
+    setUrlParsing(true);
+    try {
+      const token = localStorage.getItem('admin_token');
+      const response = await fetch('/api/parse-url', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ url: urlInput.trim() })
+      });
+
+      if (response.ok) {
+        const { data } = await response.json();
+
+        console.log('Parsed video data:', data); // Debug log
+
+        // Auto-populate fields with parsed data (always overwrite for better UX)
+        setVideoData(prev => ({
+          ...prev,
+          title: data.title || prev.title || '',
+          description: data.description || prev.description || '',
+          videoUrl: urlInput.trim(), // Always use the provided URL
+          thumbnailUrl: data.thumbnail || prev.thumbnailUrl || ''
+        }));
+
+        setUrlInput('');
+        setParseSuccess(true);
+
+        // Show success message
+        console.log('✅ Video URL parsed successfully:', {
+          title: data.title,
+          description: data.description,
+          thumbnail: data.thumbnail ? 'Yes' : 'No'
+        });
+
+        // Hide success message after 3 seconds
+        setTimeout(() => setParseSuccess(false), 3000);
+      } else {
+        const errorData = await response.json();
+        console.error('URL parsing failed:', errorData.error);
+        alert(`Failed to parse URL: ${errorData.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error parsing URL:', error);
+      alert('Failed to parse URL. Please check the URL and try again, or enter the information manually.');
+    } finally {
+      setUrlParsing(false);
+    }
+  };
+
   const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -381,6 +448,54 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
                 onChange={(e) => setVideoData(prev => ({ ...prev, title: e.target.value }))}
                 className="bg-slate-700/50 border-gray-600 text-white placeholder-gray-400 text-lg"
               />
+            </CardContent>
+          </Card>
+
+          {/* URL Auto-Population */}
+          <Card className="bg-slate-800/50 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Link className="w-5 h-5" />
+                Auto-populate from URL
+              </CardTitle>
+              <p className="text-gray-400 text-sm">
+                Paste a YouTube URL to automatically extract title, description, and thumbnail
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="https://youtube.com/watch?v=... or https://youtu.be/..."
+                    value={urlInput}
+                    onChange={(e) => setUrlInput(e.target.value)}
+                    className="bg-slate-700/50 border-gray-600 text-white placeholder-gray-400"
+                    onKeyPress={(e) => e.key === 'Enter' && handleUrlParse()}
+                  />
+                  <Button
+                    onClick={handleUrlParse}
+                    disabled={urlParsing || !urlInput.trim()}
+                    variant="outline"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700 whitespace-nowrap"
+                  >
+                    {urlParsing ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Download className="w-4 h-4 mr-2" />
+                        Parse
+                      </>
+                    )}
+                  </Button>
+                </div>
+
+                {parseSuccess && (
+                  <div className="flex items-center gap-2 text-green-400 text-sm">
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    Video content successfully extracted and populated!
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -635,6 +750,71 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
                     </Badge>
                   ))}
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Featured Content */}
+          <Card className="bg-slate-800/50 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Eye className="w-5 h-5" />
+                Featured Content
+              </CardTitle>
+              <p className="text-gray-400 text-sm">
+                Mark this video as featured for homepage display
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="featured-video"
+                    checked={videoData.featured.isFeatured}
+                    onChange={(e) => setVideoData(prev => ({
+                      ...prev,
+                      featured: {
+                        ...prev.featured,
+                        isFeatured: e.target.checked,
+                        order: e.target.checked ? prev.featured.order || 1 : undefined
+                      }
+                    }))}
+                    className="rounded border-gray-600 bg-slate-700 text-purple-600 focus:ring-purple-500"
+                  />
+                  <label htmlFor="featured-video" className="text-white text-sm font-medium">
+                    Feature on homepage
+                  </label>
+                </div>
+
+                {videoData.featured.isFeatured && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Display Order (1-6)
+                    </label>
+                    <select
+                      value={videoData.featured.order || 1}
+                      onChange={(e) => setVideoData(prev => ({
+                        ...prev,
+                        featured: {
+                          ...prev.featured,
+                          order: parseInt(e.target.value)
+                        }
+                      }))}
+                      className="w-full bg-slate-700/50 border border-gray-600 rounded-md px-3 py-2 text-white"
+                    >
+                      <option value={1}>1 (First)</option>
+                      <option value={2}>2</option>
+                      <option value={3}>3</option>
+                      <option value={4}>4</option>
+                      <option value={5}>5</option>
+                      <option value={6}>6 (Last)</option>
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Lower numbers appear first on the homepage
+                    </p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

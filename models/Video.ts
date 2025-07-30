@@ -65,6 +65,19 @@ const VideoSchema = new Schema<IVideo>({
     type: Number,
     default: 0
   },
+  // Featured content system
+  featured: {
+    isFeatured: {
+      type: Boolean,
+      default: false
+    },
+    order: {
+      type: Number,
+      min: 1,
+      max: 6,
+      default: null
+    }
+  },
   // Automated content aggregation fields
   source: {
     platform: {

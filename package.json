@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@netlify/plugin-nextjs": "^5.7.2",
+    "@types/cheerio": "^1.0.0",
     "@types/node": "^20.19.1",
     "@types/react": "^18.3.23",
     "typescript": "^5.4.5"

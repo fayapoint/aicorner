@@ -124,7 +124,7 @@ export class YouTubeAggregator {
   }
 
   /**
-   * Get a valid YouTube thumbnail URL
+   * Get a valid YouTube thumbnail URL with multiple fallbacks
    */
   private getValidThumbnailUrl(thumbnailUrl: string, videoId: string): string {
     // If we have a valid thumbnail URL, use it
@@ -132,8 +132,16 @@ export class YouTubeAggregator {
       return thumbnailUrl;
     }
 
-    // Fallback to YouTube's standard thumbnail URLs
-    return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+    // Try multiple YouTube thumbnail qualities
+    const thumbnailOptions = [
+      `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`, // Highest quality
+      `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,     // High quality
+      `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`,     // Medium quality
+      `https://i.ytimg.com/vi/${videoId}/default.jpg`        // Default quality
+    ];
+
+    // Return the highest quality available
+    return thumbnailOptions[0];
   }
 
   /**

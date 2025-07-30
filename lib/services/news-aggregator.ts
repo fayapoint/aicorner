@@ -346,7 +346,7 @@ export class NewsAggregator {
   }
 
   /**
-   * Get a valid image URL with fallback
+   * Get a valid image URL with fallback and better validation
    */
   private getValidImageUrl(imageUrl?: string): string {
     // Default fallback image
@@ -366,11 +366,31 @@ export class NewsAggregator {
       }
 
       // Skip obviously invalid image URLs
-      if (imageUrl.includes('favicon') || imageUrl.includes('logo') || imageUrl.length < 10) {
+      if (imageUrl.includes('favicon') ||
+          imageUrl.includes('logo') ||
+          imageUrl.length < 10 ||
+          imageUrl.includes('1x1') ||
+          imageUrl.includes('pixel')) {
         return defaultImage;
       }
 
-      return imageUrl;
+      // Check for common image extensions
+      const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+      const hasImageExtension = imageExtensions.some(ext =>
+        imageUrl.toLowerCase().includes(ext)
+      );
+
+      // If it has image extension or is from known image domains, use it
+      const imageDomains = ['images.unsplash.com', 'cdn.', 'img.', 'image.', 'media.'];
+      const isImageDomain = imageDomains.some(domain =>
+        url.hostname.includes(domain)
+      );
+
+      if (hasImageExtension || isImageDomain || imageUrl.includes('image') || imageUrl.includes('photo')) {
+        return imageUrl;
+      }
+
+      return defaultImage;
     } catch (error) {
       return defaultImage;
     }

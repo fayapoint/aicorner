@@ -8,14 +8,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Save, 
-  Eye, 
-  Upload, 
-  X, 
+import {
+  Save,
+  Eye,
+  Upload,
+  X,
   Plus,
   Loader2,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Link,
+  Download
 } from "lucide-react";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
@@ -44,6 +46,10 @@ interface ArticleData {
     publicId: string;
   };
   readTime: number;
+  featured: {
+    isFeatured: boolean;
+    order?: number;
+  };
 }
 
 export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
@@ -59,13 +65,20 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
       alt: '',
       publicId: ''
     },
-    readTime: 1
+    readTime: 1,
+    featured: {
+      isFeatured: false,
+      order: undefined
+    }
   });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [newTag, setNewTag] = useState('');
   const [imageUploading, setImageUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
+  const [urlParsing, setUrlParsing] = useState(false);
+  const [parseSuccess, setParseSuccess] = useState(false);
 
   const categories = [
     'AI Technology',
@@ -122,7 +135,8 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
           tags: article.tags || [],
           status: article.status || 'draft',
           featuredImage: article.featuredImage || { url: '', alt: '', publicId: '' },
-          readTime: article.readTime || 1
+          readTime: article.readTime || 1,
+          featured: article.featured || { isFeatured: false, order: undefined }
         });
       }
     } catch (error) {
@@ -274,6 +288,63 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
     return Math.max(1, Math.ceil(words / wordsPerMinute));
   };
 
+  const handleUrlParse = async () => {
+    if (!urlInput.trim()) return;
+
+    setUrlParsing(true);
+    try {
+      const token = localStorage.getItem('admin_token');
+      const response = await fetch('/api/parse-url', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ url: urlInput.trim() })
+      });
+
+      if (response.ok) {
+        const { data } = await response.json();
+
+        console.log('Parsed data:', data); // Debug log
+
+        // Auto-populate fields with parsed data (always overwrite for better UX)
+        setArticleData(prev => ({
+          ...prev,
+          title: data.title || prev.title || '',
+          excerpt: data.description || prev.excerpt || '',
+          featuredImage: data.thumbnail ? {
+            url: data.thumbnail,
+            alt: data.title || 'Article image',
+            publicId: ''
+          } : prev.featuredImage
+        }));
+
+        setUrlInput('');
+        setParseSuccess(true);
+
+        // Show success message
+        console.log('✅ URL parsed successfully:', {
+          title: data.title,
+          description: data.description,
+          thumbnail: data.thumbnail ? 'Yes' : 'No'
+        });
+
+        // Hide success message after 3 seconds
+        setTimeout(() => setParseSuccess(false), 3000);
+      } else {
+        const errorData = await response.json();
+        console.error('URL parsing failed:', errorData.error);
+        alert(`Failed to parse URL: ${errorData.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error parsing URL:', error);
+      alert('Failed to parse URL. Please check the URL and try again, or enter the information manually.');
+    } finally {
+      setUrlParsing(false);
+    }
+  };
+
   useEffect(() => {
     const readTime = calculateReadTime(articleData.content);
     setArticleData(prev => ({ ...prev, readTime }));
@@ -340,6 +411,54 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
                 onChange={(e) => setArticleData(prev => ({ ...prev, title: e.target.value }))}
                 className="bg-slate-700/50 border-gray-600 text-white placeholder-gray-400 text-lg"
               />
+            </CardContent>
+          </Card>
+
+          {/* URL Auto-Population */}
+          <Card className="bg-slate-800/50 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Link className="w-5 h-5" />
+                Auto-populate from URL
+              </CardTitle>
+              <p className="text-gray-400 text-sm">
+                Paste a news article or YouTube URL to automatically extract title, description, and thumbnail
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="https://example.com/article or https://youtube.com/watch?v=..."
+                    value={urlInput}
+                    onChange={(e) => setUrlInput(e.target.value)}
+                    className="bg-slate-700/50 border-gray-600 text-white placeholder-gray-400"
+                    onKeyPress={(e) => e.key === 'Enter' && handleUrlParse()}
+                  />
+                  <Button
+                    onClick={handleUrlParse}
+                    disabled={urlParsing || !urlInput.trim()}
+                    variant="outline"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700 whitespace-nowrap"
+                  >
+                    {urlParsing ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Download className="w-4 h-4 mr-2" />
+                        Parse
+                      </>
+                    )}
+                  </Button>
+                </div>
+
+                {parseSuccess && (
+                  <div className="flex items-center gap-2 text-green-400 text-sm">
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    Content successfully extracted and populated!
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -522,6 +641,71 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
                     </Badge>
                   ))}
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Featured Content */}
+          <Card className="bg-slate-800/50 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Eye className="w-5 h-5" />
+                Featured Content
+              </CardTitle>
+              <p className="text-gray-400 text-sm">
+                Mark this article as featured for homepage display
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="featured"
+                    checked={articleData.featured.isFeatured}
+                    onChange={(e) => setArticleData(prev => ({
+                      ...prev,
+                      featured: {
+                        ...prev.featured,
+                        isFeatured: e.target.checked,
+                        order: e.target.checked ? prev.featured.order || 1 : undefined
+                      }
+                    }))}
+                    className="rounded border-gray-600 bg-slate-700 text-purple-600 focus:ring-purple-500"
+                  />
+                  <label htmlFor="featured" className="text-white text-sm font-medium">
+                    Feature on homepage
+                  </label>
+                </div>
+
+                {articleData.featured.isFeatured && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Display Order (1-6)
+                    </label>
+                    <select
+                      value={articleData.featured.order || 1}
+                      onChange={(e) => setArticleData(prev => ({
+                        ...prev,
+                        featured: {
+                          ...prev.featured,
+                          order: parseInt(e.target.value)
+                        }
+                      }))}
+                      className="w-full bg-slate-700/50 border border-gray-600 rounded-md px-3 py-2 text-white"
+                    >
+                      <option value={1}>1 (First)</option>
+                      <option value={2}>2</option>
+                      <option value={3}>3</option>
+                      <option value={4}>4</option>
+                      <option value={5}>5</option>
+                      <option value={6}>6 (Last)</option>
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Lower numbers appear first on the homepage
+                    </p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

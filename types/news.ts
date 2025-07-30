@@ -26,6 +26,11 @@ export interface NewsArticle {
   };
   readTime: number; // in minutes
   views: number;
+  // Featured content system
+  featured?: {
+    isFeatured: boolean;
+    order?: number; // 1-6 for homepage ordering
+  };
   // Automated content aggregation fields
   source?: {
     platform: 'manual' | 'newsapi' | 'google-news' | 'rss' | 'google-ai';
@@ -60,6 +65,11 @@ export interface Video {
   updatedAt: Date;
   views: number;
   likes: number;
+  // Featured content system
+  featured?: {
+    isFeatured: boolean;
+    order?: number; // 1-6 for homepage ordering
+  };
   // Automated content aggregation fields
   source?: {
     platform: 'manual' | 'youtube' | 'instagram' | 'tiktok';
