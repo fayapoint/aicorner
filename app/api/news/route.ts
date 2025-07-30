@@ -102,14 +102,13 @@ export async function GET(request: NextRequest) {
     sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
 
     // Get total count for pagination
-    const totalCount = await News.countDocuments(query);
+    const totalCount = await (News as any).countDocuments(query);
 
     // Get articles with pagination
-    const articles = await News.find(query)
+    const articles = await (News as any).find(query)
       .sort(sort)
       .skip((page - 1) * limit)
-      .limit(limit)
-      .lean();
+      .limit(limit);
 
     const totalPages = Math.ceil(totalCount / limit);
 

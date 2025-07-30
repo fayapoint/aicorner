@@ -77,14 +77,13 @@ export async function GET(request: NextRequest) {
     sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
 
     // Get total count for pagination
-    const totalCount = await Video.countDocuments(query);
+    const totalCount = await (Video as any).countDocuments(query);
 
     // Get videos with pagination
-    const videos = await Video.find(query)
+    const videos = await (Video as any).find(query)
       .sort(sort)
       .skip((page - 1) * limit)
-      .limit(limit)
-      .lean();
+      .limit(limit);
 
     const totalPages = Math.ceil(totalCount / limit);
 

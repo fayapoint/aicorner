@@ -19,17 +19,17 @@ export async function GET(
     }
     
     // Find article by slug
-    const article = await News.findOne({ slug, status: 'published' }).lean();
-    
+    const article = await (News as any).findOne({ slug, status: 'published' });
+
     if (!article) {
       return NextResponse.json(
         { error: 'Article not found' },
         { status: 404 }
       );
     }
-    
+
     // Increment view count
-    await News.findByIdAndUpdate(article._id, { $inc: { views: 1 } });
+    await (News as any).findByIdAndUpdate(article._id, { $inc: { views: 1 } });
     
     return NextResponse.json(article);
   } catch (error) {

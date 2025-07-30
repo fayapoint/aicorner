@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const article = await News.findById(id).lean();
+    const article = await (News as any).findById(id);
 
     if (!article) {
       return NextResponse.json(
@@ -67,11 +67,11 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const updatedArticle = await News.findByIdAndUpdate(
+    const updatedArticle = await (News as any).findByIdAndUpdate(
       id,
       { ...updateData, updatedAt: new Date() },
       { new: true, runValidators: true }
-    ).lean();
+    );
 
     if (!updatedArticle) {
       return NextResponse.json(
@@ -123,7 +123,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const deletedArticle = await News.findByIdAndDelete(id);
+    const deletedArticle = await (News as any).findByIdAndDelete(id);
 
     if (!deletedArticle) {
       return NextResponse.json(

@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const video = await Video.findById(id).lean();
+    const video = await (Video as any).findById(id);
 
     if (!video) {
       return NextResponse.json(
@@ -67,11 +67,11 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const updatedVideo = await Video.findByIdAndUpdate(
+    const updatedVideo = await (Video as any).findByIdAndUpdate(
       id,
       { ...updateData, updatedAt: new Date() },
       { new: true, runValidators: true }
-    ).lean();
+    );
 
     if (!updatedVideo) {
       return NextResponse.json(
@@ -123,7 +123,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const deletedVideo = await Video.findByIdAndDelete(id);
+    const deletedVideo = await (Video as any).findByIdAndDelete(id);
 
     if (!deletedVideo) {
       return NextResponse.json(
