@@ -18,7 +18,7 @@ CLOUDINARY_API_SECRET=your_api_secret
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
 
 # Admin Authentication
-ADMIN_SECRET_KEY=ainseconds_admin_2024_secure_key
+ADMIN_SECRET_KEY=your_admin_secret_key_here
 JWT_SECRET=your_jwt_secret_key_here_make_it_long_and_secure
 ```
 
@@ -100,8 +100,8 @@ If admin login fails with 404 or JSON parsing errors:
 1. **Verify Environment Variables**:
    ```bash
    # In Netlify dashboard, ensure these are set:
-   ADMIN_SECRET_KEY=ainseconds_admin_2024_secure_key
-   JWT_SECRET=your_jwt_secret_key_here_make_it_long_and_secure
+   ADMIN_SECRET_KEY=your_admin_secret_key
+   JWT_SECRET=your_jwt_secret_key
    ```
 
 2. **Test API Endpoint**: Visit `/api/health` to check if API routes are working

@@ -4,8 +4,9 @@ export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json();
     
-    // Simple mock authentication for local development
-    if (username === 'admin' && password === 'ainseconds_admin_2024_secure_key') {
+    // Authentication using environment variable
+    const adminSecret = process.env.ADMIN_SECRET_KEY || 'default_admin_key';
+    if (username === 'admin' && password === adminSecret) {
       return NextResponse.json({
         token: 'mock-jwt-token-for-local-development',
         user: { username: 'admin', role: 'admin' }
