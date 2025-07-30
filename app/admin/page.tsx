@@ -14,7 +14,8 @@ import {
   Plus,
   BarChart3,
   Activity,
-  Clock
+  Clock,
+  Bot
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -294,6 +295,12 @@ export default function AdminDashboard() {
                     <Button variant="outline" className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-700">
                       <BarChart3 className="w-4 h-4 mr-3" />
                       View Analytics
+                    </Button>
+                  </Link>
+                  <Link href="/admin/aggregation">
+                    <Button variant="outline" className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-700">
+                      <Bot className="w-4 h-4 mr-3" />
+                      Content Aggregation
                     </Button>
                   </Link>
                   <Link href="/admin/settings">

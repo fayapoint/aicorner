@@ -26,6 +26,21 @@ export interface NewsArticle {
   };
   readTime: number; // in minutes
   views: number;
+  // Automated content aggregation fields
+  source?: {
+    platform: 'manual' | 'newsapi' | 'google-news' | 'rss' | 'google-ai';
+    originalUrl?: string;
+    apiId?: string;
+    aggregatedAt?: Date;
+    lastUpdated?: Date;
+  };
+  aggregation?: {
+    isAutomated: boolean;
+    confidence?: number;
+    relevanceScore?: number;
+    duplicateCheck?: boolean;
+    processed?: boolean;
+  };
 }
 
 export interface Video {
@@ -45,6 +60,23 @@ export interface Video {
   updatedAt: Date;
   views: number;
   likes: number;
+  // Automated content aggregation fields
+  source?: {
+    platform: 'manual' | 'youtube' | 'instagram' | 'tiktok';
+    originalUrl?: string;
+    videoId?: string;
+    channelId?: string;
+    channelName?: string;
+    aggregatedAt?: Date;
+    lastUpdated?: Date;
+  };
+  aggregation?: {
+    isAutomated: boolean;
+    confidence?: number;
+    relevanceScore?: number;
+    duplicateCheck?: boolean;
+    processed?: boolean;
+  };
 }
 
 export interface NewsCategory {

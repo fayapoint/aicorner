@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Eye } from "lucide-react";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import Link from "next/link";
 
 interface NewsCardProps {
@@ -33,7 +33,7 @@ export function NewsCard({ article, index = 0 }: NewsCardProps) {
       <Link href={`/news/${article.slug}`}>
         <Card className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border-gray-600 hover:border-purple-400/40 transition-all duration-300 cursor-pointer group h-full overflow-hidden backdrop-blur-sm">
           <div className="relative overflow-hidden">
-            <Image
+            <SafeImage
               src={article.featuredImage.url}
               alt={article.featuredImage.alt}
               width={400}
@@ -108,7 +108,7 @@ export function NewsCard({ article, index = 0 }: NewsCardProps) {
 
                 <div className="flex items-center gap-2">
                   {article.author?.avatar && (
-                    <Image
+                    <SafeImage
                       src={article.author.avatar}
                       alt={article.author.name || 'Author'}
                       width={20}

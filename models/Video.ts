@@ -64,6 +64,61 @@ const VideoSchema = new Schema<IVideo>({
   likes: {
     type: Number,
     default: 0
+  },
+  // Automated content aggregation fields
+  source: {
+    platform: {
+      type: String,
+      enum: ['manual', 'youtube', 'instagram', 'tiktok'],
+      default: 'manual'
+    },
+    originalUrl: {
+      type: String,
+      trim: true
+    },
+    videoId: {
+      type: String,
+      trim: true
+    },
+    channelId: {
+      type: String,
+      trim: true
+    },
+    channelName: {
+      type: String,
+      trim: true
+    },
+    aggregatedAt: {
+      type: Date
+    },
+    lastUpdated: {
+      type: Date
+    }
+  },
+  aggregation: {
+    isAutomated: {
+      type: Boolean,
+      default: false
+    },
+    confidence: {
+      type: Number,
+      min: 0,
+      max: 1,
+      default: 1
+    },
+    relevanceScore: {
+      type: Number,
+      min: 0,
+      max: 1
+    },
+    duplicateCheck: {
+      type: Boolean,
+      default: false
+    },
+    processed: {
+      type: Boolean,
+      default: false
+    }
   }
 }, {
   timestamps: true

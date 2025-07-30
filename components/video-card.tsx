@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Play, Clock, Eye, Heart, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -69,15 +69,12 @@ export function VideoCard({ video, index = 0, onPlay }: VideoCardProps) {
           onMouseLeave={() => setIsHovered(false)}
         >
         <div className="relative overflow-hidden">
-          <Image
+          <SafeImage
             src={video.thumbnailUrl}
             alt={video.title}
             width={400}
             height={240}
             className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = '/images/video-placeholder.svg';
-            }}
           />
 
           {/* Play Button Overlay */}

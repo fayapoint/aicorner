@@ -18,7 +18,7 @@ import {
   ChevronRight
 } from "lucide-react";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
@@ -204,7 +204,7 @@ export default function NewsArticlePage() {
         >
           {/* Featured Image */}
           <div className="mb-8">
-            <Image
+            <SafeImage
               src={article.featuredImage.url}
               alt={article.featuredImage.alt}
               width={800}
@@ -255,7 +255,7 @@ export default function NewsArticlePage() {
                 <Link key={relatedArticle._id} href={`/news/${relatedArticle.slug}`}>
                   <Card className="bg-slate-800/50 border-gray-700 hover:border-purple-400/40 transition-all duration-300 cursor-pointer group h-full">
                     <div className="relative overflow-hidden">
-                      <Image
+                      <SafeImage
                         src={relatedArticle.featuredImage.url}
                         alt={relatedArticle.featuredImage.alt}
                         width={300}

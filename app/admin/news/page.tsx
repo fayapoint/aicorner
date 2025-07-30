@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import { NewsArticle } from "@/types/news";
 
 export default function AdminNewsPage() {
@@ -199,7 +199,7 @@ export default function AdminNewsPage() {
                       {/* Thumbnail */}
                       <div className="w-24 h-16 bg-gray-700 rounded overflow-hidden flex-shrink-0">
                         {article.featuredImage?.url ? (
-                          <Image
+                          <SafeImage
                             src={article.featuredImage.url}
                             alt={article.featuredImage.alt || 'Article image'}
                             width={96}

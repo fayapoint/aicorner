@@ -3,18 +3,19 @@
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Video, 
-  Users, 
-  Settings, 
+import {
+  LayoutDashboard,
+  FileText,
+  Video,
+  Users,
+  Settings,
   LogOut,
   Menu,
   X,
   Bell,
   Search,
-  Shield
+  Shield,
+  Bot
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -115,6 +116,12 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       href: "/admin/videos",
       icon: Video,
       current: pathname.startsWith("/admin/videos")
+    },
+    {
+      name: "Content Aggregation",
+      href: "/admin/aggregation",
+      icon: Bot,
+      current: pathname.startsWith("/admin/aggregation")
     },
     {
       name: "Users",

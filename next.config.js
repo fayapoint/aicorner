@@ -25,6 +25,82 @@ const nextConfig = {
         hostname: 'via.placeholder.com',
         port: '',
         pathname: '/**',
+      },
+      // YouTube thumbnails
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+        port: '',
+        pathname: '/**',
+      },
+      // News sources
+      {
+        protocol: 'https',
+        hostname: 'ml.globenewswire.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.vox-cdn.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'techcrunch.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'venturebeat.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.artificialintelligence-news.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'wp.technologyreview.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      // Generic news image sources
+      {
+        protocol: 'https',
+        hostname: '*.googleapis.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
+      // Catch-all for common news domains
+      {
+        protocol: 'https',
+        hostname: '*.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
