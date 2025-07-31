@@ -449,7 +449,7 @@ export class NewsAggregator {
         type: 'news',
         platform: this.getPlatformDisplayName(article.sourcePlatform),
         title: article.title,
-        description: article.excerpt || article.description,
+        description: article.description,
         url: article.url,
         author: article.author,
         publishedAt: article.publishedAt,
@@ -457,7 +457,7 @@ export class NewsAggregator {
           platform: article.sourcePlatform,
           originalUrl: article.url,
           apiId: article.url,
-          sourceName: article.source?.name || this.getPlatformDisplayName(article.sourcePlatform)
+          sourceName: article.source || this.getPlatformDisplayName(article.sourcePlatform)
         },
         data: article
       }));

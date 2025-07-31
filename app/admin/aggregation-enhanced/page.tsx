@@ -377,18 +377,18 @@ export default function EnhancedAggregationPage() {
             </Card>
 
             {/* YouTube Videos */}
-            {previewData.sources.youtube.success && previewData.sources.youtube.items.length > 0 && (
+            {previewData.sources.youtube.success && previewData.sources.youtube.items.filter(item => item.platform === 'YouTube').length > 0 && (
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <div className="bg-red-600 p-2 rounded-lg">
                       <Eye className="w-5 h-5 text-white" />
                     </div>
-                    YouTube Videos ({previewData.sources.youtube.items.length})
+                    YouTube Videos ({previewData.sources.youtube.items.filter(item => item.platform === 'YouTube').length})
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {previewData.sources.youtube.items.map((item) => {
+                  {previewData.sources.youtube.items.filter(item => item.platform === 'YouTube').map((item) => {
                     const displayItem = getDisplayItem(item);
                     return (
                       <div key={item.id} className="border border-white/10 rounded-lg p-4 hover:bg-white/5 transition-colors">
@@ -560,18 +560,18 @@ export default function EnhancedAggregationPage() {
             )}
 
             {/* Other Video Platforms */}
-            {previewData.sources.multiPlatform && previewData.sources.multiPlatform.items.length > 0 && (
+            {previewData.sources.youtube.success && previewData.sources.youtube.items.filter(item => item.platform !== 'YouTube').length > 0 && (
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <div className="bg-purple-600 p-2 rounded-lg">
                       <Play className="w-5 h-5 text-white" />
                     </div>
-                    Other Video Platforms ({previewData.sources.multiPlatform.items.length})
+                    Other Video Platforms ({previewData.sources.youtube.items.filter(item => item.platform !== 'YouTube').length})
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {previewData.sources.multiPlatform.items.map((item) => {
+                  {previewData.sources.youtube.items.filter(item => item.platform !== 'YouTube').map((item) => {
                     const displayItem = getDisplayItem(item);
                     return (
                       <div key={item.id} className="border border-white/10 rounded-lg p-4 hover:bg-white/5 transition-colors">

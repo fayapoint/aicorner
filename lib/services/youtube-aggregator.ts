@@ -252,19 +252,19 @@ export class YouTubeAggregator {
       const videos = await this.searchTrendingAIVideos(3);
 
       const previewItems = videos.map(video => ({
-        id: `youtube_${video.videoId}`,
+        id: `youtube_${video.id}`,
         type: 'video',
         platform: 'YouTube',
         title: video.title,
         description: video.description,
-        thumbnail: video.thumbnail,
-        url: `https://www.youtube.com/watch?v=${video.videoId}`,
+        thumbnail: video.thumbnailUrl,
+        url: `https://www.youtube.com/watch?v=${video.id}`,
         author: video.channelTitle,
         publishedAt: video.publishedAt,
         source: {
           platform: 'youtube',
-          originalUrl: `https://www.youtube.com/watch?v=${video.videoId}`,
-          apiId: video.videoId,
+          originalUrl: `https://www.youtube.com/watch?v=${video.id}`,
+          apiId: video.id,
           channelId: video.channelId,
           channelTitle: video.channelTitle
         },
