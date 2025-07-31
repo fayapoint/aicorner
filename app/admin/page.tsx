@@ -297,7 +297,7 @@ export default function AdminDashboard() {
                       View Analytics
                     </Button>
                   </Link>
-                  <Link href="/admin/aggregation">
+                  <Link href="/admin/aggregation-enhanced">
                     <Button variant="outline" className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-700">
                       <Bot className="w-4 h-4 mr-3" />
                       Content Aggregation

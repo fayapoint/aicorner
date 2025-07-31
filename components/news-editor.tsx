@@ -22,9 +22,28 @@ import {
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useState as useEditorState } from "react";
 
 // Dynamically import ReactQuill to avoid SSR issues
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(
+  () => import('react-quill').then((mod) => mod.default).catch(() => {
+    // Fallback component if ReactQuill fails to load
+    return ({ value, onChange }: any) => (
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full h-64 p-4 bg-slate-700 border border-gray-600 rounded-lg text-white resize-none"
+        placeholder="Enter your content here..."
+      />
+    );
+  }),
+  {
+    ssr: false,
+    loading: () => <div className="h-64 bg-slate-700 rounded-lg animate-pulse" />
+  }
+);
+
+// Import Quill styles
 import 'react-quill/dist/quill.snow.css';
 
 interface NewsEditorProps {
@@ -79,6 +98,7 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
   const [urlInput, setUrlInput] = useState('');
   const [urlParsing, setUrlParsing] = useState(false);
   const [parseSuccess, setParseSuccess] = useState(false);
+  const [useSimpleEditor, setUseSimpleEditor] = useState(false);
 
   const categories = [
     'AI Technology',
@@ -480,20 +500,52 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
           {/* Content Editor */}
           <Card className="bg-slate-800/50 border-gray-700">
             <CardHeader>
-              <CardTitle className="text-white">Content</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-white">Content</CardTitle>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setUseSimpleEditor(!useSimpleEditor)}
+                  className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                >
+                  {useSimpleEditor ? 'Rich Editor' : 'Simple Editor'}
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="prose-editor">
-                <ReactQuill
-                  theme="snow"
-                  value={articleData.content}
-                  onChange={(content) => setArticleData(prev => ({ ...prev, content }))}
-                  style={{
-                    backgroundColor: 'rgb(51 65 85 / 0.5)',
-                    color: 'white',
-                    minHeight: '300px'
-                  }}
-                />
+                {useSimpleEditor ? (
+                  <textarea
+                    value={articleData.content}
+                    onChange={(e) => setArticleData(prev => ({ ...prev, content: e.target.value }))}
+                    className="w-full h-64 p-4 bg-slate-700 border border-gray-600 rounded-lg text-white resize-none focus:outline-none focus:border-purple-400"
+                    placeholder="Enter your content here... (You can use HTML tags for formatting)"
+                  />
+                ) : typeof window !== 'undefined' ? (
+                  <ReactQuill
+                    theme="snow"
+                    value={articleData.content}
+                    onChange={(content) => setArticleData(prev => ({ ...prev, content }))}
+                    style={{
+                      backgroundColor: 'rgb(51 65 85 / 0.5)',
+                      color: 'white',
+                      minHeight: '300px'
+                    }}
+                    modules={{
+                      toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['link', 'image'],
+                        ['clean']
+                      ],
+                    }}
+                  />
+                ) : (
+                  <div className="h-64 bg-slate-700 rounded-lg flex items-center justify-center">
+                    <div className="text-gray-400">Loading editor...</div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

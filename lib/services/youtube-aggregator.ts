@@ -147,14 +147,16 @@ export class YouTubeAggregator {
   /**
    * Convert YouTube duration to seconds
    */
-  private parseDuration(duration: string): number {
+  private parseDuration(duration: string | undefined): number {
+    if (!duration) return 0;
+
     const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
     if (!match) return 0;
-    
+
     const hours = parseInt(match[1] || '0');
     const minutes = parseInt(match[2] || '0');
     const seconds = parseInt(match[3] || '0');
-    
+
     return hours * 3600 + minutes * 60 + seconds;
   }
 
@@ -241,29 +243,77 @@ export class YouTubeAggregator {
   }
 
   /**
+   * Preview content without saving to database
+   */
+  async previewContent(): Promise<{ success: boolean; items: any[]; error?: string }> {
+    try {
+      console.log('Previewing YouTube content...');
+
+      const videos = await this.searchTrendingAIVideos(3);
+
+      const previewItems = videos.map(video => ({
+        id: `youtube_${video.videoId}`,
+        type: 'video',
+        platform: 'YouTube',
+        title: video.title,
+        description: video.description,
+        thumbnail: video.thumbnail,
+        url: `https://www.youtube.com/watch?v=${video.videoId}`,
+        author: video.channelTitle,
+        publishedAt: video.publishedAt,
+        source: {
+          platform: 'youtube',
+          originalUrl: `https://www.youtube.com/watch?v=${video.videoId}`,
+          apiId: video.videoId,
+          channelId: video.channelId,
+          channelTitle: video.channelTitle
+        },
+        data: video
+      }));
+
+      return { success: true, items: previewItems };
+
+    } catch (error) {
+      console.error('YouTube preview failed:', error);
+      return {
+        success: false,
+        items: [],
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Save a single video to database (used by selective import)
+   */
+  async saveVideoToDatabase(videoData: any): Promise<void> {
+    await this.saveVideosToDatabase([videoData]);
+  }
+
+  /**
    * Run the complete aggregation process
    */
   async aggregateContent(): Promise<{ success: boolean; count: number; error?: string }> {
     try {
       console.log('Starting YouTube content aggregation...');
-      
+
       const videos = await this.searchTrendingAIVideos(3);
-      
+
       if (videos.length === 0) {
         return { success: true, count: 0 };
       }
-      
+
       await this.saveVideosToDatabase(videos);
-      
+
       console.log(`YouTube aggregation completed: ${videos.length} videos processed`);
       return { success: true, count: videos.length };
-      
+
     } catch (error) {
       console.error('YouTube aggregation failed:', error);
-      return { 
-        success: false, 
-        count: 0, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      return {
+        success: false,
+        count: 0,
+        error: error instanceof Error ? error.message : 'Unknown error'
       };
     }
   }

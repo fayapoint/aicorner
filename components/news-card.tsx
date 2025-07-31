@@ -3,7 +3,7 @@
 import { NewsArticle } from "@/types/news";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Eye } from "lucide-react";
+import { Calendar, Clock, Eye, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { SafeImage } from "@/components/safe-image";
 import Link from "next/link";
@@ -106,17 +106,33 @@ export function NewsCard({ article, index = 0 }: NewsCardProps) {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  {article.author?.avatar && (
-                    <SafeImage
-                      src={article.author.avatar}
-                      alt={article.author.name || 'Author'}
-                      width={20}
-                      height={20}
-                      className="rounded-full"
-                    />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {article.author?.avatar && (
+                      <SafeImage
+                        src={article.author.avatar}
+                        alt={article.author.name || 'Author'}
+                        width={20}
+                        height={20}
+                        className="rounded-full"
+                      />
+                    )}
+                    <span className="text-xs text-gray-400">{article.author?.name || 'AInSeconds Team'}</span>
+                  </div>
+
+                  {/* Source Attribution */}
+                  {(article as any).source?.platform && (article as any).source.platform !== 'manual' && (
+                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <ExternalLink className="w-3 h-3" />
+                      <span className="capitalize">
+                        {(article as any).source.platform === 'newsapi' ? 'NewsAPI' :
+                         (article as any).source.platform === 'google-news' ? 'Google News' :
+                         (article as any).source.platform === 'google-ai' ? 'Google AI' :
+                         (article as any).source.platform === 'rss' ? 'RSS Feed' :
+                         (article as any).source.platform}
+                      </span>
+                    </div>
                   )}
-                  <span className="text-xs text-gray-400">{article.author?.name || 'AInSeconds Team'}</span>
                 </div>
               </div>
             </div>

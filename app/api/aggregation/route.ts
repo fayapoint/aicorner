@@ -30,6 +30,24 @@ export async function GET(request: NextRequest) {
           data: latestLog
         });
 
+      case 'preview':
+        // Preview fresh content from external sources without saving
+        console.log('Preview aggregation requested via API - fetching fresh content');
+        const previewResult = await scheduler.previewAggregation();
+        return NextResponse.json({
+          success: true,
+          data: previewResult,
+          message: 'Fresh content preview completed'
+        });
+
+      case 'sources':
+        // Get current aggregation sources configuration
+        const sources = scheduler.getSources();
+        return NextResponse.json({
+          success: true,
+          data: sources
+        });
+
       default:
         return NextResponse.json({
           success: true,
@@ -39,7 +57,9 @@ export async function GET(request: NextRequest) {
               'GET ?action=status': 'Get scheduler status',
               'GET ?action=logs': 'Get aggregation logs',
               'GET ?action=latest': 'Get latest aggregation log',
-              'POST': 'Trigger manual aggregation'
+              'GET ?action=preview': 'Preview content without saving',
+              'GET ?action=sources': 'Get aggregation sources',
+              'POST': 'Trigger manual aggregation or import selected items'
             }
           }
         });
@@ -77,6 +97,31 @@ export async function POST(request: NextRequest) {
     }
 
     const scheduler = getScheduler();
+    const body = await request.json().catch(() => ({}));
+
+    // Check if this is a selective import request
+    if (body.action === 'import-selected' && body.selectedItems) {
+      console.log('Selective import triggered via API');
+      const result = await scheduler.importSelectedItems(body.selectedItems);
+
+      return NextResponse.json({
+        success: true,
+        data: result,
+        message: 'Selected items imported successfully'
+      });
+    }
+
+    // Check if this is a source management request
+    if (body.action === 'update-sources' && body.sources) {
+      console.log('Source configuration update triggered via API');
+      const result = await scheduler.updateSources(body.sources);
+
+      return NextResponse.json({
+        success: true,
+        data: result,
+        message: 'Sources updated successfully'
+      });
+    }
 
     // Check if aggregation is already running
     if (scheduler.isAggregationRunning()) {
@@ -86,7 +131,7 @@ export async function POST(request: NextRequest) {
       }, { status: 409 });
     }
 
-    // Trigger manual aggregation
+    // Default: Trigger manual aggregation
     console.log('Manual aggregation triggered via API');
     const result = await scheduler.triggerManualAggregation();
 

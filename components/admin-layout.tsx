@@ -118,10 +118,16 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       current: pathname.startsWith("/admin/videos")
     },
     {
-      name: "Content Aggregation",
+      name: "Enhanced Aggregation",
+      href: "/admin/aggregation-enhanced",
+      icon: Bot,
+      current: pathname.startsWith("/admin/aggregation-enhanced")
+    },
+    {
+      name: "Basic Aggregation",
       href: "/admin/aggregation",
       icon: Bot,
-      current: pathname.startsWith("/admin/aggregation")
+      current: pathname === "/admin/aggregation"
     },
     {
       name: "Users",
@@ -159,7 +165,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             animate={{ x: 0 }}
             exit={{ x: -300 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-y-0 left-0 z-50 w-64 bg-slate-800 border-r border-gray-700"
+            className="fixed inset-y-0 left-0 z-50 w-72 bg-slate-800 border-r border-gray-700"
           >
             <div className="flex flex-col h-full">
               {/* Logo */}
@@ -234,33 +240,35 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       </AnimatePresence>
 
       {/* Main Content */}
-      <div className={`transition-all duration-300 ${sidebarOpen ? 'lg:ml-64' : 'ml-0'}`}>
+      <div className={`transition-all duration-300 ${sidebarOpen ? 'lg:ml-72' : 'ml-0'}`}>
         {/* Top Bar */}
-        <header className="bg-slate-800 border-b border-gray-700 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <header className="bg-slate-800 border-b border-gray-700 px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between min-h-[40px]">
+            <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="flex-shrink-0"
               >
                 <Menu className="w-4 h-4" />
               </Button>
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-lg sm:text-xl font-semibold truncate">
                 {navigation.find(item => item.current)?.name || "Dashboard"}
               </h2>
             </div>
 
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm">
+            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+              <Button variant="ghost" size="sm" className="hidden sm:flex">
                 <Search className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="hidden sm:flex">
                 <Bell className="w-4 h-4" />
               </Button>
               <Link href="/" target="_blank">
-                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-700">
-                  View Site
+                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-700 text-xs sm:text-sm">
+                  <span className="hidden sm:inline">View Site</span>
+                  <span className="sm:hidden">Site</span>
                 </Button>
               </Link>
             </div>

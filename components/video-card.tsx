@@ -155,21 +155,51 @@ export function VideoCard({ video, index = 0, onPlay }: VideoCardProps) {
             )}
 
             {/* Footer */}
-            <div className="flex items-center justify-between pt-3 border-t border-gray-700/50">
-              <div className="flex items-center gap-4 text-xs text-gray-400">
-                <div className="flex items-center gap-1">
-                  <Eye className="w-3 h-3" />
-                  {(video.views ?? 0).toLocaleString()}
+            <div className="space-y-2 pt-3 border-t border-gray-700/50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4 text-xs text-gray-400">
+                  <div className="flex items-center gap-1">
+                    <Eye className="w-3 h-3" />
+                    {(video.views ?? 0).toLocaleString()}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Heart className="w-3 h-3" />
+                    {(video.likes ?? 0).toLocaleString()}
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Heart className="w-3 h-3" />
-                  {(video.likes ?? 0).toLocaleString()}
-                </div>
+
+                <span className="text-xs text-gray-400">
+                  {formatDate(video.publishedAt || video.createdAt)}
+                </span>
               </div>
 
-              <span className="text-xs text-gray-400">
-                {formatDate(video.publishedAt || video.createdAt)}
-              </span>
+              {/* Source Attribution */}
+              {(video as any).source?.platform && (video as any).source.platform !== 'manual' && (
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1 text-gray-500">
+                    <ExternalLink className="w-3 h-3" />
+                    <span>
+                      Source: {(video as any).source.channelTitle || (video as any).source.channelName ||
+                      ((video as any).source.platform === 'youtube' ? 'YouTube' :
+                       (video as any).source.platform === 'vimeo' ? 'Vimeo' :
+                       (video as any).source.platform === 'dailymotion' ? 'Dailymotion' :
+                       (video as any).source.platform === 'twitch' ? 'Twitch' :
+                       (video as any).source.platform.charAt(0).toUpperCase() + (video as any).source.platform.slice(1))}
+                    </span>
+                  </div>
+                  {(video as any).source.originalUrl && (
+                    <a
+                      href={(video as any).source.originalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:text-blue-300 transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      View Original
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </CardContent>

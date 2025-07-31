@@ -82,7 +82,7 @@ const VideoSchema = new Schema<IVideo>({
   source: {
     platform: {
       type: String,
-      enum: ['manual', 'youtube', 'instagram', 'tiktok'],
+      enum: ['manual', 'youtube', 'vimeo', 'dailymotion', 'twitch', 'instagram', 'tiktok', 'custom'],
       default: 'manual'
     },
     originalUrl: {
@@ -98,6 +98,18 @@ const VideoSchema = new Schema<IVideo>({
       trim: true
     },
     channelName: {
+      type: String,
+      trim: true
+    },
+    channelTitle: {
+      type: String,
+      trim: true
+    },
+    sourceName: {
+      type: String,
+      trim: true
+    },
+    sourceAttribution: {
       type: String,
       trim: true
     },

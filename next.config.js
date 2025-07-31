@@ -95,6 +95,13 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      // CloudFront CDN
+      {
+        protocol: 'https',
+        hostname: 'd15shllkswkct0.cloudfront.net',
+        port: '',
+        pathname: '/**',
+      },
       // Catch-all for common news domains
       {
         protocol: 'https',
@@ -106,6 +113,18 @@ const nextConfig = {
   },
   experimental: {
     serverComponentsExternalPackages: ['mongoose', 'bcryptjs', 'jsonwebtoken']
+  },
+  // Webpack configuration for better module resolution
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    return config;
   },
   // Ensure API routes work properly on Netlify
   trailingSlash: false

@@ -1,6 +1,7 @@
 import * as cron from 'node-cron';
 import { YouTubeAggregator } from './youtube-aggregator';
 import { NewsAggregator } from './news-aggregator';
+import { MultiVideoAggregator } from './multi-video-aggregator';
 import connectDB from '@/lib/mongodb';
 
 interface AggregationResult {
@@ -22,6 +23,7 @@ interface AggregationLog {
 export class ContentScheduler {
   private youtubeAggregator: YouTubeAggregator;
   private newsAggregator: NewsAggregator;
+  private multiVideoAggregator: MultiVideoAggregator;
   private isRunning: boolean = false;
   private logs: AggregationLog[] = [];
 
@@ -29,6 +31,7 @@ export class ContentScheduler {
     try {
       this.youtubeAggregator = new YouTubeAggregator();
       this.newsAggregator = new NewsAggregator();
+      this.multiVideoAggregator = new MultiVideoAggregator();
     } catch (error) {
       console.error('Error initializing aggregators:', error);
       throw error;
@@ -206,6 +209,177 @@ export class ContentScheduler {
    */
   getLatestLog(): AggregationLog | null {
     return this.logs.length > 0 ? this.logs[this.logs.length - 1] : null;
+  }
+
+  /**
+   * Preview content without saving to database
+   */
+  async previewAggregation(): Promise<any> {
+    try {
+      console.log('🔍 Previewing content aggregation...');
+
+      // Get current sources configuration
+      const sources = this.getSources();
+
+      const [youtubePreview, newsPreview, multiVideoPreview] = await Promise.all([
+        this.youtubeAggregator.previewContent(),
+        this.newsAggregator.previewContent(),
+        this.multiVideoAggregator.previewFromAllSources(sources.videoSources || [])
+      ]);
+
+      // Combine all video sources
+      const allVideoItems = [
+        ...(youtubePreview?.items || []),
+        ...(multiVideoPreview?.items || [])
+      ];
+
+      return {
+        timestamp: new Date(),
+        sources: {
+          youtube: {
+            success: youtubePreview?.success || false,
+            items: allVideoItems,
+            error: youtubePreview?.error
+          },
+          news: newsPreview
+        },
+        totalItems: allVideoItems.length + (newsPreview?.items?.length || 0)
+      };
+    } catch (error) {
+      console.error('❌ Preview aggregation failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Import selected items from preview
+   */
+  async importSelectedItems(selectedItems: any[]): Promise<any> {
+    try {
+      console.log('📥 Importing selected items...', selectedItems.length);
+
+      const results = [];
+
+      for (const item of selectedItems) {
+        try {
+          if (item.type === 'video') {
+            await this.youtubeAggregator.saveVideoToDatabase(item.data);
+          } else if (item.type === 'news') {
+            await this.newsAggregator.saveArticleToDatabase(item.data, item.source);
+          }
+          results.push({ success: true, item: item.id });
+        } catch (error) {
+          results.push({ success: false, item: item.id, error: error instanceof Error ? error.message : 'Unknown error' });
+        }
+      }
+
+      return {
+        timestamp: new Date(),
+        imported: results.filter(r => r.success).length,
+        failed: results.filter(r => !r.success).length,
+        results
+      };
+    } catch (error) {
+      console.error('❌ Import selected items failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get current sources configuration
+   */
+  getSources(): any {
+    return {
+      youtube: {
+        enabled: true,
+        searchTerms: ['artificial intelligence', 'AI technology', 'machine learning', 'AI news'],
+        maxResults: 3,
+        channels: []
+      },
+      videoSources: [
+        {
+          id: 'youtube-main',
+          name: 'YouTube (Primary)',
+          type: 'youtube',
+          enabled: true,
+          config: {
+            searchTerms: ['artificial intelligence', 'AI technology', 'machine learning'],
+            maxResults: 3,
+            channels: []
+          }
+        },
+        {
+          id: 'vimeo-ai',
+          name: 'Vimeo AI Content',
+          type: 'vimeo',
+          enabled: true,
+          config: {
+            searchTerms: ['artificial intelligence', 'AI', 'machine learning'],
+            maxResults: 2,
+            customUrl: 'https://vimeo.com/api/v2/videos/search.json'
+          }
+        },
+        {
+          id: 'dailymotion-tech',
+          name: 'Dailymotion Tech',
+          type: 'dailymotion',
+          enabled: true,
+          config: {
+            searchTerms: ['AI technology', 'artificial intelligence'],
+            maxResults: 2,
+            customUrl: 'https://www.dailymotion.com/api'
+          }
+        },
+        {
+          id: 'twitch-ai',
+          name: 'Twitch AI Streams',
+          type: 'twitch',
+          enabled: true,
+          config: {
+            searchTerms: ['AI', 'programming', 'machine learning'],
+            maxResults: 1
+          }
+        }
+      ],
+      news: {
+        enabled: true,
+        sources: [
+          { id: 'newsapi-1', name: 'NewsAPI', type: 'newsapi', enabled: true, config: { maxResults: 3 } },
+          { id: 'google-news-1', name: 'Google News', type: 'google-news', enabled: true, config: { maxResults: 3 } },
+          { id: 'rss-sources-1', name: 'RSS Sources', type: 'rss', enabled: true, config: { maxResults: 6 } },
+          { id: 'google-ai-1', name: 'Google AI Blog', type: 'google-ai', enabled: true, config: { maxResults: 5 } }
+        ]
+      },
+      instagram: {
+        enabled: false,
+        reason: 'API restrictions'
+      },
+      tiktok: {
+        enabled: false,
+        reason: 'API restrictions'
+      }
+    };
+  }
+
+  /**
+   * Update sources configuration
+   */
+  async updateSources(sources: any): Promise<any> {
+    try {
+      console.log('⚙️ Updating sources configuration...', sources);
+
+      // Here you would typically save to database or config file
+      // For now, we'll just return success
+
+      return {
+        timestamp: new Date(),
+        updated: true,
+        sources
+      };
+    } catch (error) {
+      console.error('❌ Update sources failed:', error);
+      throw error;
+    }
   }
 
   /**

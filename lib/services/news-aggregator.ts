@@ -424,12 +424,83 @@ export class NewsAggregator {
   }
 
   /**
+   * Preview content without saving to database
+   */
+  async previewContent(): Promise<{ success: boolean; items: any[]; error?: string }> {
+    try {
+      console.log('Previewing news content...');
+
+      const [newsApiArticles, googleNewsArticles, rssArticles, googleAIArticles] = await Promise.all([
+        this.fetchFromNewsAPI(3),
+        this.fetchFromGoogleNews(3),
+        this.fetchFromRSSSources(6),
+        this.fetchGoogleAINews(5)
+      ]);
+
+      const allArticles = [
+        ...newsApiArticles.map(article => ({ ...article, sourcePlatform: 'newsapi' })),
+        ...googleNewsArticles.map(article => ({ ...article, sourcePlatform: 'google-news' })),
+        ...rssArticles.map(article => ({ ...article, sourcePlatform: 'rss' })),
+        ...googleAIArticles.map(article => ({ ...article, sourcePlatform: 'google-ai' }))
+      ];
+
+      const previewItems = allArticles.map((article, index) => ({
+        id: `news_${article.sourcePlatform}_${index}`,
+        type: 'news',
+        platform: this.getPlatformDisplayName(article.sourcePlatform),
+        title: article.title,
+        description: article.excerpt || article.description,
+        url: article.url,
+        author: article.author,
+        publishedAt: article.publishedAt,
+        source: {
+          platform: article.sourcePlatform,
+          originalUrl: article.url,
+          apiId: article.url,
+          sourceName: article.source?.name || this.getPlatformDisplayName(article.sourcePlatform)
+        },
+        data: article
+      }));
+
+      return { success: true, items: previewItems };
+
+    } catch (error) {
+      console.error('News preview failed:', error);
+      return {
+        success: false,
+        items: [],
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Get display name for platform
+   */
+  private getPlatformDisplayName(platform: string): string {
+    const names: { [key: string]: string } = {
+      'newsapi': 'NewsAPI',
+      'google-news': 'Google News',
+      'rss': 'RSS Sources',
+      'google-ai': 'Google AI Blog'
+    };
+    return names[platform] || platform;
+  }
+
+  /**
+   * Save a single article to database (used by selective import)
+   */
+  async saveArticleToDatabase(articleData: any, platform: string): Promise<void> {
+    await this.saveArticlesToDatabase([articleData], platform);
+  }
+
+  /**
    * Run the complete news aggregation process
    */
   async aggregateContent(): Promise<{ success: boolean; count: number; error?: string }> {
     try {
       console.log('Starting news content aggregation...');
-      
+
       const [newsApiArticles, googleNewsArticles, rssArticles, googleAIArticles] = await Promise.all([
         this.fetchFromNewsAPI(3),
         this.fetchFromGoogleNews(3),
