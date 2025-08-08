@@ -346,7 +346,7 @@ if __name__ == '__main__':
               </li>
               <li className="flex items-center gap-3">
                 <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-                An AI Corner API key (get one <a href="/signup" className="text-purple-400 hover:text-purple-300">here</a>)
+                An AI Corner API key (get one <a href="/trial" className="text-purple-400 hover:text-purple-300">here</a>)
               </li>
               <li className="flex items-center gap-3">
                 <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />

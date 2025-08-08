@@ -126,6 +126,18 @@ const nextConfig = {
     }
     return config;
   },
+  // Redirect common English slugs to existing Portuguese routes
+  async redirects() {
+    return [
+      { source: '/about', destination: '/sobre', permanent: false },
+      { source: '/careers', destination: '/carreiras', permanent: false },
+      { source: '/partners', destination: '/parceiros', permanent: false },
+      { source: '/contact', destination: '/contato', permanent: false },
+      { source: '/blog', destination: '/news', permanent: false },
+      { source: '/blog/:slug*', destination: '/news/:slug*', permanent: false },
+      { source: '/signup', destination: '/trial', permanent: false },
+    ];
+  },
   // Ensure API routes work properly on Netlify
   trailingSlash: false
 }

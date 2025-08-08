@@ -7,7 +7,7 @@ export default function Login() {
         <input type="email" placeholder="E-mail" className="rounded px-4 py-2 bg-slate-800 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400/60" />
         <input type="password" placeholder="Senha" className="rounded px-4 py-2 bg-slate-800 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400/60" />
         <button type="submit" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-2 rounded mt-4 hover:from-purple-600 hover:to-pink-600 transition">Entrar</button>
-        <a href="/signup" className="text-purple-400 hover:underline text-sm text-center">Não possui conta? Cadastre-se</a>
+        <a href="/trial" className="text-purple-400 hover:underline text-sm text-center">Não possui conta? Cadastre-se</a>
       </form>
     </div>
   );

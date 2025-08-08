@@ -300,6 +300,13 @@ export class NewsAggregator {
           .trim()
           .substring(0, 100);
 
+        // Normalize platform and tags
+        const safePlatform = typeof platform === 'string' ? platform : (platform as any)?.platform ?? 'manual';
+        const tags = ['AI', 'Technology', 'News', safePlatform]
+          .filter(t => typeof t === 'string')
+          .map(t => String(t).trim())
+          .filter(Boolean);
+
         // Create new article document
         const newArticle = new (News as any)({
           title: article.title.substring(0, 200),
@@ -316,11 +323,11 @@ export class NewsAggregator {
             avatar: ''
           },
           category: 'AI News',
-          tags: ['AI', 'Technology', 'News', platform],
+          tags: tags,
           status: 'published',
           publishedAt: new Date(article.publishedAt),
           source: {
-            platform: platform as any,
+            platform: safePlatform,
             originalUrl: article.url,
             apiId: article.url,
             aggregatedAt: new Date(),

@@ -66,6 +66,13 @@ export default function EnhancedAggregationPage() {
   const [showSources, setShowSources] = useState(false);
   const [editingItem, setEditingItem] = useState<PreviewItem | null>(null);
   const [editedItems, setEditedItems] = useState<Map<string, PreviewItem>>(new Map());
+  const [importSummary, setImportSummary] = useState<
+    | null
+    | {
+        status: 'success' | 'partial' | 'error';
+        data: { imported: number; failed: number; results: Array<{ success: boolean; item: string; error?: string }> };
+      }
+  >(null);
 
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -111,6 +118,7 @@ export default function EnhancedAggregationPage() {
 
     setIsImporting(true);
     setError(null);
+    setImportSummary(null);
     setTimerActive(false);
     
     try {
@@ -118,7 +126,18 @@ export default function EnhancedAggregationPage() {
       const items = [
         ...previewData.sources.youtube.items,
         ...previewData.sources.news.items
-      ].filter(item => selectedItems.has(item.id)).map(item => getDisplayItem(item));
+      ]
+        .filter(item => selectedItems.has(item.id))
+        .map(item => {
+          const display = getDisplayItem(item);
+          return {
+            id: display.id,
+            type: display.type,
+            data: display.data,
+            // send source as object with platform; backend normalizes
+            source: display.source?.platform ? { platform: display.source.platform } : display.platform || 'manual'
+          };
+        });
       
       const response = await fetch('/api/aggregation', {
         method: 'POST',
@@ -134,12 +153,16 @@ export default function EnhancedAggregationPage() {
       
       const data = await response.json();
       
-      if (data.success) {
+      if (response.ok && data.success) {
+        setImportSummary({ status: 'success', data: data.data });
         setPreviewData(null);
         setSelectedItems(new Set());
         setTimeLeft(null);
-        alert(`Successfully imported ${data.data.imported} items!`);
+      } else if (response.status === 207) {
+        // Partial success
+        setImportSummary({ status: 'partial', data: data.data });
       } else {
+        setImportSummary({ status: 'error', data: data.data || { imported: 0, failed: 0, results: [] } });
         setError(data.error || 'Failed to import items');
       }
     } catch (error) {
@@ -336,6 +359,60 @@ export default function EnhancedAggregationPage() {
           <Card className="bg-red-500/20 border-red-500/30">
             <CardContent className="p-4">
               <p className="text-red-300">{error}</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Import Result Summary */}
+        {importSummary && (
+          <Card
+            className={
+              importSummary.status === 'success'
+                ? 'bg-green-500/15 border-green-500/30'
+                : importSummary.status === 'partial'
+                ? 'bg-yellow-500/15 border-yellow-500/30'
+                : 'bg-red-500/15 border-red-500/30'
+            }
+          >
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span>
+                  {importSummary.status === 'success' && 'Import Successful'}
+                  {importSummary.status === 'partial' && 'Partial Import'}
+                  {importSummary.status === 'error' && 'Import Failed'}
+                </span>
+                <Badge
+                  className={
+                    importSummary.status === 'success'
+                      ? 'bg-green-600/30 text-green-300'
+                      : importSummary.status === 'partial'
+                      ? 'bg-yellow-600/30 text-yellow-300'
+                      : 'bg-red-600/30 text-red-300'
+                  }
+                >
+                  {importSummary.data.imported} imported · {importSummary.data.failed} failed
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {importSummary.data.failed > 0 && (
+                <div className="mt-2">
+                  <p className="text-sm text-gray-300 mb-2">Failed items:</p>
+                  <ul className="space-y-1 text-sm">
+                    {importSummary.data.results
+                      .filter(r => !r.success)
+                      .slice(0, 10)
+                      .map((r, idx) => (
+                        <li key={idx} className="text-red-300">
+                          • {r.item}: {r.error || 'Unknown error'}
+                        </li>
+                      ))}
+                    {importSummary.data.results.filter(r => !r.success).length > 10 && (
+                      <li className="text-gray-400">…and more</li>
+                    )}
+                  </ul>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}

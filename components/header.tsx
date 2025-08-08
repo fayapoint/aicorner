@@ -27,12 +27,15 @@ import {
   BarChart3
 } from "lucide-react";
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [menuTimeouts, setMenuTimeouts] = useState<Map<string, NodeJS.Timeout>>(new Map());
+  const [menuTimeouts, setMenuTimeouts] = useState<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,12 +73,34 @@ export function Header() {
     setMenuTimeouts(newTimeouts);
   };
 
-  const handleMenuEnter = (menuTitle: string) => {
+  const handleMenuEnter = (menuTitle: string, el?: HTMLElement) => {
     // Clear any existing timeout for this menu
     clearMenuTimeout(menuTitle);
     // Immediately show this menu
     setActiveMenu(menuTitle);
+    if (el && typeof window !== 'undefined') {
+      const r = el.getBoundingClientRect();
+      // Use viewport coordinates for fixed-position portal. Do NOT add scroll offsets.
+      setDropdownPos({ top: r.bottom + 8, left: r.left });
+      setAnchorEl(el);
+    }
   };
+
+  // Keep portal aligned on scroll/resize while open
+  useEffect(() => {
+    if (!activeMenu || !anchorEl) return;
+    const update = () => {
+      const r = anchorEl.getBoundingClientRect();
+      // Keep aligned using viewport coordinates; no scroll offsets for fixed-position elements
+      setDropdownPos({ top: r.bottom + 8, left: r.left });
+    };
+    window.addEventListener('scroll', update, true);
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update, true);
+      window.removeEventListener('resize', update);
+    };
+  }, [activeMenu, anchorEl]);
 
   const handleMenuLeave = (menuTitle: string) => {
     // Set timeout to hide this specific menu
@@ -123,7 +148,7 @@ export function Header() {
       items: [
         { name: "About Us", href: "/sobre", icon: Users, description: "Our mission and team" },
         { name: "Success Stories", href: "/success-stories", icon: TrendingUp, description: "Customer stories" },
-        { name: "Blog", href: "/blog", icon: FileText, description: "Latest insights" },
+        { name: "Blog", href: "/news", icon: FileText, description: "Latest insights" },
         { name: "Support", href: "/support", icon: MessageSquare, description: "Get help" }
       ]
     }
@@ -133,15 +158,11 @@ export function Header() {
     <header
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-gradient-to-r from-slate-900/95 via-purple-900/20 to-slate-900/95 backdrop-blur-3xl shadow-2xl border-b border-purple-400/40'
-          : 'bg-gradient-to-r from-slate-900/90 via-purple-900/15 to-slate-900/90 backdrop-blur-3xl shadow-xl'
+          ? 'bg-gradient-to-r from-slate-900/90 via-purple-900/20 to-slate-900/90 backdrop-blur-2xl shadow-2xl border-b border-purple-400/40 bg-slate-900/80 supports-[backdrop-filter]:bg-slate-900/50'
+          : 'bg-gradient-to-r from-slate-900/70 via-purple-900/15 to-slate-900/70 backdrop-blur-2xl shadow-xl bg-slate-900/70 supports-[backdrop-filter]:bg-slate-900/40'
       }`}
       style={{
-        background: isScrolled
-          ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(88, 28, 135, 0.25) 25%, rgba(147, 51, 234, 0.15) 50%, rgba(88, 28, 135, 0.25) 75%, rgba(15, 23, 42, 0.95) 100%)'
-          : 'linear-gradient(135deg, rgba(15, 23, 42, 0.90) 0%, rgba(88, 28, 135, 0.20) 25%, rgba(147, 51, 234, 0.10) 50%, rgba(88, 28, 135, 0.20) 75%, rgba(15, 23, 42, 0.90) 100%)',
-        backdropFilter: 'blur(20px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+        // Removing isolation fixes backdrop-filter not affecting underlying page content
         borderImage: 'linear-gradient(90deg, transparent, rgba(147, 51, 234, 0.4), transparent) 1',
         boxShadow: isScrolled
           ? '0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(147, 51, 234, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
@@ -174,7 +195,7 @@ export function Header() {
             <div
               key={index}
               className="relative"
-              onMouseEnter={() => handleMenuEnter(menu.title)}
+              onMouseEnter={(e) => handleMenuEnter(menu.title, e.currentTarget as HTMLElement)}
               onMouseLeave={() => handleMenuLeave(menu.title)}
             >
               <button className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white transition-all duration-300 rounded-lg hover:bg-slate-800/50 group">
@@ -184,79 +205,61 @@ export function Header() {
               </button>
 
               {/* Dropdown Menu */}
-              {activeMenu === menu.title && (
-                <div
-                  className="absolute top-full left-0 mt-2 w-80 rounded-2xl shadow-2xl overflow-hidden z-[60]"
-                  onMouseEnter={() => handleDropdownEnter(menu.title)}
-                  onMouseLeave={() => handleDropdownLeave(menu.title)}
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(88, 28, 135, 0.4) 25%, rgba(147, 51, 234, 0.3) 50%, rgba(88, 28, 135, 0.4) 75%, rgba(15, 23, 42, 0.85) 100%)',
-                    backdropFilter: 'blur(40px) saturate(200%) brightness(1.1)',
-                    WebkitBackdropFilter: 'blur(40px) saturate(200%) brightness(1.1)',
-                    border: '1px solid rgba(147, 51, 234, 0.6)',
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(147, 51, 234, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 32px rgba(147, 51, 234, 0.3)'
-                  } as React.CSSProperties}
-                >
-                  {/* Content layer */}
-                  <div className="p-4 relative">
-                    {/* Reflection effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
-                    <div className="space-y-1 relative">
-                      {menu.items.map((item, itemIndex) => (
-                        <a
-                          key={itemIndex}
-                          href={item.href}
-                          className="flex items-center gap-3 p-3 rounded-xl transition-all duration-300 group border border-transparent relative overflow-hidden"
-                          style={{
-                            background: 'linear-gradient(135deg, rgba(51, 65, 85, 0.4) 0%, rgba(88, 28, 135, 0.2) 50%, rgba(51, 65, 85, 0.4) 100%)',
-                            backdropFilter: 'blur(20px) saturate(180%) brightness(1.05)',
-                            WebkitBackdropFilter: 'blur(20px) saturate(180%) brightness(1.05)'
-                          } as React.CSSProperties}
-                          onMouseEnter={(e) => {
-                            const style = e.currentTarget.style as any;
-                            style.background = 'linear-gradient(135deg, rgba(88, 28, 135, 0.5) 0%, rgba(147, 51, 234, 0.3) 50%, rgba(88, 28, 135, 0.5) 100%)';
-                            style.borderColor = 'rgba(147, 51, 234, 0.7)';
-                            style.boxShadow = '0 8px 25px rgba(147, 51, 234, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25)';
-                            style.backdropFilter = 'blur(25px) saturate(200%) brightness(1.15)';
-                            style.WebkitBackdropFilter = 'blur(25px) saturate(200%) brightness(1.15)';
-                          }}
-                          onMouseLeave={(e) => {
-                            const style = e.currentTarget.style as any;
-                            style.background = 'linear-gradient(135deg, rgba(51, 65, 85, 0.4) 0%, rgba(88, 28, 135, 0.2) 50%, rgba(51, 65, 85, 0.4) 100%)';
-                            style.borderColor = 'transparent';
-                            style.boxShadow = 'none';
-                            style.backdropFilter = 'blur(20px) saturate(180%) brightness(1.05)';
-                            style.WebkitBackdropFilter = 'blur(20px) saturate(180%) brightness(1.05)';
-                          }}
-                        >
-                          {/* Reflection overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                          <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-lg flex items-center justify-center group-hover:from-purple-500/50 group-hover:to-pink-500/50 transition-all duration-300 relative overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            <item.icon className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors duration-300 relative z-10" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium text-white group-hover:text-purple-300 transition-colors">
-                              {item.name}
+              {activeMenu === menu.title && dropdownPos
+                ? (typeof document !== 'undefined' ? createPortal(
+                  <div
+                    className="fixed w-80 rounded-2xl shadow-2xl overflow-hidden z-[1000] bg-slate-900/70 backdrop-blur-2xl supports-[backdrop-filter]:bg-slate-900/40 border border-purple-500/60"
+                    onMouseEnter={() => handleDropdownEnter(menu.title)}
+                    onMouseLeave={() => handleDropdownLeave(menu.title)}
+                    style={{
+                      top: dropdownPos.top,
+                      left: dropdownPos.left,
+                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(147, 51, 234, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 32px rgba(147, 51, 234, 0.3)',
+                      backdropFilter: 'blur(24px) saturate(180%) brightness(1.08)',
+                      WebkitBackdropFilter: 'blur(24px) saturate(180%) brightness(1.08)'
+                    } as React.CSSProperties}
+                  >
+                    {/* Content layer */}
+                    <div className="p-4 relative">
+                      {/* Backdrop overlay to guarantee blur visibility */}
+                      <div className="absolute inset-0 backdrop-blur-2xl bg-slate-900/30 pointer-events-none" />
+                      {/* Reflection effect */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
+                      <div className="space-y-1 relative">
+                        {menu.items.map((item, itemIndex) => (
+                          <a
+                            key={itemIndex}
+                            href={item.href}
+                            className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-purple-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
+                          >
+                            {/* Reflection overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                            <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-lg flex items-center justify-center group-hover:from-purple-500/50 group-hover:to-pink-500/50 transition-all duration-300 relative overflow-hidden">
+                              <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                              <item.icon className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors duration-300 relative z-10" />
                             </div>
-                            <div className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
-                              {item.description}
+                            <div className="flex-1">
+                              <div className="font-medium text-white group-hover:text-purple-300 transition-colors">
+                                {item.name}
+                              </div>
+                              <div className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                                {item.description}
+                              </div>
                             </div>
-                          </div>
-                          <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-purple-400 opacity-0 group-hover:opacity-100 transition-all" />
-                        </a>
-                      ))}
+                            <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-purple-400 opacity-0 group-hover:opacity-100 transition-all" />
+                          </a>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                </div>
-              )}
+                  </div>, document.body) : null)
+                  : null}
             </div>
           ))}
 
           {/* Pricing Menu */}
           <div
             className="relative"
-            onMouseEnter={() => handleMenuEnter('pricing')}
+            onMouseEnter={(e) => handleMenuEnter('pricing', e.currentTarget as HTMLElement)}
             onMouseLeave={() => handleMenuLeave('pricing')}
           >
             <button className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white transition-all duration-300 rounded-lg hover:bg-slate-800/50 group">
@@ -265,41 +268,27 @@ export function Header() {
               <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeMenu === 'pricing' ? 'rotate-180' : ''}`} />
             </button>
 
-            {activeMenu === 'pricing' && (
+            {activeMenu === 'pricing' && dropdownPos
+              ? (typeof document !== 'undefined' ? createPortal(
               <div
-                className="absolute top-full left-0 mt-2 w-80 rounded-2xl shadow-2xl overflow-hidden z-[60]"
+                className="fixed w-80 rounded-2xl shadow-2xl overflow-hidden z-[1000] bg-slate-900/20 backdrop-blur-3xl supports-[backdrop-filter]:bg-slate-900/10 border border-purple-500/60"
                 onMouseEnter={() => handleDropdownEnter('pricing')}
                 onMouseLeave={() => handleDropdownLeave('pricing')}
                 style={{
-                  background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(88, 28, 135, 0.4) 25%, rgba(147, 51, 234, 0.3) 50%, rgba(88, 28, 135, 0.4) 75%, rgba(15, 23, 42, 0.85) 100%)',
-                  backdropFilter: 'blur(40px) saturate(200%) brightness(1.1)',
-                  WebkitBackdropFilter: 'blur(40px) saturate(200%) brightness(1.1)',
-                  border: '1px solid rgba(147, 51, 234, 0.6)',
+                  top: dropdownPos.top,
+                  left: dropdownPos.left,
                   boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(147, 51, 234, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 32px rgba(147, 51, 234, 0.3)'
                 } as React.CSSProperties}
               >
-                  <div className="p-4 relative z-10">
+                <div className="p-4 relative z-10">
+                  {/* Backdrop overlay to guarantee blur visibility */}
+                  <div className="absolute inset-0 backdrop-blur-2xl bg-slate-900/20 pointer-events-none" />
                   {/* Reflection effect */}
                   <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
                   <div className="space-y-2 relative">
                     <a
                       href="/pricing"
-                      className="flex items-center gap-3 p-3 rounded-xl transition-all duration-300 group border border-transparent relative overflow-hidden"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(51, 65, 85, 0.3) 0%, rgba(88, 28, 135, 0.1) 50%, rgba(51, 65, 85, 0.3) 100%)',
-                        backdropFilter: 'blur(8px)',
-                        WebkitBackdropFilter: 'blur(8px)'
-                      } as React.CSSProperties}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(88, 28, 135, 0.4) 0%, rgba(147, 51, 234, 0.2) 50%, rgba(88, 28, 135, 0.4) 100%)';
-                        e.currentTarget.style.borderColor = 'rgba(147, 51, 234, 0.5)';
-                        e.currentTarget.style.boxShadow = '0 8px 25px rgba(147, 51, 234, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(51, 65, 85, 0.3) 0%, rgba(88, 28, 135, 0.1) 50%, rgba(51, 65, 85, 0.3) 100%)';
-                        e.currentTarget.style.borderColor = 'transparent';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}
+                      className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-purple-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
                     >
                       {/* Reflection overlay */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -315,28 +304,7 @@ export function Header() {
 
                     <a
                       href="/starter"
-                      className="flex items-center justify-between p-3 rounded-xl transition-all duration-300 group border border-transparent relative overflow-hidden"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(51, 65, 85, 0.4) 0%, rgba(34, 197, 94, 0.2) 50%, rgba(51, 65, 85, 0.4) 100%)',
-                        backdropFilter: 'blur(20px) saturate(180%) brightness(1.05)',
-                        WebkitBackdropFilter: 'blur(20px) saturate(180%) brightness(1.05)'
-                      } as React.CSSProperties}
-                      onMouseEnter={(e) => {
-                        const style = e.currentTarget.style as any;
-                        style.background = 'linear-gradient(135deg, rgba(34, 197, 94, 0.5) 0%, rgba(34, 197, 94, 0.3) 50%, rgba(34, 197, 94, 0.5) 100%)';
-                        style.borderColor = 'rgba(34, 197, 94, 0.7)';
-                        style.boxShadow = '0 8px 25px rgba(34, 197, 94, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25)';
-                        style.backdropFilter = 'blur(25px) saturate(200%) brightness(1.15)';
-                        style.WebkitBackdropFilter = 'blur(25px) saturate(200%) brightness(1.15)';
-                      }}
-                      onMouseLeave={(e) => {
-                        const style = e.currentTarget.style as any;
-                        style.background = 'linear-gradient(135deg, rgba(51, 65, 85, 0.4) 0%, rgba(34, 197, 94, 0.2) 50%, rgba(51, 65, 85, 0.4) 100%)';
-                        style.borderColor = 'transparent';
-                        style.boxShadow = 'none';
-                        style.backdropFilter = 'blur(20px) saturate(180%) brightness(1.05)';
-                        style.WebkitBackdropFilter = 'blur(20px) saturate(180%) brightness(1.05)';
-                      }}
+                      className="flex items-center justify-between p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-green-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
                     >
                       {/* Reflection overlay */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -349,28 +317,7 @@ export function Header() {
 
                     <a
                       href="/growth"
-                      className="flex items-center justify-between p-3 rounded-xl transition-all duration-300 group border border-transparent relative overflow-hidden"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(51, 65, 85, 0.4) 0%, rgba(59, 130, 246, 0.2) 50%, rgba(51, 65, 85, 0.4) 100%)',
-                        backdropFilter: 'blur(20px) saturate(180%) brightness(1.05)',
-                        WebkitBackdropFilter: 'blur(20px) saturate(180%) brightness(1.05)'
-                      } as React.CSSProperties}
-                      onMouseEnter={(e) => {
-                        const style = e.currentTarget.style as any;
-                        style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.5) 0%, rgba(59, 130, 246, 0.3) 50%, rgba(59, 130, 246, 0.5) 100%)';
-                        style.borderColor = 'rgba(59, 130, 246, 0.7)';
-                        style.boxShadow = '0 8px 25px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25)';
-                        style.backdropFilter = 'blur(25px) saturate(200%) brightness(1.15)';
-                        style.WebkitBackdropFilter = 'blur(25px) saturate(200%) brightness(1.15)';
-                      }}
-                      onMouseLeave={(e) => {
-                        const style = e.currentTarget.style as any;
-                        style.background = 'linear-gradient(135deg, rgba(51, 65, 85, 0.4) 0%, rgba(59, 130, 246, 0.2) 50%, rgba(51, 65, 85, 0.4) 100%)';
-                        style.borderColor = 'transparent';
-                        style.boxShadow = 'none';
-                        style.backdropFilter = 'blur(20px) saturate(180%) brightness(1.05)';
-                        style.WebkitBackdropFilter = 'blur(20px) saturate(180%) brightness(1.05)';
-                      }}
+                      className="flex items-center justify-between p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-blue-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
                     >
                       {/* Reflection overlay */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -383,28 +330,7 @@ export function Header() {
 
                     <a
                       href="/professional"
-                      className="flex items-center justify-between p-3 rounded-xl transition-all duration-300 group border border-transparent relative overflow-hidden"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(51, 65, 85, 0.4) 0%, rgba(147, 51, 234, 0.2) 50%, rgba(51, 65, 85, 0.4) 100%)',
-                        backdropFilter: 'blur(20px) saturate(180%) brightness(1.05)',
-                        WebkitBackdropFilter: 'blur(20px) saturate(180%) brightness(1.05)'
-                      } as React.CSSProperties}
-                      onMouseEnter={(e) => {
-                        const style = e.currentTarget.style as any;
-                        style.background = 'linear-gradient(135deg, rgba(147, 51, 234, 0.5) 0%, rgba(147, 51, 234, 0.3) 50%, rgba(147, 51, 234, 0.5) 100%)';
-                        style.borderColor = 'rgba(147, 51, 234, 0.7)';
-                        style.boxShadow = '0 8px 25px rgba(147, 51, 234, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25)';
-                        style.backdropFilter = 'blur(25px) saturate(200%) brightness(1.15)';
-                        style.WebkitBackdropFilter = 'blur(25px) saturate(200%) brightness(1.15)';
-                      }}
-                      onMouseLeave={(e) => {
-                        const style = e.currentTarget.style as any;
-                        style.background = 'linear-gradient(135deg, rgba(51, 65, 85, 0.4) 0%, rgba(147, 51, 234, 0.2) 50%, rgba(51, 65, 85, 0.4) 100%)';
-                        style.borderColor = 'transparent';
-                        style.boxShadow = 'none';
-                        style.backdropFilter = 'blur(20px) saturate(180%) brightness(1.05)';
-                        style.WebkitBackdropFilter = 'blur(20px) saturate(180%) brightness(1.05)';
-                      }}
+                      className="flex items-center justify-between p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-purple-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
                     >
                       {/* Reflection overlay */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -417,28 +343,7 @@ export function Header() {
 
                     <a
                       href="/enterprise"
-                      className="flex items-center justify-between p-3 rounded-xl transition-all duration-300 group border border-transparent relative overflow-hidden"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(51, 65, 85, 0.4) 0%, rgba(234, 179, 8, 0.2) 50%, rgba(51, 65, 85, 0.4) 100%)',
-                        backdropFilter: 'blur(20px) saturate(180%) brightness(1.05)',
-                        WebkitBackdropFilter: 'blur(20px) saturate(180%) brightness(1.05)'
-                      } as React.CSSProperties}
-                      onMouseEnter={(e) => {
-                        const style = e.currentTarget.style as any;
-                        style.background = 'linear-gradient(135deg, rgba(234, 179, 8, 0.5) 0%, rgba(234, 179, 8, 0.3) 50%, rgba(234, 179, 8, 0.5) 100%)';
-                        style.borderColor = 'rgba(234, 179, 8, 0.7)';
-                        style.boxShadow = '0 8px 25px rgba(234, 179, 8, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25)';
-                        style.backdropFilter = 'blur(25px) saturate(200%) brightness(1.15)';
-                        style.WebkitBackdropFilter = 'blur(25px) saturate(200%) brightness(1.15)';
-                      }}
-                      onMouseLeave={(e) => {
-                        const style = e.currentTarget.style as any;
-                        style.background = 'linear-gradient(135deg, rgba(51, 65, 85, 0.4) 0%, rgba(234, 179, 8, 0.2) 50%, rgba(51, 65, 85, 0.4) 100%)';
-                        style.borderColor = 'transparent';
-                        style.boxShadow = 'none';
-                        style.backdropFilter = 'blur(20px) saturate(180%) brightness(1.05)';
-                        style.WebkitBackdropFilter = 'blur(20px) saturate(180%) brightness(1.05)';
-                      }}
+                      className="flex items-center justify-between p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-yellow-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
                     >
                       {/* Reflection overlay */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -450,8 +355,8 @@ export function Header() {
                     </a>
                   </div>
                 </div>
-              </div>
-            )}
+              </div>, document.body) : null)
+            : null}
           </div>
         </nav>
         {/* CTA Buttons */}
@@ -463,7 +368,7 @@ export function Header() {
             Login
           </a>
           <a
-            href="/signup"
+            href="/trial"
             className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105 hover:-translate-y-0.5"
           >
             <span className="flex items-center gap-2">
@@ -486,13 +391,12 @@ export function Header() {
       {/* Mobile Nav Menu */}
       {isOpen && (
         <nav
-          className="lg:hidden absolute top-full left-0 w-full border-t shadow-2xl z-[60]"
+          className="lg:hidden absolute top-full left-0 w-full border-t shadow-2xl z-[60] bg-slate-900/70 backdrop-blur-2xl supports-[backdrop-filter]:bg-slate-900/40"
           style={{
-            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(88, 28, 135, 0.20) 50%, rgba(15, 23, 42, 0.95) 100%)',
-            backdropFilter: 'blur(24px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(24px) saturate(180%)',
             borderTop: '1px solid rgba(147, 51, 234, 0.4)',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(24px) saturate(180%) brightness(1.08)',
+            WebkitBackdropFilter: 'blur(24px) saturate(180%) brightness(1.08)'
           } as React.CSSProperties}
         >
           <div className="p-6 space-y-6 relative">
@@ -546,7 +450,7 @@ export function Header() {
               <a href="/login" className="flex items-center justify-center w-full border border-purple-500/50 text-purple-300 hover:bg-purple-500/20 rounded-lg py-3 transition-all">
                 Login
               </a>
-              <a href="/signup" className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-lg shadow-lg transition-all">
+              <a href="/trial" className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-lg shadow-lg transition-all">
                 Start Free Trial
                 <Sparkles className="w-4 h-4" />
               </a>

@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 
 const posts = [
   {
@@ -32,21 +32,7 @@ const posts = [
 ];
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = posts.find(p => p.slug === params.slug);
-  if (!post) return notFound();
-  return (
-    <div className="max-w-3xl mx-auto py-16 px-4">
-      <h1 className={`text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4`}>{post.title}</h1>
-      <span className={`inline-block bg-${post.color}/20 text-${post.color} px-3 py-1 rounded-full text-xs mb-4`}>Artigo</span>
-      <p className="text-lg text-gray-300 mb-8">{post.excerpt}</p>
-      <div className="bg-white/5 rounded-xl p-8 border border-slate-700/40 shadow-lg">
-        <h2 className="text-2xl font-bold text-purple-300 mb-2">Conteúdo</h2>
-        <p className="text-gray-400 text-base whitespace-pre-line">{post.content}</p>
-      </div>
-    </div>
-  );
+  redirect(`/news/${params.slug}`);
 }
 
-export async function generateStaticParams() {
-  return posts.map(p => ({ slug: p.slug }));
-}
+// No static params needed; this route now redirects at runtime.

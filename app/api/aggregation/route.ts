@@ -104,11 +104,37 @@ export async function POST(request: NextRequest) {
       console.log('Selective import triggered via API');
       const result = await scheduler.importSelectedItems(body.selectedItems);
 
-      return NextResponse.json({
-        success: true,
-        data: result,
-        message: 'Selected items imported successfully'
-      });
+      const allSucceeded = result?.failed === 0;
+      const noneSucceeded = (result?.imported ?? 0) === 0;
+
+      if (allSucceeded) {
+        return NextResponse.json({
+          success: true,
+          data: result,
+          message: `Imported ${result.imported} items`
+        });
+      }
+
+      if (noneSucceeded) {
+        return NextResponse.json(
+          {
+            success: false,
+            data: result,
+            error: 'Import failed for all selected items'
+          },
+          { status: 500 }
+        );
+      }
+
+      // Partial success: some items imported, some failed
+      return NextResponse.json(
+        {
+          success: false,
+          data: result,
+          error: `Partial import: ${result.imported} imported, ${result.failed} failed`
+        },
+        { status: 207 }
+      );
     }
 
     // Check if this is a source management request

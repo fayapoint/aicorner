@@ -265,7 +265,15 @@ export class ContentScheduler {
           if (item.type === 'video') {
             await this.youtubeAggregator.saveVideoToDatabase(item.data);
           } else if (item.type === 'news') {
-            await this.newsAggregator.saveArticleToDatabase(item.data, item.source);
+            // Ensure platform is always a string for Mongoose schema
+            const platform =
+              typeof item.source === 'string'
+                ? item.source
+                : item.source?.platform;
+            await this.newsAggregator.saveArticleToDatabase(
+              item.data,
+              platform || 'manual'
+            );
           }
           results.push({ success: true, item: item.id });
         } catch (error) {

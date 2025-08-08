@@ -122,7 +122,7 @@ console.log(data.choices[0].message.content);`
             <ul className="space-y-2 text-gray-300">
               <li className="flex items-center gap-3">
                 <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-                An AInSeconds account (sign up for free at <a href="/signup" className="text-purple-400 hover:text-purple-300">ainseconds.com</a>)
+                An AInSeconds account (sign up for free at <a href="/trial" className="text-purple-400 hover:text-purple-300">ainseconds.com</a>)
               </li>
               <li className="flex items-center gap-3">
                 <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
