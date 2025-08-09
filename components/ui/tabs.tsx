@@ -1,3 +1,4 @@
+'use client';
 import { useState, ReactNode } from "react";
 
 export function Tabs({ children, defaultValue, value, onValueChange, className = "", ...props }: any) {
