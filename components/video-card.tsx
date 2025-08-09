@@ -39,7 +39,7 @@ export function VideoCard({ video, index = 0, onPlay }: VideoCardProps) {
     }
   };
 
-  // Create a slug from the video title or use the ID
+  // Create a slug from the video title or use the ID more
   const videoSlug = video.slug || video.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || video._id;
 
   const getVideoType = (url: string) => {
