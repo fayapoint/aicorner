@@ -1,0 +1,31 @@
+import { getUssAccess } from "@/lib/authz";
+import { FeatureLocked } from "@/components/uss/feature-locked";
+
+export default async function UssPersonasPage({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
+  const access = await getUssAccess();
+  const embed = searchParams?.embed === "1" || searchParams?.embed === "true";
+
+  if (!access.session || !access.email) {
+    return (
+      <div>
+        <h1 className="text-2xl font-semibold mb-2">Personas</h1>
+        <p className="text-sm text-red-600">Você não está autenticado.</p>
+      </div>
+    );
+  }
+
+  if (!access.features.personas) {
+    return <FeatureLocked title="Personas" />;
+  }
+
+  return (
+    <div className={embed ? "space-y-3 p-2" : "space-y-4"}>
+      {!embed && <h1 className="text-2xl font-semibold">Personas</h1>}
+      <p className="text-sm text-gray-600">Em breve: gerenciamento de perfis e tons de conteúdo.</p>
+    </div>
+  );
+}

@@ -31,6 +31,14 @@ The AI Corner platform now includes a comprehensive automated content aggregatio
 - **Enhanced Content Processing** - Better text extraction
 - **Advanced Filtering** - ML-based relevance scoring
 
+### ✅ Recent Fixes (2025-08)
+- **News schema normalization**: Ensured `News.tags` is an array of strings and `source.platform` is a plain string (enum) when persisting from `lib/services/news-aggregator.ts`. This resolves Mongoose validation errors during saves.
+- **Admin import UI accuracy**: The admin import flow now reflects real outcomes (success, partial failure, failure). The scheduler's `importSelectedItems()` returns per-item results, and the API route at `app/api/aggregation/route.ts` passes through correct statuses and messages for partial failures.
+- **Safer dev scheduling**: Background jobs initialize only in production or when explicitly enabled; this keeps dev workflows predictable.
+- **Navigation consistency**: Global redirects added — `/signup` → `/trial`, `/blog` → `/news`. Footer English links point to existing PT pages via Next.js redirects.
+
+> Note: UI improvements like portalized dropdown menus and stronger backdrop blur were completed in `components/header.tsx` and are tracked in engineering notes (see `docs/UPGRADES-2025-08.md`).
+
 ## 📋 Setup Instructions
 
 ### 1. API Keys Required
