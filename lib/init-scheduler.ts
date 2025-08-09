@@ -18,7 +18,7 @@ export function ensureSchedulerInitialized() {
   }
 }
 
-// Auto-initialize in production or when explicitly enabled
-if (process.env.NODE_ENV === 'production' || process.env.ENABLE_SCHEDULER === 'true') {
+// Auto-initialize only when explicitly enabled
+if (process.env.ENABLE_SCHEDULER === 'true') {
   ensureSchedulerInitialized();
 }

@@ -11,7 +11,6 @@ export const metadata = {
 
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import "@/lib/init-scheduler"; // Initialize content aggregation scheduler
 import { Providers } from "@/components/providers";
 
 export default function RootLayout({ children }: { children: ReactNode }) {

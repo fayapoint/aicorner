@@ -451,11 +451,11 @@ export function initializeScheduler(): ContentScheduler {
   const scheduler = getScheduler();
   
   // Start the scheduler if not already running
-  if (process.env.NODE_ENV === 'production' || process.env.ENABLE_SCHEDULER === 'true') {
+  if (process.env.ENABLE_SCHEDULER === 'true') {
     scheduler.startScheduler();
   } else {
-    console.log('⚠️  Scheduler not started (not in production mode)');
-    console.log('   Set ENABLE_SCHEDULER=true to enable in development');
+    console.log('⚠️  Scheduler not started (ENABLE_SCHEDULER not set to true)');
+    console.log('   Set ENABLE_SCHEDULER=true to enable');
   }
   
   return scheduler;
