@@ -1,6 +1,7 @@
 "use client";
 
 
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -60,16 +61,16 @@ export default function Home() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-          <a href="/trial">
+          <Link href="/trial">
             <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300">
               Start Your AI Journey <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-          </a>
-          <a href="/solutions">
+          </Link>
+          <Link href="/solutions">
             <Button variant="outline" size="lg" className="border-purple-400 text-purple-300 hover:bg-purple-500/10 px-8 py-4 text-lg rounded-xl">
               Explore Solutions
             </Button>
-          </a>
+          </Link>
         </div>
 
         {/* Trust Indicators */}
@@ -146,11 +147,11 @@ export default function Home() {
                     <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Hands-on practice</li>
                     <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Personal guidance</li>
                   </ul>
-                  <a href="/courses">
+                  <Link href="/courses">
                     <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600">
                       Start Learning
                     </Button>
-                  </a>
+                  </Link>
                 </CardContent>
               </Card>
 
@@ -192,11 +193,11 @@ export default function Home() {
                     <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Get real help</li>
                     <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Make friends</li>
                   </ul>
-                  <a href="/community">
+                  <Link href="/community">
                     <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600">
                       Join Community
                     </Button>
-                  </a>
+                  </Link>
                 </CardContent>
               </Card>
             </div>
@@ -573,11 +574,11 @@ export default function Home() {
                 <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> WebBuilder Pro - Instant websites</li>
                 <li className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" /> Content Generator - AI writing</li>
               </ul>
-              <a href="/tools-dashboard">
+              <Link href="/tools-dashboard">
                 <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600">
                   Try Free Tools
                 </Button>
-              </a>
+              </Link>
             </CardContent>
           </Card>
 
@@ -623,11 +624,11 @@ export default function Home() {
                 <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Advanced AI strategies</li>
                 <li className="flex items-center"><CheckCircle className="w-4 h-4 text-purple-400 mr-2" /> Certification programs</li>
               </ul>
-              <a href="/courses">
+              <Link href="/courses">
                 <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
                   Start Learning
                 </Button>
-              </a>
+              </Link>
             </CardContent>
           </Card>
 
@@ -673,11 +674,11 @@ export default function Home() {
                 <li className="flex items-center"><CheckCircle className="w-4 h-4 text-pink-400 mr-2" /> Exclusive resources</li>
                 <li className="flex items-center"><CheckCircle className="w-4 h-4 text-pink-400 mr-2" /> Networking opportunities</li>
               </ul>
-              <a href="/community">
+              <Link href="/community">
                 <Button className="w-full bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600">
                   Join Community
                 </Button>
-              </a>
+              </Link>
             </CardContent>
           </Card>
 
@@ -1005,16 +1006,16 @@ export default function Home() {
               These are just a taste of the 50+ AI tools available to our members. Start your free trial and unlock the full suite.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/trial">
+              <Link href="/trial">
                 <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
                   Access All Tools - Start $3 Trial
                 </Button>
-              </a>
-              <a href="/tools-dashboard">
+              </Link>
+              <Link href="/tools-dashboard">
                 <Button variant="outline" size="lg" className="border-purple-400 text-purple-300 hover:bg-purple-500/10">
                   View All 50+ Tools
                 </Button>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -1178,16 +1179,16 @@ export default function Home() {
               Start with our $3 trial and experience the most supportive AI community on the internet.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/trial">
+              <Link href="/trial">
                 <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
                   Join Community - $3 Trial
                 </Button>
-              </a>
-              <a href="/community">
+              </Link>
+              <Link href="/community">
                 <Button variant="outline" size="lg" className="border-purple-400 text-purple-300 hover:bg-purple-500/10">
                   Browse Community
                 </Button>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -1227,11 +1228,11 @@ export default function Home() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-          <a href="/trial">
+          <Link href="/trial">
             <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-6 text-xl font-bold rounded-2xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105">
               Start Your $1.50 Trial Now <ArrowRight className="ml-3 w-6 h-6" />
             </Button>
-          </a>
+          </Link>
           <div className="text-center">
             <div className="text-gray-400 text-sm">✓ No credit card required</div>
             <div className="text-gray-400 text-sm">✓ Cancel anytime</div>

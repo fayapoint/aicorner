@@ -4,6 +4,7 @@ import { Suspense, useMemo, useState, useEffect, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Html, OrbitControls, Float, Sparkles, Environment } from "@react-three/drei";
 import * as THREE from "three";
+import Link from "next/link";
 import type { FeatureFlags, Tier } from "@/lib/tier";
 import { AnalyticsPanel } from "../uss/panels/analytics-panel";
 import { SchedulerPanel } from "../uss/panels/scheduler-panel";
@@ -914,7 +915,7 @@ export default function ArenaCanvas({ user, tier, features, heightClass }: Props
             <input type="checkbox" checked={fxEnabled} onChange={(e)=>{ setFxEnabled(e.target.checked); setLog((l)=>[`FX Emoji: ${e.target.checked ? 'on' : 'off'}`, ...l].slice(0,30)); }} />
             <span className="opacity-80">FX Emoji</span>
           </label>
-          <a href="/dashboard" className="rounded border border-white/10 bg-white/10 px-2 py-1 hover:bg-white/20">← Dashboard</a>
+          <Link href="/dashboard" className="rounded border border-white/10 bg-white/10 px-2 py-1 hover:bg-white/20">← Dashboard</Link>
           <button onClick={()=>{ setLevel(1); setXp(0); setCoins(0); setAchievements([]); setLog((l)=>['🗑️ Progresso resetado', ...l].slice(0,30)); maybeSync('reset'); }} className="rounded border border-white/10 bg-white/10 px-2 py-1 hover:bg-white/20">Reset</button>
         </div>
         {openPanel ? (

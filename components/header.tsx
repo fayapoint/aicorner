@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -172,7 +173,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <a href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center gap-3 group">
             <div className="relative">
               <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center group-hover:scale-105 transition-all duration-300 shadow-lg group-hover:shadow-purple-500/25">
                 <Brain className="w-6 h-6 text-white" />
@@ -187,7 +188,7 @@ export function Header() {
               </h1>
               <p className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors">AI Solutions in Seconds</p>
             </div>
-          </a>
+          </Link>
         </div>
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center gap-2">
@@ -227,7 +228,7 @@ export function Header() {
                       <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
                       <div className="space-y-1 relative">
                         {menu.items.map((item, itemIndex) => (
-                          <a
+                          <Link
                             key={itemIndex}
                             href={item.href}
                             className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-purple-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
@@ -247,7 +248,7 @@ export function Header() {
                               </div>
                             </div>
                             <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-purple-400 opacity-0 group-hover:opacity-100 transition-all" />
-                          </a>
+                          </Link>
                         ))}
                       </div>
                     </div>
@@ -286,7 +287,7 @@ export function Header() {
                   {/* Reflection effect */}
                   <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
                   <div className="space-y-2 relative">
-                    <a
+                    <Link
                       href="/pricing"
                       className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-purple-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
                     >
@@ -300,9 +301,9 @@ export function Header() {
                         <div className="font-medium text-white group-hover:text-purple-300 transition-colors duration-300">View All Plans</div>
                         <div className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">Compare features & pricing</div>
                       </div>
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                       href="/starter"
                       className="flex items-center justify-between p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-green-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
                     >
@@ -313,9 +314,9 @@ export function Header() {
                         <span className="font-medium text-white group-hover:text-green-300 transition-colors duration-300">Starter</span>
                       </div>
                       <span className="text-sm text-green-400 font-medium group-hover:text-green-300 transition-colors duration-300 relative z-10">$3/mo</span>
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                       href="/growth"
                       className="flex items-center justify-between p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-blue-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
                     >
@@ -326,9 +327,9 @@ export function Header() {
                         <span className="font-medium text-white group-hover:text-blue-300 transition-colors duration-300">Growth</span>
                       </div>
                       <span className="text-sm text-blue-400 font-medium group-hover:text-blue-300 transition-colors duration-300 relative z-10">$47/mo</span>
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                       href="/professional"
                       className="flex items-center justify-between p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-purple-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
                     >
@@ -339,9 +340,9 @@ export function Header() {
                         <span className="font-medium text-white group-hover:text-purple-300 transition-colors duration-300">Professional</span>
                       </div>
                       <span className="text-sm text-purple-400 font-medium group-hover:text-purple-300 transition-colors duration-300 relative z-10">$147/mo</span>
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                       href="/enterprise"
                       className="flex items-center justify-between p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-yellow-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
                     >
@@ -352,7 +353,7 @@ export function Header() {
                         <span className="font-medium text-white group-hover:text-yellow-300 transition-colors duration-300">Enterprise</span>
                       </div>
                       <span className="text-sm text-yellow-400 font-medium group-hover:text-yellow-300 transition-colors duration-300 relative z-10">$497/mo</span>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>, document.body) : null)
@@ -361,13 +362,13 @@ export function Header() {
         </nav>
         {/* CTA Buttons */}
         <div className="flex items-center gap-4">
-          <a
+          <Link
             href="/login"
             className="hidden md:flex items-center gap-2 border border-purple-500/50 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400 rounded-lg px-4 py-2 transition-all duration-300 font-medium hover:scale-105"
           >
             Login
-          </a>
-          <a
+          </Link>
+          <Link
             href="/trial"
             className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105 hover:-translate-y-0.5"
           >
@@ -375,7 +376,7 @@ export function Header() {
               Start Free Trial
               <Sparkles className="w-4 h-4" />
             </span>
-          </a>
+          </Link>
         </div>
         {/* Mobile Nav Trigger */}
         <button
@@ -404,56 +405,56 @@ export function Header() {
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
             {/* Quick Links */}
             <div className="grid grid-cols-2 gap-4">
-              <a href="/tools" className="flex items-center gap-2 p-3 bg-slate-800/80 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.6)'}}>
+              <Link href="/tools" className="flex items-center gap-2 p-3 bg-slate-800/80 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.6)'}}>
                 <Zap className="w-4 h-4 text-purple-400" />
                 <span className="text-white font-medium">Free Tools</span>
-              </a>
-              <a href="/api" className="flex items-center gap-2 p-3 bg-slate-800/80 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.6)'}}>
+              </Link>
+              <Link href="/api" className="flex items-center gap-2 p-3 bg-slate-800/80 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.6)'}}>
                 <Code className="w-4 h-4 text-purple-400" />
                 <span className="text-white font-medium">API</span>
-              </a>
-              <a href="/docs" className="flex items-center gap-2 p-3 bg-slate-800/80 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.6)'}}>
+              </Link>
+              <Link href="/docs" className="flex items-center gap-2 p-3 bg-slate-800/80 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.6)'}}>
                 <FileText className="w-4 h-4 text-purple-400" />
                 <span className="text-white font-medium">Docs</span>
-              </a>
-              <a href="/tutorials" className="flex items-center gap-2 p-3 bg-slate-800/80 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.6)'}}>
+              </Link>
+              <Link href="/tutorials" className="flex items-center gap-2 p-3 bg-slate-800/80 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.6)'}}>
                 <PlayCircle className="w-4 h-4 text-purple-400" />
                 <span className="text-white font-medium">Tutorials</span>
-              </a>
+              </Link>
             </div>
 
             {/* Pricing Plans */}
             <div>
               <h3 className="text-gray-400 font-semibold mb-3">Pricing Plans</h3>
               <div className="space-y-2">
-                <a href="/starter" className="flex items-center justify-between p-3 bg-slate-800/70 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-green-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)'}}>
+                <Link href="/starter" className="flex items-center justify-between p-3 bg-slate-800/70 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-green-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)'}}>
                   <span className="text-white">Starter</span>
                   <span className="text-green-400 font-medium">$3/mo</span>
-                </a>
-                <a href="/growth" className="flex items-center justify-between p-3 bg-slate-800/70 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-blue-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)'}}>
+                </Link>
+                <Link href="/growth" className="flex items-center justify-between p-3 bg-slate-800/70 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-blue-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)'}}>
                   <span className="text-white">Growth</span>
                   <span className="text-blue-400 font-medium">$47/mo</span>
-                </a>
-                <a href="/professional" className="flex items-center justify-between p-3 bg-slate-800/70 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)'}}>
+                </Link>
+                <Link href="/professional" className="flex items-center justify-between p-3 bg-slate-800/70 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)'}}>
                   <span className="text-white">Professional</span>
                   <span className="text-purple-400 font-medium">$147/mo</span>
-                </a>
-                <a href="/enterprise" className="flex items-center justify-between p-3 bg-slate-800/70 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-yellow-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)'}}>
+                </Link>
+                <Link href="/enterprise" className="flex items-center justify-between p-3 bg-slate-800/70 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-yellow-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)'}}>
                   <span className="text-white">Enterprise</span>
                   <span className="text-yellow-400 font-medium">$497/mo</span>
-                </a>
+                </Link>
               </div>
             </div>
 
             {/* CTA Buttons */}
             <div className="space-y-3 pt-4 border-t border-gray-700">
-              <a href="/login" className="flex items-center justify-center w-full border border-purple-500/50 text-purple-300 hover:bg-purple-500/20 rounded-lg py-3 transition-all">
+              <Link href="/login" className="flex items-center justify-center w-full border border-purple-500/50 text-purple-300 hover:bg-purple-500/20 rounded-lg py-3 transition-all">
                 Login
-              </a>
-              <a href="/trial" className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-lg shadow-lg transition-all">
+              </Link>
+              <Link href="/trial" className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-lg shadow-lg transition-all">
                 Start Free Trial
                 <Sparkles className="w-4 h-4" />
-              </a>
+              </Link>
             </div>
           </div>
         </nav>

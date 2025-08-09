@@ -17,6 +17,7 @@ import {
   Lightbulb
 } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function QuickStartPage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
@@ -122,7 +123,7 @@ console.log(data.choices[0].message.content);`
             <ul className="space-y-2 text-gray-300">
               <li className="flex items-center gap-3">
                 <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-                An AInSeconds account (sign up for free at <a href="/trial" className="text-purple-400 hover:text-purple-300">ainseconds.com</a>)
+                An AInSeconds account (sign up for free at <Link href="/trial" className="text-purple-400 hover:text-purple-300">ainseconds.com</Link>)
               </li>
               <li className="flex items-center gap-3">
                 <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
@@ -152,7 +153,7 @@ console.log(data.choices[0].message.content);`
               <ol className="space-y-3 text-gray-300">
                 <li className="flex items-start gap-3">
                   <span className="bg-purple-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">1</span>
-                  <span>Log in to your <a href="/login" className="text-purple-400 hover:text-purple-300">AI Corner dashboard</a></span>
+                  <span>Log in to your <Link href="/login" className="text-purple-400 hover:text-purple-300">AI Corner dashboard</Link></span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="bg-purple-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">2</span>

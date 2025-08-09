@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,23 +23,28 @@ import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useState as useEditorState } from "react";
+import type { FunctionComponent } from "react";
+
+// Fallback editor component if ReactQuill fails to load
+const FallbackQuill = ({ value, onChange }: any) => (
+  <textarea
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    className="w-full h-64 p-4 bg-slate-700 border border-gray-600 rounded-lg text-white resize-none"
+    placeholder="Enter your content here..."
+  />
+);
+FallbackQuill.displayName = "FallbackQuill";
 
 // Dynamically import ReactQuill to avoid SSR issues
 const ReactQuill = dynamic(
-  () => import('react-quill').then((mod) => mod.default).catch(() => {
-    // Fallback component if ReactQuill fails to load
-    return ({ value, onChange }: any) => (
-      <textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full h-64 p-4 bg-slate-700 border border-gray-600 rounded-lg text-white resize-none"
-        placeholder="Enter your content here..."
-      />
-    );
-  }),
+  () =>
+    import("react-quill")
+      .then((mod) => mod.default)
+      .catch(() => FallbackQuill),
   {
     ssr: false,
-    loading: () => <div className="h-64 bg-slate-700 rounded-lg animate-pulse" />
+    loading: () => <div className="h-64 bg-slate-700 rounded-lg animate-pulse" />,
   }
 );
 
@@ -109,11 +114,76 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
     'Product Updates'
   ];
 
+  // Image upload helper (memoized)
+  const handleImageUpload = useCallback(async (file: File) => {
+    setImageUploading(true);
+    try {
+      const token = localStorage.getItem('admin_token');
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload-image', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setArticleData(prev => ({
+          ...prev,
+          featuredImage: {
+            url: data.url || '',
+            alt: data.alt || '',
+            publicId: data.publicId || ''
+          }
+        }));
+      } else {
+        alert('Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image');
+    } finally {
+      setImageUploading(false);
+    }
+  }, []);
+
+  // Fetch article (memoized)
+  const fetchArticle = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/news-single?id=${articleId}`);
+      if (response.ok) {
+        const article = await response.json();
+        setArticleData({
+          title: article.title || '',
+          excerpt: article.excerpt || '',
+          content: article.content || '',
+          category: article.category || '',
+          tags: article.tags || [],
+          status: article.status || 'draft',
+          featuredImage: article.featuredImage || { url: '', alt: '', publicId: '' },
+          readTime: article.readTime || 1,
+          featured: article.featured || { isFeatured: false, order: undefined }
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching article:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [articleId]);
+
   useEffect(() => {
     if (articleId) {
       fetchArticle();
     }
-  }, [articleId]);
+  }, [articleId, fetchArticle]);
+
+  
 
   // Add global paste event listener for featured image
   useEffect(() => {
@@ -139,34 +209,11 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
 
     document.addEventListener('paste', handleGlobalPaste);
     return () => document.removeEventListener('paste', handleGlobalPaste);
-  }, [articleData.featuredImage.url]);
+  }, [articleData.featuredImage.url, handleImageUpload]);
 
-  const fetchArticle = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/news-single?id=${articleId}`);
-      if (response.ok) {
-        const article = await response.json();
-        setArticleData({
-          title: article.title || '',
-          excerpt: article.excerpt || '',
-          content: article.content || '',
-          category: article.category || '',
-          tags: article.tags || [],
-          status: article.status || 'draft',
-          featuredImage: article.featuredImage || { url: '', alt: '', publicId: '' },
-          readTime: article.readTime || 1,
-          featured: article.featured || { isFeatured: false, order: undefined }
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching article:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  
 
-  const handleSave = async (status: 'draft' | 'published') => {
+  const handleSave = useCallback(async (status: 'draft' | 'published') => {
     setSaving(true);
     try {
       const token = localStorage.getItem('admin_token');
@@ -204,44 +251,9 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
     } finally {
       setSaving(false);
     }
-  };
+  }, [articleId, articleData, onSave]);
 
-  const handleImageUpload = async (file: File) => {
-    setImageUploading(true);
-    try {
-      const token = localStorage.getItem('admin_token');
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('/api/upload-image', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: formData
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setArticleData(prev => ({
-          ...prev,
-          featuredImage: {
-            url: data.secure_url,
-            alt: articleData.title || 'Article image',
-            publicId: data.public_id
-          }
-        }));
-      } else {
-        const errorData = await response.json();
-        alert(`Failed to upload image: ${errorData.error}`);
-      }
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('Failed to upload image');
-    } finally {
-      setImageUploading(false);
-    }
-  };
+  
 
   // Handle clipboard paste
   const handlePaste = async (e: React.ClipboardEvent) => {
@@ -766,3 +778,5 @@ export function NewsEditor({ articleId, onSave, onCancel }: NewsEditorProps) {
     </div>
   );
 }
+
+(NewsEditor as FunctionComponent).displayName = 'NewsEditor';

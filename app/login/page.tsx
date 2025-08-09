@@ -2,6 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import React from "react";
+import Link from "next/link";
 
 export default function Login() {
   const [email, setEmail] = React.useState("");
@@ -72,7 +73,7 @@ export default function Login() {
         >
           Entrar com Google
         </button>
-        <a href="/trial" className="text-purple-400 hover:underline text-sm text-center">Não possui conta? Cadastre-se</a>
+        <Link href="/trial" className="text-purple-400 hover:underline text-sm text-center">Não possui conta? Cadastre-se</Link>
       </form>
     </div>
   );

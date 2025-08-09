@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -172,11 +173,11 @@ export default function SolutionsPage() {
               <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-xl">
                 Explore Solutions <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
-              <a href="/book-consultation">
+              <Link href="/book-consultation">
                 <Button variant="outline" size="lg" className="border-purple-400 text-purple-300 hover:bg-purple-500/10 px-8 py-4 text-lg rounded-xl">
                   Book Consultation
                 </Button>
-              </a>
+              </Link>
             </div>
           </motion.div>
         </div>
@@ -490,16 +491,16 @@ export default function SolutionsPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <a href="/book-consultation">
+              <Link href="/book-consultation">
                 <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-6 text-xl font-bold rounded-2xl">
                   Book Free Consultation <ArrowRight className="ml-3 w-6 h-6" />
                 </Button>
-              </a>
-              <a href="/pricing">
+              </Link>
+              <Link href="/pricing">
                 <Button variant="outline" size="lg" className="border-purple-400 text-purple-300 hover:bg-purple-500/10 px-8 py-4 text-lg rounded-xl">
                   View Pricing
                 </Button>
-              </a>
+              </Link>
             </div>
 
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">

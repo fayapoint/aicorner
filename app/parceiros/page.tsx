@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Parceiros() {
   return (
     <div className="max-w-3xl mx-auto py-16 px-4">
@@ -8,13 +10,13 @@ export default function Parceiros() {
           <img src="/partner1.png" alt="TechCloud" className="w-24 h-24 object-contain mb-4" />
           <h2 className="text-xl font-bold text-purple-300 mb-2">TechCloud</h2>
           <p className="text-gray-400 text-center">Parceiro estratégico em soluções de cloud, infraestrutura e DevOps.</p>
-          <a href="/parceiros/techcloud" className="mt-4 inline-block font-semibold text-purple-300 hover:text-white underline transition">Saiba mais &rarr;</a>
+          <Link href="/parceiros/techcloud" className="mt-4 inline-block font-semibold text-purple-300 hover:text-white underline transition">Saiba mais &rarr;</Link>
         </div>
         <div className="bg-white/5 rounded-xl p-6 flex flex-col items-center border border-slate-700/40 shadow-lg">
           <img src="/partner2.png" alt="DataGenius" className="w-24 h-24 object-contain mb-4" />
           <h2 className="text-xl font-bold text-pink-300 mb-2">DataGenius</h2>
           <p className="text-gray-400 text-center">Especialistas em IA, analytics e big data para projetos inovadores.</p>
-          <a href="/parceiros/datagenius" className="mt-4 inline-block font-semibold text-pink-300 hover:text-white underline transition">Saiba mais &rarr;</a>
+          <Link href="/parceiros/datagenius" className="mt-4 inline-block font-semibold text-pink-300 hover:text-white underline transition">Saiba mais &rarr;</Link>
         </div>
       </div>
     </div>

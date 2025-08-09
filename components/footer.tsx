@@ -1,4 +1,5 @@
 import { Sparkles } from "lucide-react";
+import Link from "next/link";
 
 export function Footer() {
   return (
@@ -37,23 +38,23 @@ export function Footer() {
         <div>
           <h4 className="text-lg font-bold text-white mb-4">AI Solutions</h4>
           <ul className="space-y-2">
-            <li><a href="/tools" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Free AI Tools</a></li>
-            <li><a href="/solutions" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Business Solutions</a></li>
-            <li><a href="/integrations" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Integrations</a></li>
-            <li><a href="/api" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">API Access</a></li>
-            <li><a href="/learn" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Learn AI</a></li>
-            <li><a href="/support" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Support 24/7</a></li>
+            <li><Link href="/tools" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Free AI Tools</Link></li>
+            <li><Link href="/solutions" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Business Solutions</Link></li>
+            <li><Link href="/integrations" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Integrations</Link></li>
+            <li><Link href="/api" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">API Access</Link></li>
+            <li><Link href="/learn" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Learn AI</Link></li>
+            <li><Link href="/support" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Support 24/7</Link></li>
           </ul>
         </div>
         <div>
           <h4 className="text-lg font-bold text-white mb-4">Company</h4>
           <ul className="space-y-2">
-            <li><a href="/about" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">About Us</a></li>
-            <li><a href="/pricing" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Pricing</a></li>
-            <li><a href="/news" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Blog</a></li>
-            <li><a href="/careers" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Careers</a></li>
-            <li><a href="/partners" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Partners</a></li>
-            <li><a href="/contact" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Contact</a></li>
+            <li><Link href="/about" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">About Us</Link></li>
+            <li><Link href="/pricing" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Pricing</Link></li>
+            <li><Link href="/news" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Blog</Link></li>
+            <li><Link href="/careers" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Careers</Link></li>
+            <li><Link href="/partners" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Partners</Link></li>
+            <li><Link href="/contact" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Contact</Link></li>
           </ul>
         </div>
       </div>
@@ -62,8 +63,8 @@ export function Footer() {
         <div className="flex items-center gap-6 mb-4 md:mb-0">
           <p className="text-gray-400 text-sm">© {new Date().getFullYear()} Portal Tech. Todos os direitos reservados.</p>
           <div className="flex gap-4">
-            <a href="/politica" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Privacidade</a>
-            <a href="/termos" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Termos</a>
+            <Link href="/politica" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Privacidade</Link>
+            <Link href="/termos" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Termos</Link>
           </div>
         </div>
         <div className="flex items-center gap-4">

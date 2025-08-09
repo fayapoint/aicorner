@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Signup() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8">
@@ -8,7 +10,7 @@ export default function Signup() {
         <input type="email" placeholder="E-mail" className="rounded px-4 py-2 bg-slate-800 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400/60" />
         <input type="password" placeholder="Senha" className="rounded px-4 py-2 bg-slate-800 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400/60" />
         <button type="submit" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-2 rounded mt-4 hover:from-purple-600 hover:to-pink-600 transition">Cadastrar</button>
-        <a href="/login" className="text-purple-400 hover:underline text-sm text-center">Já possui conta? Entrar</a>
+        <Link href="/login" className="text-purple-400 hover:underline text-sm text-center">Já possui conta? Entrar</Link>
       </form>
     </div>
   );

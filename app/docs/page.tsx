@@ -24,6 +24,7 @@ import {
   Terminal,
   PlayCircle
 } from "lucide-react";
+import Link from "next/link";
 
 export default function DocsPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -323,17 +324,17 @@ export default function DocsPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <a href="/support">
+              <Link href="/support">
                 <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-6 text-xl font-bold rounded-2xl">
                   Contact Support <ArrowRight className="ml-3 w-6 h-6" />
                 </Button>
-              </a>
-              <a href="/tutorials">
+              </Link>
+              <Link href="/tutorials">
                 <Button variant="outline" size="lg" className="border-purple-400 text-purple-300 hover:bg-purple-500/10 px-8 py-4 text-lg rounded-xl">
                   <Video className="mr-2 w-5 h-5" />
                   Watch Tutorials
                 </Button>
-              </a>
+              </Link>
             </div>
           </motion.div>
         </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -245,16 +246,16 @@ export default function LearnPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <a href="/courses">
+              <Link href="/courses">
                 <Button size="lg" className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white px-8 py-4 text-lg font-semibold rounded-xl">
                   Start Learning Free <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
-              </a>
-              <a href="/courses">
+              </Link>
+              <Link href="/courses">
                 <Button variant="outline" size="lg" className="border-blue-400 text-blue-300 hover:bg-blue-500/10 px-8 py-4 text-lg rounded-xl">
                   Browse Courses
                 </Button>
-              </a>
+              </Link>
             </div>
           </motion.div>
         </div>
