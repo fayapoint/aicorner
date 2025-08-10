@@ -45,7 +45,7 @@ export default function Home() {
           </Badge>
         </div>
         
-        <h1 className="text-6xl md:text-8xl font-black mb-8">
+        <h1 className="text-5xl md:text-6xl lg:text-8xl font-black mb-8">
           <span className="bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
             AI Solutions
           </span>
@@ -117,14 +117,14 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="beginner" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-12 bg-slate-800/50 p-2 rounded-2xl">
-            <TabsTrigger value="beginner" className="text-lg py-4 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-500">
+          <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 mb-12 bg-slate-800/50 p-2 rounded-2xl">
+            <TabsTrigger value="beginner" className="text-base md:text-lg py-4 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-500">
               🌱 AI Beginner
             </TabsTrigger>
-            <TabsTrigger value="intermediate" className="text-lg py-4 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500">
+            <TabsTrigger value="intermediate" className="text-base md:text-lg py-4 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500">
               🚀 Growing Fast
             </TabsTrigger>
-            <TabsTrigger value="expert" className="text-lg py-4 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500">
+            <TabsTrigger value="expert" className="text-base md:text-lg py-4 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500">
               🎯 AI Expert
             </TabsTrigger>
           </TabsList>
