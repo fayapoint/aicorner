@@ -26,9 +26,10 @@ import {
   FileText,
   BarChart3
 } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +38,14 @@ export function Header() {
   const [menuTimeouts, setMenuTimeouts] = useState<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const pathname = usePathname();
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [mobileSections, setMobileSections] = useState<Record<string, boolean>>({
+    products: true,
+    learn: false,
+    company: false,
+    pricing: true,
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,6 +61,37 @@ export function Header() {
       menuTimeouts.forEach(timeout => clearTimeout(timeout));
     };
   }, [menuTimeouts]);
+
+  // Close menus on route change (prevents mobile drawer from blocking navigation)
+  useEffect(() => {
+    setIsOpen(false);
+    setActiveMenu(null);
+  }, [pathname]);
+
+  // Body scroll lock and ESC to close when mobile menu is open
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [isOpen]);
+
+  // Return focus to the menu button when the menu closes
+  useEffect(() => {
+    if (!isOpen && menuButtonRef.current) {
+      menuButtonRef.current.focus();
+    }
+  }, [isOpen]);
+
+  const toggleSection = (key: string) =>
+    setMobileSections(prev => ({ ...prev, [key]: !prev[key as keyof typeof prev] }));
 
   const clearMenuTimeout = (menuTitle: string) => {
     const timeout = menuTimeouts.get(menuTitle);
@@ -232,6 +272,7 @@ export function Header() {
                             key={itemIndex}
                             href={item.href}
                             className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-purple-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
+                            onClick={() => setActiveMenu(null)}
                           >
                             {/* Reflection overlay */}
                             <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -290,6 +331,7 @@ export function Header() {
                     <Link
                       href="/pricing"
                       className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-purple-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
+                      onClick={() => setActiveMenu(null)}
                     >
                       {/* Reflection overlay */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -306,6 +348,7 @@ export function Header() {
                     <Link
                       href="/starter"
                       className="flex items-center justify-between p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-green-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
+                      onClick={() => setActiveMenu(null)}
                     >
                       {/* Reflection overlay */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -319,6 +362,7 @@ export function Header() {
                     <Link
                       href="/growth"
                       className="flex items-center justify-between p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-blue-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
+                      onClick={() => setActiveMenu(null)}
                     >
                       {/* Reflection overlay */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -332,6 +376,7 @@ export function Header() {
                     <Link
                       href="/professional"
                       className="flex items-center justify-between p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-purple-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
+                      onClick={() => setActiveMenu(null)}
                     >
                       {/* Reflection overlay */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -345,6 +390,7 @@ export function Header() {
                     <Link
                       href="/enterprise"
                       className="flex items-center justify-between p-3 rounded-xl transition-all duration-200 group border border-white/10 hover:border-yellow-500/40 relative overflow-hidden bg-white/5 hover:bg-white/10"
+                      onClick={() => setActiveMenu(null)}
                     >
                       {/* Reflection overlay */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -380,6 +426,7 @@ export function Header() {
         </div>
         {/* Mobile Nav Trigger */}
         <button
+          ref={menuButtonRef}
           onClick={() => setIsOpen(!isOpen)}
           className="lg:hidden p-2 text-gray-300 hover:text-white ml-2 rounded-lg hover:bg-slate-800/50 transition-all duration-300 hover:scale-110"
           aria-label="Toggle menu"
@@ -389,76 +436,128 @@ export function Header() {
           </div>
         </button>
       </div>
-      {/* Mobile Nav Menu */}
-      {isOpen && (
-        <nav
-          className="lg:hidden absolute top-full left-0 w-full border-t shadow-2xl z-[60] bg-slate-900/70 backdrop-blur-2xl supports-[backdrop-filter]:bg-slate-900/40"
-          style={{
-            borderTop: '1px solid rgba(147, 51, 234, 0.4)',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(24px) saturate(180%) brightness(1.08)',
-            WebkitBackdropFilter: 'blur(24px) saturate(180%) brightness(1.08)'
-          } as React.CSSProperties}
-        >
-          <div className="p-6 space-y-6 relative">
-            {/* Reflection effect */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
-            {/* Quick Links */}
-            <div className="grid grid-cols-2 gap-4">
-              <Link href="/tools" className="flex items-center gap-2 p-3 bg-slate-800/80 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.6)'}}>
-                <Zap className="w-4 h-4 text-purple-400" />
-                <span className="text-white font-medium">Free Tools</span>
-              </Link>
-              <Link href="/api" className="flex items-center gap-2 p-3 bg-slate-800/80 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.6)'}}>
-                <Code className="w-4 h-4 text-purple-400" />
-                <span className="text-white font-medium">API</span>
-              </Link>
-              <Link href="/docs" className="flex items-center gap-2 p-3 bg-slate-800/80 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.6)'}}>
-                <FileText className="w-4 h-4 text-purple-400" />
-                <span className="text-white font-medium">Docs</span>
-              </Link>
-              <Link href="/tutorials" className="flex items-center gap-2 p-3 bg-slate-800/80 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.6)'}}>
-                <PlayCircle className="w-4 h-4 text-purple-400" />
-                <span className="text-white font-medium">Tutorials</span>
-              </Link>
+      {/* Mobile Nav Menu - Redesigned full-screen overlay via portal */}
+      {isOpen && (typeof document !== 'undefined' ? createPortal(
+        <div className="fixed inset-0 z-[1000] lg:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-slate-950/90"
+            onClick={() => setIsOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Panel */}
+          <nav
+            className="absolute inset-0 bg-slate-900 text-white overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 bg-slate-900/95 border-b border-white/10">
+              <span className="text-sm text-gray-300">Menu</span>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="p-2 rounded-lg hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                aria-label="Close menu"
+              >
+                <X className="w-6 h-6" />
+              </button>
             </div>
 
-            {/* Pricing Plans */}
-            <div>
-              <h3 className="text-gray-400 font-semibold mb-3">Pricing Plans</h3>
-              <div className="space-y-2">
-                <Link href="/starter" className="flex items-center justify-between p-3 bg-slate-800/70 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-green-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)'}}>
-                  <span className="text-white">Starter</span>
-                  <span className="text-green-400 font-medium">$3/mo</span>
+            <div className="px-5 py-5 space-y-4">
+              {/* Collapsible sections derived from desktop config */}
+              {menuItems.map((menu) => {
+                const key = menu.title.toLowerCase();
+                return (
+                  <div key={key} className="border border-white/10 rounded-xl overflow-hidden">
+                    <button
+                      onClick={() => toggleSection(key)}
+                      className="w-full flex items-center justify-between px-4 py-3 bg-white/5 hover:bg-white/10"
+                      aria-expanded={!!mobileSections[key]}
+                      aria-controls={`mobile-sec-${key}`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <menu.icon className="w-4 h-4 text-purple-400" />
+                        <span className="font-semibold">{menu.title}</span>
+                      </span>
+                      <ChevronDown className={`w-4 h-4 transition-transform ${mobileSections[key] ? 'rotate-180' : ''}`} />
+                    </button>
+                    {mobileSections[key] && (
+                      <div id={`mobile-sec-${key}`} className="px-2 pb-2">
+                        {menu.items.map((item, idx) => (
+                          <Link
+                            key={idx}
+                            href={item.href}
+                            onClick={() => setIsOpen(false)}
+                            className="flex items-center justify-between px-3 py-3 rounded-lg hover:bg-white/5"
+                          >
+                            <span className="flex items-center gap-3">
+                              <item.icon className="w-4 h-4 text-purple-400" />
+                              <span className="font-medium">{item.name}</span>
+                            </span>
+                            <ArrowRight className="w-4 h-4 text-gray-400" />
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Pricing section */}
+              <div className="border border-white/10 rounded-xl overflow-hidden">
+                <button
+                  onClick={() => toggleSection('pricing')}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-white/5 hover:bg-white/10"
+                  aria-expanded={!!mobileSections['pricing']}
+                  aria-controls="mobile-sec-pricing"
+                >
+                  <span className="flex items-center gap-2">
+                    <Star className="w-4 h-4 text-yellow-400" />
+                    <span className="font-semibold">Pricing</span>
+                  </span>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${mobileSections['pricing'] ? 'rotate-180' : ''}`} />
+                </button>
+                {mobileSections['pricing'] && (
+                  <div id="mobile-sec-pricing" className="px-2 pb-2">
+                    <Link href="/pricing" onClick={() => setIsOpen(false)} className="flex items-center justify-between px-3 py-3 rounded-lg hover:bg-white/5">
+                      <span className="font-medium">View All Plans</span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </Link>
+                    <Link href="/starter" onClick={() => setIsOpen(false)} className="flex items-center justify-between px-3 py-3 rounded-lg hover:bg-white/5">
+                      <span className="font-medium">Starter</span>
+                      <span className="text-green-400">$3/mo</span>
+                    </Link>
+                    <Link href="/growth" onClick={() => setIsOpen(false)} className="flex items-center justify-between px-3 py-3 rounded-lg hover:bg-white/5">
+                      <span className="font-medium">Growth</span>
+                      <span className="text-blue-400">$47/mo</span>
+                    </Link>
+                    <Link href="/professional" onClick={() => setIsOpen(false)} className="flex items-center justify-between px-3 py-3 rounded-lg hover:bg-white/5">
+                      <span className="font-medium">Professional</span>
+                      <span className="text-purple-400">$147/mo</span>
+                    </Link>
+                    <Link href="/enterprise" onClick={() => setIsOpen(false)} className="flex items-center justify-between px-3 py-3 rounded-lg hover:bg-white/5">
+                      <span className="font-medium">Enterprise</span>
+                      <span className="text-yellow-400">$497/mo</span>
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="space-y-3 pt-2">
+                <Link href="/login" onClick={() => setIsOpen(false)} className="flex items-center justify-center w-full border border-purple-500/50 text-purple-300 hover:bg-purple-500/20 rounded-lg py-3 transition-all">
+                  Login
                 </Link>
-                <Link href="/growth" className="flex items-center justify-between p-3 bg-slate-800/70 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-blue-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)'}}>
-                  <span className="text-white">Growth</span>
-                  <span className="text-blue-400 font-medium">$47/mo</span>
-                </Link>
-                <Link href="/professional" className="flex items-center justify-between p-3 bg-slate-800/70 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-purple-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)'}}>
-                  <span className="text-white">Professional</span>
-                  <span className="text-purple-400 font-medium">$147/mo</span>
-                </Link>
-                <Link href="/enterprise" className="flex items-center justify-between p-3 bg-slate-800/70 rounded-lg hover:bg-slate-700/80 transition-all border border-transparent hover:border-yellow-500/30" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)'}}>
-                  <span className="text-white">Enterprise</span>
-                  <span className="text-yellow-400 font-medium">$497/mo</span>
+                <Link href="/trial" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-lg shadow-lg transition-all">
+                  Start Free Trial
+                  <Sparkles className="w-4 h-4" />
                 </Link>
               </div>
-            </div>
 
-            {/* CTA Buttons */}
-            <div className="space-y-3 pt-4 border-t border-gray-700">
-              <Link href="/login" className="flex items-center justify-center w-full border border-purple-500/50 text-purple-300 hover:bg-purple-500/20 rounded-lg py-3 transition-all">
-                Login
-              </Link>
-              <Link href="/trial" className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-lg shadow-lg transition-all">
-                Start Free Trial
-                <Sparkles className="w-4 h-4" />
-              </Link>
+              <div className="h-8" />
             </div>
-          </div>
-        </nav>
-      )}
+          </nav>
+        </div>, document.body) : null)}
     </header>
   );
 }

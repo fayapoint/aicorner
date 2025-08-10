@@ -188,15 +188,17 @@ export function VideoCard({ video, index = 0, onPlay }: VideoCardProps) {
                     </span>
                   </div>
                   {(video as any).source.originalUrl && (
-                    <a
-                      href={(video as any).source.originalUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300 transition-colors"
-                      onClick={(e) => e.stopPropagation()}
+                    <button
+                      type="button"
+                      className="text-blue-400 hover:text-blue-300 transition-colors underline"
+                      aria-label="Open original video source in a new tab"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open((video as any).source.originalUrl, "_blank", "noopener,noreferrer");
+                      }}
                     >
                       View Original
-                    </a>
+                    </button>
                   )}
                 </div>
               )}
