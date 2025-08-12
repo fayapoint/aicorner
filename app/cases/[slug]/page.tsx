@@ -1,3 +1,5 @@
+"use client";
+
 import { notFound } from "next/navigation";
 
 const cases = [
@@ -51,6 +53,5 @@ export default function CasePage({ params }: { params: { slug: string } }) {
   );
 }
 
-export async function generateStaticParams() {
-  return cases.map(c => ({ slug: c.slug }));
-}
+// Removed generateStaticParams to avoid SSG issues with SessionProvider
+// Dynamic routing will still work
