@@ -1,5 +1,8 @@
 'use client';
 
+import { useEffect, useState, useRef } from "react";
+import { useClientSession } from '../hooks/useClientSession';
+
 import {
   Brain,
   Menu,
@@ -26,13 +29,12 @@ import {
   FileText,
   BarChart3
 } from "lucide-react";
-import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 export function Header() {
+  // Initialize state with safe defaults for SSR
   const [isOpen, setIsOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -41,15 +43,13 @@ export function Header() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [isClient, setIsClient] = useState(false);
   
-  // Safely call useSession with error handling
-  let sessionData = null;
-  try {
-    sessionData = useSession();
-  } catch (error) {
-    // Session provider not available during SSR
-    sessionData = null;
-  }
-  const { data: session, status } = sessionData || { data: null, status: 'loading' };
+  // Use our custom hook that safely handles session data
+  const { data: session, status, isClient: isSessionClient } = useClientSession();
+  
+  // Effect to set client state (separate from session handling)
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   const pathname = usePathname();
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
   const [mobileSections, setMobileSections] = useState<Record<string, boolean>>({
@@ -58,10 +58,6 @@ export function Header() {
     company: false,
     pricing: true,
   });
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -225,6 +221,35 @@ export function Header() {
     );
   };
 
+  // Prevent rendering session-dependent UI during SSR
+  if (!isClient) {
+    return (
+      <header className="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <div className="flex items-center gap-2 text-white">
+                <Brain className="w-8 h-8 text-purple-500" />
+                <span className="text-2xl font-bold">Fayza</span>
+              </div>
+            </div>
+            {/* Placeholder for session UI */}
+            <div className="hidden md:flex items-center gap-4">
+              <div className="w-24 h-8 bg-gray-800 rounded-md"></div>
+            </div>
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button className="text-white p-2">
+                <Menu className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
+  
   return (
     <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? 'bg-black/80 backdrop-blur-lg border-b border-white/10' : 'bg-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

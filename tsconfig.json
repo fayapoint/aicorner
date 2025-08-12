@@ -24,8 +24,12 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@/components/*": ["components/*"]
+      "@/*": [
+        "./*"
+      ],
+      "@/components/*": [
+        "components/*"
+      ]
     },
     "plugins": [
       {
@@ -37,7 +41,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "**/*.d.ts",
+    "**/*.d.ts"
+    /* Temporarily removed until Next.js regenerates these files */,
     ".next/types/**/*.ts"
   ],
   "exclude": [
