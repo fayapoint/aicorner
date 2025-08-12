@@ -4,6 +4,9 @@ import authOptions from "@/lib/auth-options";
 import { buildUssUserSummary } from "@/lib/uss/summary";
 import { getUssAccess } from "@/lib/authz";
 
+// Force dynamic rendering to prevent SSG context issues
+export const dynamic = 'force-dynamic';
+
 export default async function UssHubPage({
   searchParams,
 }: {

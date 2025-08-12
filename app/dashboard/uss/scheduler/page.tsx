@@ -1,6 +1,9 @@
 import { getUssAccess } from "@/lib/authz";
 import { FeatureLocked } from "@/components/uss/feature-locked";
 
+// Force dynamic rendering to prevent SSG context issues
+export const dynamic = 'force-dynamic';
+
 export default async function UssSchedulerPage({
   searchParams,
 }: {
