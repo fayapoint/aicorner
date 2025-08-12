@@ -1,66 +1,70 @@
 'use client';
 
 import { useEffect, useState, useRef } from "react";
-import { useClientSession } from '../hooks/useClientSession';
+import { useSession } from "next-auth/react";
+
 import {
   Brain,
   Menu,
   X,
   ChevronDown,
-  ArrowRight,
+  ChevronUp,
   Sparkles,
-  Star,
-  Zap
+  MessageSquare,
+  Award,
+  Globe,
+  Settings,
+  PlayCircle,
+  FileText,
+  BarChart3,
+  Brain as BrainIcon,
+  // Replace PuzzlePiece with Puzzle which exists
+  Users,
+  Rocket,
+  ArrowRight as ArrowRightIcon,
+  Lightbulb,
+  Zap,
+  Code,
+  Database,
+  Layers,
+  Cloud,
+  Shield,
+  Puzzle,
+  Lock,
+  Calendar,
+  ArrowRight,
+  Target,
+  TrendingUp,
 } from "lucide-react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export function Header() {
-  const [isClient, setIsClient] = useState(false);
-  
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // During SSR/SSG, render a minimal placeholder header
-  if (!isClient) {
-    return (
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Brain className="w-8 h-8 text-blue-600" />
-              <span className="ml-2 text-xl font-bold text-gray-900">AI Corner</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="w-20 h-8 bg-gray-100 rounded animate-pulse"></div>
-              <div className="w-16 h-8 bg-gray-100 rounded animate-pulse"></div>
-            </div>
-          </div>
-        </div>
-      </header>
-    );
-  }
-
-  return <ClientHeader />;
-}
-
-function ClientHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuTimeouts, setMenuTimeouts] = useState<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  
-  const { data: session, status } = useClientSession();
+  const [isClient, setIsClient] = useState(false);
   const pathname = usePathname();
+  
+  // Only use useSession on client side to avoid SSR/SSG issues
+  const sessionData = isClient ? useSession() : { data: null, status: 'loading' };
+  const { data: session, status } = sessionData;
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
   const [mobileSections, setMobileSections] = useState<Record<string, boolean>>({
-    products: false,
-    pricing: false,
+    products: true,
+    learn: false,
+    company: false,
+    pricing: true,
   });
+
+  // Set isClient to true when component mounts on the client
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -101,202 +105,381 @@ function ClientHeader() {
     }
   }, [isOpen]);
 
-  const toggleSection = (key: string) => {
-    setMobileSections(prev => ({ ...prev, [key]: !prev[key as keyof typeof prev] }));
-  };
-
-  const handleMenuEnter = (menuTitle: string, el?: HTMLElement) => {
-    setActiveMenu(menuTitle);
-    setAnchorEl(el || null);
+  const handleMenuEnter = (menu: string, element: HTMLElement) => {
+    if (menuTimeouts.has(menu)) {
+      clearTimeout(menuTimeouts.get(menu)!);
+      menuTimeouts.delete(menu);
+    }
     
-    if (el) {
-      const rect = el.getBoundingClientRect();
+    setActiveMenu(menu);
+    setAnchorEl(element);
+    
+    if (element) {
+      const rect = element.getBoundingClientRect();
       setDropdownPos({
-        top: rect.bottom + window.scrollY + 8,
-        left: rect.left + window.scrollX - 250 + rect.width / 2,
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX - 300 + rect.width / 2,
       });
     }
   };
+  
+  const handleMenuLeave = (menu: string) => {
+    const timeout = setTimeout(() => {
+      setActiveMenu(prev => prev === menu ? null : prev);
+    }, 100);
+    
+    setMenuTimeouts(prev => new Map(prev).set(menu, timeout));
+  };
+  
+  const handleDropdownEnter = (menu: string) => {
+    if (menuTimeouts.has(menu)) {
+      clearTimeout(menuTimeouts.get(menu)!);
+      menuTimeouts.delete(menu);
+    }
+  };
+  
+  const handleDropdownLeave = (menu: string) => {
+    handleMenuLeave(menu);
+  };
 
-  const handleMenuLeave = (menuTitle: string) => {
-    setTimeout(() => {
-      setActiveMenu(prev => prev === menuTitle ? null : prev);
-      setAnchorEl(null);
-    }, 150);
+  const toggleMobileSection = (section: string) => {
+    setMobileSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  // Menu configuration
+  const products = [
+    { title: "AI Agents", desc: "Custom AI agents for your business", href: "/agents", icon: BrainIcon },
+    { title: "Chatbots", desc: "Intelligent conversational agents", href: "/chatbots", icon: MessageSquare },
+    { title: "Process Automation", desc: "Streamline your workflows", href: "/automation", icon: Zap },
+    { title: "Custom Development", desc: "Tailored AI solutions", href: "/development", icon: Code },
+    { title: "Data Solutions", desc: "AI-powered data processing", href: "/data", icon: Database },
+    { title: "Integration Services", desc: "Connect AI to your systems", href: "/integration", icon: Layers },
+  ];
+
+  const learn = [
+    { title: "Documentation", desc: "Guides and resources", href: "/docs", icon: FileText },
+    { title: "API Reference", desc: "Integrate with our API", href: "/api-docs", icon: Code },
+    { title: "Tutorials", desc: "Step-by-step learning", href: "/tutorials", icon: PlayCircle },
+    { title: "Case Studies", desc: "Success stories", href: "/cases", icon: Target },
+    { title: "Blog", desc: "Insights and updates", href: "/blog", icon: Puzzle },
+  ];
+
+  const company = [
+    { title: "About Us", desc: "Our mission and vision", href: "/about", icon: Users },
+    { title: "Careers", desc: "Join our team", href: "/careers", icon: Rocket },
+    { title: "Contact", desc: "Get in touch", href: "/contact", icon: MessageSquare },
+  ];
+
+  const pricing = [
+    { title: "Starter", desc: "For small teams", href: "/pricing#starter", icon: Lightbulb },
+    { title: "Professional", desc: "For growing businesses", href: "/pricing#professional", icon: Rocket },
+    { title: "Enterprise", desc: "For organizations", href: "/pricing#enterprise", icon: Globe },
+  ];
+
+  const menuConfig = {
+    products: { items: products, cols: 3 },
+    learn: { items: learn, cols: 3 },
+    company: { items: company, cols: 1 },
+    pricing: { items: pricing, cols: 2 },
   };
 
   const renderDropdown = (menuTitle: string) => {
-    if (!dropdownPos) return null;
+    const config = menuConfig[menuTitle as keyof typeof menuConfig];
+    if (!config || !dropdownPos) return null;
+
     return createPortal(
       <div
-        className="absolute bg-slate-800/95 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl"
-        style={{
-          top: dropdownPos.top,
-          left: Math.max(20, Math.min(dropdownPos.left, window.innerWidth - 520)),
-          zIndex: 1000,
-        }}
-        onMouseEnter={() => setActiveMenu(menuTitle)}
-        onMouseLeave={() => handleMenuLeave(menuTitle)}
+        className="fixed z-50 bg-gray-900/80 backdrop-blur-lg border border-white/10 rounded-lg shadow-2xl p-6 text-white animate-fade-in-fast"
+        style={{ top: `${dropdownPos.top}px`, left: `${dropdownPos.left}px` }}
+        onMouseEnter={() => handleDropdownEnter(menuTitle)}
+        onMouseLeave={() => handleDropdownLeave(menuTitle)}
       >
-        <div className="p-8 min-w-[300px]">
-          <h3 className="text-lg font-semibold text-white capitalize mb-4">{menuTitle}</h3>
-          <p className="text-gray-300 text-sm">Coming soon...</p>
+        <div className={`grid grid-cols-${config.cols} gap-x-8 gap-y-4`}>
+          {config.items.map((item, i) => (
+            <Link key={i} href={item.href} className="flex items-start gap-4 p-2 rounded-lg hover:bg-white/5 transition-colors">
+              <item.icon className="w-5 h-5 mt-1 text-purple-400 flex-shrink-0" />
+              <div>
+                <p className="font-semibold">{item.title}</p>
+                <p className="text-sm text-gray-400">{item.desc}</p>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>,
       document.body
     );
   };
 
+  // Prevent rendering session-dependent UI during SSR
+  if (!isClient) {
+    return (
+      <header className="fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-black/80 backdrop-blur-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            <div className="flex-shrink-0">
+              <div className="flex items-center gap-2 text-white">
+                <Brain className="w-8 h-8 text-purple-500" />
+                <span className="text-2xl font-bold">Fayza</span>
+              </div>
+            </div>
+            {/* Placeholder for session-dependent UI */}
+            <div className="hidden md:flex items-center gap-4">
+              <div className="w-24 h-8 bg-gray-800 animate-pulse rounded-md"></div>
+            </div>
+            <div className="md:hidden">
+              <button className="text-white p-2">
+                <Menu className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   return (
-    <header className={`fixed top-0 left-0 right-0 z-40 transition-all ${
-      isScrolled ? 'bg-black/90 backdrop-blur-lg' : 'bg-black/60'
-    }`}>
+    <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? 'bg-black/80 backdrop-blur-lg border-b border-white/10' : 'bg-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center gap-2 text-white">
               <Brain className="w-8 h-8 text-purple-500" />
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
-                AI Corner
-              </span>
+              <span className="text-2xl font-bold">Fayza</span>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <button
-              onMouseEnter={(e) => handleMenuEnter('products', e.currentTarget)}
-              onMouseLeave={() => handleMenuLeave('products')}
-              className="flex items-center gap-1 text-gray-300 hover:text-white transition-colors"
-            >
-              Products
-              <ChevronDown className={`w-4 h-4 transition-transform ${activeMenu === 'products' ? 'rotate-180' : ''}`} />
-            </button>
+          <nav className="hidden md:flex items-center gap-8">
+            {Object.keys(menuConfig).map(menuTitle => (
+              <button
+                key={menuTitle}
+                onMouseEnter={(e) => handleMenuEnter(menuTitle, e.currentTarget)}
+                onMouseLeave={() => handleMenuLeave(menuTitle)}
+                className="capitalize flex items-center gap-1 text-gray-300 hover:text-white transition-colors"
+              >
+                {menuTitle}
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            ))}
             <Link href="/pricing" className="text-gray-300 hover:text-white transition-colors">
               Pricing
             </Link>
           </nav>
 
-          {/* Desktop CTA */}
-          <div className="hidden md:flex items-center space-x-4">
-            {status === 'loading' && (
-              <div className="w-20 h-8 bg-gray-700 animate-pulse rounded"></div>
-            )}
-            {status === 'unauthenticated' && (
+          <div className="hidden md:flex items-center gap-4">
+            {status === 'loading' ? (
+              // Loading state
+              <div className="w-24 h-10 bg-gray-800 animate-pulse rounded-md"></div>
+            ) : !session ? (
+              // Unauthenticated
               <>
-                <Link href="/login" className="text-gray-300 hover:text-white transition-colors">
+                <Link
+                  href="/login"
+                  className="px-4 py-2 text-sm text-gray-300 hover:text-white"
+                >
                   Login
                 </Link>
-                <Link href="/trial" className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-5 py-2.5 rounded-lg shadow-lg transition-all">
+                <Link
+                  href="/signup"
+                  className="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-md"
+                >
                   Start Free Trial
-                  <ArrowRight className="w-4 h-4" />
                 </Link>
               </>
-            )}
-            {status === 'authenticated' && (
-              <Link href="/dashboard" className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-5 py-2.5 rounded-lg shadow-lg transition-all">
+            ) : (
+              // Authenticated
+              <Link
+                href="/dashboard"
+                className="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-md flex items-center gap-2"
+              >
                 Dashboard
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRightIcon className="w-4 h-4" />
               </Link>
             )}
           </div>
 
-          {/* Mobile menu button */}
           <div className="md:hidden">
             <button
               ref={menuButtonRef}
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-              aria-expanded={isOpen}
-              aria-controls="mobile-menu"
+              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
             >
-              <span className="sr-only">Open main menu</span>
-              {isOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
+              {isOpen ? (
+                <X className="block h-6 w-6" />
+              ) : (
+                <Menu className="block h-6 w-6" />
+              )}
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      <div className={`md:hidden ${isOpen ? 'block' : 'hidden'} fixed inset-0 z-50 bg-black/95 h-full w-full overflow-y-auto`}>
+        <div className="px-4 py-8">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-2 text-white">
+              <Brain className="w-8 h-8 text-purple-500" />
+              <span className="text-2xl font-bold">Fayza</span>
+            </Link>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="p-2 text-white"
+            >
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+
+          <div className="mt-8 space-y-6 divide-y divide-white/10">
+            {/* Mobile Products */}
+            <div className="py-4">
+              <button
+                onClick={() => toggleMobileSection('products')}
+                className="flex items-center justify-between w-full text-white mb-4"
+              >
+                <span className="text-xl font-semibold">Products</span>
+                {mobileSections.products ? (
+                  <ChevronUp className="h-5 w-5" />
+                ) : (
+                  <ChevronDown className="h-5 w-5" />
+                )}
+              </button>
+              {mobileSections.products && (
+                <div className="mt-4 ml-4 space-y-6">
+                  {products.map((item, i) => (
+                    <Link key={i} href={item.href} className="flex items-start gap-3">
+                      <item.icon className="w-5 h-5 mt-1 text-purple-400" />
+                      <div>
+                        <p className="font-medium">{item.title}</p>
+                        <p className="text-sm text-gray-400">{item.desc}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Learn */}
+            <div className="py-4">
+              <button
+                onClick={() => toggleMobileSection('learn')}
+                className="flex items-center justify-between w-full text-white mb-4"
+              >
+                <span className="text-xl font-semibold">Learn</span>
+                {mobileSections.learn ? (
+                  <ChevronUp className="h-5 w-5" />
+                ) : (
+                  <ChevronDown className="h-5 w-5" />
+                )}
+              </button>
+              {mobileSections.learn && (
+                <div className="mt-4 ml-4 space-y-6">
+                  {learn.map((item, i) => (
+                    <Link key={i} href={item.href} className="flex items-start gap-3">
+                      <item.icon className="w-5 h-5 mt-1 text-purple-400" />
+                      <div>
+                        <p className="font-medium">{item.title}</p>
+                        <p className="text-sm text-gray-400">{item.desc}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Company */}
+            <div className="py-4">
+              <button
+                onClick={() => toggleMobileSection('company')}
+                className="flex items-center justify-between w-full text-white mb-4"
+              >
+                <span className="text-xl font-semibold">Company</span>
+                {mobileSections.company ? (
+                  <ChevronUp className="h-5 w-5" />
+                ) : (
+                  <ChevronDown className="h-5 w-5" />
+                )}
+              </button>
+              {mobileSections.company && (
+                <div className="mt-4 ml-4 space-y-6">
+                  {company.map((item, i) => (
+                    <Link key={i} href={item.href} className="flex items-start gap-3">
+                      <item.icon className="w-5 h-5 mt-1 text-purple-400" />
+                      <div>
+                        <p className="font-medium">{item.title}</p>
+                        <p className="text-sm text-gray-400">{item.desc}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Pricing */}
+            <div className="py-4">
+              <button
+                onClick={() => toggleMobileSection('pricing')}
+                className="flex items-center justify-between w-full text-white mb-4"
+              >
+                <span className="text-xl font-semibold">Pricing</span>
+                {mobileSections.pricing ? (
+                  <ChevronUp className="h-5 w-5" />
+                ) : (
+                  <ChevronDown className="h-5 w-5" />
+                )}
+              </button>
+              {mobileSections.pricing && (
+                <div className="mt-4 ml-4 space-y-6">
+                  {pricing.map((item, i) => (
+                    <Link key={i} href={item.href} className="flex items-start gap-3">
+                      <item.icon className="w-5 h-5 mt-1 text-purple-400" />
+                      <div>
+                        <p className="font-medium">{item.title}</p>
+                        <p className="text-sm text-gray-400">{item.desc}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Mobile CTA */}
+            <div className="py-6">
+              {status === 'loading' ? (
+                <div className="w-full h-12 bg-gray-800 animate-pulse rounded-md"></div>
+              ) : !session ? (
+                <div className="space-y-4">
+                  <Link
+                    href="/login"
+                    className="block w-full text-center px-6 py-3 text-white border border-white/20 rounded-md hover:bg-white/5"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="block w-full text-center px-6 py-3 text-white bg-purple-600 rounded-md hover:bg-purple-500"
+                  >
+                    Start Free Trial
+                  </Link>
+                </div>
+              ) : (
+                <Link
+                  href="/dashboard"
+                  className="block w-full text-center px-6 py-3 text-white bg-purple-600 rounded-md hover:bg-purple-500 flex items-center justify-center gap-2"
+                >
+                  <span>Dashboard</span>
+                  <ArrowRightIcon className="w-4 h-4" />
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Desktop dropdowns */}
       {activeMenu && renderDropdown(activeMenu)}
-
-      {/* Mobile menu */}
-      {isOpen && createPortal(
-        <div className="md:hidden fixed inset-0 bg-black/90 backdrop-blur-xl z-50">
-          <nav className="h-full overflow-y-auto">
-            <div className="px-5 pt-5 pb-8 text-white">
-              {/* Mobile header */}
-              <div className="flex items-center justify-between pb-8">
-                <div className="flex items-center gap-2">
-                  <Brain className="w-8 h-8 text-purple-500" />
-                  <span className="text-xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
-                    AI Corner
-                  </span>
-                </div>
-                <button onClick={() => setIsOpen(false)}>
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-
-              {/* Mobile Products */}
-              <div className="pb-6">
-                <button
-                  onClick={() => toggleSection('products')}
-                  className="w-full flex justify-between items-center py-2 text-left"
-                >
-                  <span className="flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-purple-400" />
-                    <span className="font-semibold">Products</span>
-                  </span>
-                  <ChevronDown className={`w-4 h-4 transition-transform ${mobileSections.products ? 'rotate-180' : ''}`} />
-                </button>
-                {mobileSections.products && (
-                  <div className="px-2 pb-2 mt-2">
-                    <Link href="/agents" onClick={() => setIsOpen(false)} className="flex items-center justify-between px-3 py-3 rounded-lg hover:bg-white/5">
-                      <span className="font-medium">AI Agents</span>
-                      <ArrowRight className="w-4 h-4 text-gray-400" />
-                    </Link>
-                  </div>
-                )}
-              </div>
-
-              {/* Mobile Pricing */}
-              <div className="pb-6">
-                <Link href="/pricing" onClick={() => setIsOpen(false)} className="flex items-center gap-2 text-white py-2">
-                  <Star className="w-4 h-4 text-yellow-400" />
-                  <span className="font-semibold">Pricing</span>
-                </Link>
-              </div>
-
-              {/* Mobile CTA */}
-              <div className="space-y-3 pt-4">
-                {status === 'loading' && (
-                  <div className="w-full h-12 bg-slate-700/50 animate-pulse rounded-lg"></div>
-                )}
-                {status === 'unauthenticated' && (
-                  <>
-                    <Link href="/login" onClick={() => setIsOpen(false)} className="flex items-center justify-center w-full border border-purple-500/50 text-purple-300 hover:bg-purple-500/20 rounded-lg py-3 transition-all">
-                      Login
-                    </Link>
-                    <Link href="/trial" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-lg shadow-lg transition-all">
-                      Start Free Trial
-                      <Sparkles className="w-4 h-4" />
-                    </Link>
-                  </>
-                )}
-                {status === 'authenticated' && (
-                  <Link href="/dashboard" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-lg shadow-lg transition-all">
-                    Dashboard
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                )}
-              </div>
-            </div>
-          </nav>
-        </div>,
-        document.body
-      )}
     </header>
   );
 }
