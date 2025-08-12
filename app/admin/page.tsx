@@ -77,7 +77,7 @@ export default function AdminDashboard() {
         ).length
       });
 
-      // Combine and sort recent items
+      // Combine and sort recent items2
       const allItems = [
         ...(newsData.articles || []).map((item: any) => ({ ...item, type: 'news' as const })),
         ...(videosData.videos || []).map((item: any) => ({ ...item, type: 'video' as const }))
