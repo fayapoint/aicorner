@@ -3,6 +3,9 @@ import authOptions from "@/lib/auth-options";
 import { getUssAccess } from "@/lib/authz";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 
+// Force dynamic rendering to prevent SSG context issues
+export const dynamic = 'force-dynamic';
+
 export default async function Conta() {
   const session = await getServerSession(authOptions);
 
