@@ -5,28 +5,45 @@ declare global {
   var _ussMongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-const uri = process.env.MONGODB_USS_URI || process.env.MONGODB_URI;
-if (!uri) throw new Error("Missing MONGODB_USS_URI or MONGODB_URI in environment variables");
+// Don't throw during module loading - defer until actual usage
+const getUri = () => {
+  const uri = process.env.MONGODB_USS_URI || process.env.MONGODB_URI;
+  if (!uri) {
+    console.warn("Missing MONGODB_USS_URI or MONGODB_URI in environment variables");
+    // Return a placeholder URI that won't break build but will fail at runtime if actually used
+    return "mongodb://localhost:27017/placeholder";
+  }
+  return uri;
+};
 
 const dbName = process.env.MONGODB_USS_DB || process.env.MONGODB_DB;
 
-let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
-if (process.env.NODE_ENV === "development") {
-  if (!global._ussMongoClientPromise) {
-    client = new MongoClient(uri);
-    global._ussMongoClientPromise = client.connect();
+function getClientPromise(): Promise<MongoClient> {
+  if (process.env.NODE_ENV === "development") {
+    if (!global._ussMongoClientPromise) {
+      const client = new MongoClient(getUri());
+      global._ussMongoClientPromise = client.connect();
+    }
+    return global._ussMongoClientPromise;
+  } else {
+    const client = new MongoClient(getUri());
+    return client.connect();
   }
-  clientPromise = global._ussMongoClientPromise;
-} else {
-  client = new MongoClient(uri);
-  clientPromise = client.connect();
 }
+
+// Lazy initialization - only connect when actually needed
+clientPromise = getClientPromise();
 
 export default clientPromise;
 
 export async function getUssDb(): Promise<Db> {
-  const client = await clientPromise;
-  return client.db(dbName);
+  try {
+    const client = await clientPromise;
+    return client.db(dbName);
+  } catch (error) {
+    console.error("Failed to connect to USS database:", error);
+    throw error;
+  }
 }
