@@ -4,6 +4,9 @@ import { signIn } from "next-auth/react";
 import React from "react";
 import Link from "next/link";
 
+// Force dynamic rendering to prevent SSG context issues
+export const dynamic = 'force-dynamic';
+
 export default function Login() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
