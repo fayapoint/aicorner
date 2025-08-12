@@ -7,12 +7,19 @@ declare global {
 
 // Don't throw during module loading - defer until actual usage
 const getUri = () => {
-  const uri = process.env.MONGODB_USS_URI || process.env.MONGODB_URI;
+  let uri = process.env.MONGODB_USS_URI || process.env.MONGODB_URI;
   if (!uri) {
     console.warn("Missing MONGODB_USS_URI or MONGODB_URI in environment variables");
     // Return a placeholder URI that won't break build but will fail at runtime if actually used
     return "mongodb://localhost:27017/placeholder";
   }
+  
+  // Ensure the URI has a valid MongoDB scheme
+  if (!uri.startsWith('mongodb://') && !uri.startsWith('mongodb+srv://')) {
+    console.warn("MongoDB URI missing scheme, adding default mongodb:// prefix");
+    uri = `mongodb://${uri}`;
+  }
+  
   return uri;
 };
 
