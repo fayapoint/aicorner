@@ -39,7 +39,16 @@ export function Header() {
   const [menuTimeouts, setMenuTimeouts] = useState<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const sessionData = useSession();
+  const [isClient, setIsClient] = useState(false);
+  
+  // Safely call useSession with error handling
+  let sessionData = null;
+  try {
+    sessionData = useSession();
+  } catch (error) {
+    // Session provider not available during SSR
+    sessionData = null;
+  }
   const { data: session, status } = sessionData || { data: null, status: 'loading' };
   const pathname = usePathname();
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -49,6 +58,10 @@ export function Header() {
     company: false,
     pricing: true,
   });
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
