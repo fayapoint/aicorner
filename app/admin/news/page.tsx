@@ -16,7 +16,9 @@ import {
   Calendar,
   User,
   MoreHorizontal,
-  FileText
+  FileText,
+  Star,
+  Crown
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -104,6 +106,19 @@ export default function AdminNewsPage() {
       day: 'numeric',
       year: 'numeric'
     });
+  };
+
+  const getFeaturePageName = (order: number | undefined) => {
+    if (!order) return null;
+    const featurePages = {
+      1: "Homepage Hero",
+      2: "Homepage Secondary", 
+      3: "Homepage Tertiary",
+      4: "Featured Section #1",
+      5: "Featured Section #2",
+      6: "Featured Section #3"
+    };
+    return featurePages[order as keyof typeof featurePages] || `Feature Page ${order}`;
   };
 
   return (
@@ -242,7 +257,7 @@ export default function AdminNewsPage() {
                           </div>
 
                           {/* Actions */}
-                          <div className="flex items-center gap-2 ml-4">
+                          <div className="flex items-center gap-2 ml-4 flex-wrap">
                             <Badge
                               className={
                                 article.status === "published"
@@ -252,6 +267,23 @@ export default function AdminNewsPage() {
                             >
                               {article.status}
                             </Badge>
+                            
+                            {/* Featured status indicator */}
+                            {article.featured?.isFeatured && (
+                              <Badge className="bg-purple-600/20 text-purple-400 border-purple-600/30 flex items-center gap-1">
+                                <Star className="w-3 h-3 fill-current" />
+                                Featured
+                              </Badge>
+                            )}
+                            
+                            {/* Feature page indicator */}
+                            {article.featured?.isFeatured && article.featured?.order && (
+                              <Badge className="bg-orange-600/20 text-orange-400 border-orange-600/30 flex items-center gap-1">
+                                <Crown className="w-3 h-3" />
+                                {getFeaturePageName(article.featured.order)}
+                              </Badge>
+                            )}
+                            
                             <Badge variant="outline" className="border-gray-600 text-gray-400">
                               {article.category}
                             </Badge>

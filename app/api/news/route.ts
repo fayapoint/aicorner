@@ -97,9 +97,18 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // Build sort object
+    // Build sort object - prioritize featured articles first for admin panel
     const sort: any = {};
-    sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+    
+    // For admin panel (when no specific sort is requested or default), prioritize featured articles
+    if (sortBy === 'createdAt' || !sortBy) {
+      // Sort by featured status first (featured articles first), then by order, then by sortBy
+      sort['featured.isFeatured'] = -1; // Featured articles first
+      sort['featured.order'] = 1; // Then by order (1-6)
+      sort[sortBy] = sortOrder === 'desc' ? -1 : 1; // Then by requested sort
+    } else {
+      sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+    }
 
     // Get total count for pagination
     const totalCount = await (News as any).countDocuments(query);
