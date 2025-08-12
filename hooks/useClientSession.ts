@@ -5,7 +5,7 @@ import { Session } from 'next-auth';
 
 type SessionStatus = 'loading' | 'authenticated' | 'unauthenticated';
 
-// This hook safely handles useSession to prevent SSR errors
+// This hook safely handles session data without calling useSession during SSR
 export function useClientSession() {
   const [isClient, setIsClient] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
@@ -13,25 +13,29 @@ export function useClientSession() {
   
   // Only run on client-side
   useEffect(() => {
+    // Set client flag immediately
     setIsClient(true);
     
-    // Only import and call useSession after we're on the client
-    if (typeof window !== 'undefined') {
-      import('next-auth/react').then(({ useSession }) => {
-        // This is a hack but necessary to avoid SSR issues
-        // We'll manually fetch the session on the client
-        fetch('/api/auth/session')
-          .then(res => res.json())
-          .then(sessionData => {
-            setSession(sessionData || null);
-            setStatus(sessionData ? 'authenticated' : 'unauthenticated');
-          })
-          .catch(() => {
-            setSession(null);
-            setStatus('unauthenticated');
-          });
-      });
-    }
+    // Only fetch session after we're definitely on the client
+    const fetchSession = async () => {
+      try {
+        const response = await fetch('/api/auth/session');
+        if (response.ok) {
+          const sessionData = await response.json();
+          setSession(sessionData || null);
+          setStatus(sessionData ? 'authenticated' : 'unauthenticated');
+        } else {
+          setSession(null);
+          setStatus('unauthenticated');
+        }
+      } catch (error) {
+        console.error('Failed to fetch session:', error);
+        setSession(null);
+        setStatus('unauthenticated');
+      }
+    };
+    
+    fetchSession();
   }, []);
 
   return {
