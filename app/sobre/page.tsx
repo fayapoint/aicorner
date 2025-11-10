@@ -1,43 +1,98 @@
 export default function Sobre() {
   return (
-    <div className="max-w-3xl mx-auto py-16 px-4">
-      <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-6">Sobre Nós</h1>
-      <p className="text-lg text-gray-300 mb-8">O Portal Tech é apaixonado por transformar negócios através da tecnologia. Nossa missão é acelerar a transformação digital de empresas de todos os portes, entregando soluções inovadoras, personalizadas e de alto impacto.</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <div>
-          <h2 className="text-2xl font-bold text-purple-300 mb-2">Nossa História</h2>
-          <p className="text-gray-400">Fundada em 2017, a Portal Tech nasceu do desejo de democratizar o acesso à tecnologia de ponta. Desde então, já ajudamos centenas de empresas a inovar, crescer e se destacar no mercado digital.</p>
+    <div className="max-w-5xl mx-auto py-16 px-4">
+      <section className="mb-12 text-center">
+        <p className="text-sm font-semibold text-purple-300 uppercase tracking-widest mb-4">
+          Sobre Ricardo Faya
+        </p>
+        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-6">
+          Conectando estratégia, tecnologia e crescimento real
+        </h1>
+        <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+          Sou Ricardo Faya, consultor digital e estrategista de crescimento. Há mais de 15 anos ajudo marcas a escalar resultados usando tecnologia, automação, branding e marketing orientado por dados. Minha missão é transformar ideias em operações lucrativas e sustentáveis.
+        </p>
+      </section>
+
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        {[{
+          title: "+500 projetos entregues",
+          description: "Produtos digitais, plataformas SaaS, funis de vendas e experiências omnichannel."
+        }, {
+          title: "15+ anos liderando times",
+          description: "Atuação em agências, startups e consultorias com foco em performance e inovação."
+        }, {
+          title: "Tecnologia & storytelling",
+          description: "Integro dados, automação e narrativas de marca para gerar conexão e conversão."
+        }].map((item, index) => (
+          <div
+            key={index}
+            className="bg-slate-800/50 border border-slate-700/40 rounded-2xl p-6 shadow-lg shadow-purple-900/20"
+          >
+            <h3 className="text-xl font-semibold text-purple-200 mb-3">{item.title}</h3>
+            <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
+          </div>
+        ))}
+      </section>
+
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-3xl font-bold text-white mb-3">Minha jornada</h2>
+            <p className="text-gray-300 leading-relaxed">
+              Comecei como designer e desenvolvedor front-end, evoluí para liderar squads multidisciplinares e hoje atuo como consultor hands-on. Já liderei lançamentos de produtos em larga escala, construí times de growth e implantei rotinas de automação que destravaram milhões em receita.
+            </p>
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-xl font-semibold text-purple-200">Especialidades</h3>
+            <ul className="space-y-2 text-gray-300">
+              <li>• Estratégia digital e posicionamento de marca</li>
+              <li>• Product discovery, UX e crescimento orientado a dados</li>
+              <li>• Automação de marketing, CRM e jornadas omnichannel</li>
+              <li>• Monetização, lançamento de ofertas e playbooks comerciais</li>
+            </ul>
+          </div>
         </div>
-        <div>
-          <h2 className="text-2xl font-bold text-purple-300 mb-2">Valores</h2>
-          <ul className="list-disc pl-6 text-gray-400">
-            <li>Inovação constante</li>
-            <li>Foco no cliente</li>
-            <li>Ética e transparência</li>
-            <li>Excelência técnica</li>
-            <li>Colaboração e diversidade</li>
-          </ul>
+        <div className="bg-slate-800/50 border border-slate-700/40 rounded-2xl p-8 space-y-6">
+          <h3 className="text-2xl font-semibold text-white">Como trabalho</h3>
+          <div className="space-y-4 text-gray-300">
+            <div>
+              <p className="font-semibold text-purple-200">Diagnóstico profundo</p>
+              <p className="text-sm leading-relaxed">Entendo o negócio, os números e a cultura para definir prioridades claras.</p>
+            </div>
+            <div>
+              <p className="font-semibold text-purple-200">Estratégias acionáveis</p>
+              <p className="text-sm leading-relaxed">Transformo visão em planos de execução com owners, metas e rituais definidos.</p>
+            </div>
+            <div>
+              <p className="font-semibold text-purple-200">Acompanhamento contínuo</p>
+              <p className="text-sm leading-relaxed">Caminho junto com o time para garantir implementação, aprendizado e escala.</p>
+            </div>
+          </div>
         </div>
-      </div>
-      <h2 className="text-2xl font-bold text-purple-300 mb-4">Nosso Time</h2>
-      <p className="text-gray-400 mb-6">Somos uma equipe multidisciplinar de especialistas em desenvolvimento, design, marketing digital, cloud, automação e inteligência artificial. Trabalhamos juntos para entregar resultados extraordinários para nossos clientes.</p>
-      <div className="flex flex-wrap gap-6 justify-center">
-        <div className="bg-white/5 rounded-xl p-6 w-64 flex flex-col items-center border border-slate-700/40 shadow-lg">
-          <img src="/avatar1.png" alt="CEO" className="w-20 h-20 rounded-full mb-3 border-4 border-purple-500/30" />
-          <h3 className="text-lg font-bold text-purple-200">Ana Silva</h3>
-          <p className="text-gray-400 text-sm">CEO & Fundadora</p>
+      </section>
+
+      <section className="bg-gradient-to-br from-purple-600/20 to-pink-500/20 border border-purple-500/20 rounded-3xl p-10 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Vamos construir o próximo case juntos?</h2>
+        <p className="text-gray-200 max-w-2xl mx-auto mb-8">
+          Seja para lançar um novo produto, acelerar vendas, otimizar campanhas ou profissionalizar sua operação digital, conte comigo para liderar a estratégia e entregar resultado.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a
+            href="/contato"
+            className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-8 py-4 text-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg shadow-purple-500/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400/60"
+          >
+            Falar com Ricardo
+          </a>
+          <a
+            href="https://www.linkedin.com/in/ricardo-faya-04555a/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-8 py-4 text-lg border border-purple-400/60 text-purple-200 hover:bg-purple-500/10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400/60"
+          >
+            Ver perfil no LinkedIn
+          </a>
         </div>
-        <div className="bg-white/5 rounded-xl p-6 w-64 flex flex-col items-center border border-slate-700/40 shadow-lg">
-          <img src="/avatar2.png" alt="CTO" className="w-20 h-20 rounded-full mb-3 border-4 border-pink-500/30" />
-          <h3 className="text-lg font-bold text-pink-200">Carlos Souza</h3>
-          <p className="text-gray-400 text-sm">CTO & Cofundador</p>
-        </div>
-        <div className="bg-white/5 rounded-xl p-6 w-64 flex flex-col items-center border border-slate-700/40 shadow-lg">
-          <img src="/avatar3.png" alt="Head de Projetos" className="w-20 h-20 rounded-full mb-3 border-4 border-blue-500/30" />
-          <h3 className="text-lg font-bold text-blue-200">Marina Lima</h3>
-          <p className="text-gray-400 text-sm">Head de Projetos</p>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }

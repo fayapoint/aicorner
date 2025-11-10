@@ -27,6 +27,9 @@ async function connectDB() {
       bufferCommands: false,
       serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
       socketTimeoutMS: 45000,
+      // Disable OIDC to avoid ESM/CommonJS compatibility issues
+      authMechanism: undefined,
+      authSource: 'admin',
     };
 
     console.log('Attempting MongoDB connection...');

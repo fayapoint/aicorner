@@ -18,7 +18,8 @@ import {
   Shield,
   Award,
   Calendar,
-  Headphones
+  Headphones,
+  Share2
 } from "lucide-react"
 
 export default function Contato() {
@@ -72,7 +73,7 @@ export default function Contato() {
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">2</div>
-                <span className="text-gray-300">Contato via WhatsApp ou telefone em até 2h</span>
+                <span className="text-gray-300">Contato via WhatsApp (+55 21 97190-8530) ou telefone em até 2h</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">3</div>
@@ -99,7 +100,7 @@ export default function Contato() {
           Vamos Conversar?
         </h1>
         <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-          Estamos aqui para transformar suas ideias em realidade digital. Entre em contato e descubra como podemos acelerar o crescimento do seu negócio.
+          Fale diretamente com Ricardo Faya e descubra como podemos acelerar o crescimento do seu negócio.
         </p>
         
         {/* Trust Indicators */}
@@ -126,10 +127,10 @@ export default function Contato() {
             <CardHeader>
               <CardTitle className="text-2xl text-white flex items-center gap-2">
                 <MessageSquare className="w-6 h-6" />
-                Fale Conosco
+                Fale com Ricardo Faya
               </CardTitle>
               <p className="text-gray-400">
-                Preencha o formulário abaixo e nossa equipe entrará em contato rapidamente.
+                Preencha o formulário abaixo e Ricardo retornará pessoalmente em poucas horas.
               </p>
             </CardHeader>
             <CardContent>
@@ -274,11 +275,82 @@ export default function Contato() {
                   Ao enviar este formulário, você concorda com nossa política de privacidade e termos de uso.
                 </p>
               </form>
+
+              <div className="flex items-start gap-3 mt-10">
+                <Share2 className="w-5 h-5 text-purple-400 mt-1" />
+                <div>
+                  <p className="text-white font-semibold">Redes Sociais</p>
+                  <div className="flex flex-wrap gap-2 text-sm text-gray-400">
+                    <a
+                      href="https://www.facebook.com/rfaya"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-purple-300 transition-colors"
+                    >
+                      Facebook
+                    </a>
+                    <span className="text-slate-600">•</span>
+                    <a
+                      href="https://www.instagram.com/ricardofaya/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-purple-300 transition-colors"
+                    >
+                      Instagram
+                    </a>
+                    <span className="text-slate-600">•</span>
+                    <a
+                      href="https://twitter.com/ricardofaya"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-purple-300 transition-colors"
+                    >
+                      Twitter
+                    </a>
+                    <span className="text-slate-600">•</span>
+                    <a
+                      href="https://www.linkedin.com/in/ricardo-faya-04555a/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-purple-300 transition-colors"
+                    >
+                      LinkedIn
+                    </a>
+                    <span className="text-slate-600">•</span>
+                    <a
+                      href="https://www.youtube.com/channel/UCK6067oss263F0lOX252f1g"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-purple-300 transition-colors"
+                    >
+                      YouTube (Canal)
+                    </a>
+                    <span className="text-slate-600">•</span>
+                    <a
+                      href="https://www.youtube.com/ricardofaya"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-purple-300 transition-colors"
+                    >
+                      YouTube /ricardofaya
+                    </a>
+                    <span className="text-slate-600">•</span>
+                    <a
+                      href="https://dribbble.com/rfaya"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-purple-300 transition-colors"
+                    >
+                      Dribbble
+                    </a>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Contact Info & Quick Actions */}
+        {/* Quick Actions */}
         <div className="space-y-8">
           {/* Contact Information */}
           <Card className="bg-slate-800/50 border-slate-700/40">
@@ -287,22 +359,25 @@ export default function Contato() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-purple-400 mt-1" />
-                <div>
-                  <p className="text-white font-semibold">Endereço</p>
-                  <p className="text-gray-400 text-sm">
-                    Av. Paulista, 1000 - Sala 1001<br />
-                    Bela Vista, São Paulo - SP<br />
-                    CEP: 01310-100
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
                 <Phone className="w-5 h-5 text-purple-400 mt-1" />
                 <div>
-                  <p className="text-white font-semibold">Telefone</p>
-                  <p className="text-gray-400 text-sm">+55 (11) 99999-9999</p>
+                  <p className="text-white font-semibold">Telefone &amp; WhatsApp</p>
+                  <div className="text-gray-400 text-sm space-y-1">
+                    <a
+                      href="tel:+5521971908530"
+                      className="hover:text-purple-300 transition-colors"
+                    >
+                      +55 (21) 97190-8530
+                    </a>
+                    <a
+                      href="https://wa.me/5521971908530"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-purple-300 transition-colors"
+                    >
+                      Enviar mensagem pelo WhatsApp
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -310,7 +385,23 @@ export default function Contato() {
                 <Mail className="w-5 h-5 text-purple-400 mt-1" />
                 <div>
                   <p className="text-white font-semibold">E-mail</p>
-                  <p className="text-gray-400 text-sm">contato@portaltech.com.br</p>
+                  <a
+                    href="mailto:ricardofaya@gmail.com"
+                    className="text-gray-400 text-sm hover:text-purple-300 transition-colors"
+                  >
+                    ricardofaya@gmail.com
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-purple-400 mt-1" />
+                <div>
+                  <p className="text-white font-semibold">Localização</p>
+                  <p className="text-gray-400 text-sm">
+                    Atendimento remoto a partir do Rio de Janeiro, Brasil<br />
+                    Consultorias online para clientes no mundo todo
+                  </p>
                 </div>
               </div>
 
@@ -334,20 +425,31 @@ export default function Contato() {
               <CardTitle className="text-xl text-white">Ações Rápidas</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
-                <MessageSquare className="w-4 h-4 mr-2" />
-                WhatsApp Direto
-              </Button>
+              <a
+                href="https://wa.me/5521971908530"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400/60 bg-green-600 hover:bg-green-700 text-white px-4 py-3"
+              >
+                <MessageSquare className="w-4 h-4" />
+                Conversar no WhatsApp
+              </a>
               
-              <Button variant="outline" className="w-full border-purple-500/50 text-purple-300 hover:bg-purple-500/20">
-                <Calendar className="w-4 h-4 mr-2" />
+              <a
+                href="mailto:ricardofaya@gmail.com?subject=Agendar%20Consultoria%20com%20Ricardo%20Faya"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400/60 border border-purple-500/50 text-purple-300 hover:bg-purple-500/20 px-4 py-3"
+              >
+                <Calendar className="w-4 h-4" />
                 Agendar Consultoria
-              </Button>
+              </a>
               
-              <Button variant="outline" className="w-full border-purple-500/50 text-purple-300 hover:bg-purple-500/20">
-                <Headphones className="w-4 h-4 mr-2" />
-                Suporte Técnico
-              </Button>
+              <a
+                href="tel:+5521971908530"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400/60 border border-purple-500/50 text-purple-300 hover:bg-purple-500/20 px-4 py-3"
+              >
+                <Headphones className="w-4 h-4" />
+                Suporte Técnico Imediato
+              </a>
             </CardContent>
           </Card>
 
