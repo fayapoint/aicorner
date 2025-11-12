@@ -1,3 +1,5 @@
+"use client";
+
 import { notFound } from "next/navigation";
 
 const vagas = [
@@ -41,8 +43,4 @@ export default function VagaPage({ params }: { params: { slug: string } }) {
       </div>
     </div>
   );
-}
-
-export async function generateStaticParams() {
-  return vagas.map(v => ({ slug: v.slug }));
 }
