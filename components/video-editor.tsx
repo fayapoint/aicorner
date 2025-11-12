@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -88,11 +88,38 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
     'Interview'
   ];
 
-  useEffect(() => {
-    if (videoId) {
-      fetchVideo();
+  const fetchVideo = useCallback(async () => {
+    if (!videoId) return;
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/videos-single?id=${videoId}`);
+      if (response.ok) {
+        const video = await response.json();
+        setVideoData({
+          title: video.title || '',
+          description: video.description || '',
+          videoUrl: video.videoUrl || '',
+          thumbnailUrl: video.thumbnailUrl || '',
+          publicId: video.publicId || '',
+          duration: video.duration || 0,
+          category: video.category || '',
+          tags: video.tags || [],
+          status: video.status || 'draft',
+          views: video.views || 0,
+          likes: video.likes || 0,
+          featured: video.featured || { isFeatured: false, order: undefined }
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching video:', error);
+    } finally {
+      setLoading(false);
     }
   }, [videoId]);
+
+  useEffect(() => {
+    fetchVideo();
+  }, [fetchVideo]);
 
   // Add global paste event listener
   useEffect(() => {
@@ -119,34 +146,6 @@ export function VideoEditor({ videoId, onSave, onCancel }: VideoEditorProps) {
     document.addEventListener('paste', handleGlobalPaste);
     return () => document.removeEventListener('paste', handleGlobalPaste);
   }, [videoData.thumbnailUrl]);
-
-  const fetchVideo = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/videos-single?id=${videoId}`);
-      if (response.ok) {
-        const video = await response.json();
-        setVideoData({
-          title: video.title || '',
-          description: video.description || '',
-          videoUrl: video.videoUrl || '',
-          thumbnailUrl: video.thumbnailUrl || '',
-          publicId: video.publicId || '',
-          duration: video.duration || 0,
-          category: video.category || '',
-          tags: video.tags || [],
-          status: video.status || 'draft',
-          views: video.views || 0,
-          likes: video.likes || 0,
-          featured: video.featured || { isFeatured: false, order: undefined }
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching video:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSave = async (status: 'draft' | 'published') => {
     setSaving(true);

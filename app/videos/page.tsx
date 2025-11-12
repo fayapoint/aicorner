@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Clock, Eye, Calendar } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Video {
   _id: string;
@@ -25,11 +26,7 @@ export default function VideosPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  useEffect(() => {
-    fetchVideos();
-  }, [selectedCategory]);
-
-  const fetchVideos = async () => {
+  const fetchVideos = useCallback(async () => {
     try {
       setLoading(true);
       const categoryParam = selectedCategory !== 'all' ? `&category=${selectedCategory}` : '';
@@ -59,7 +56,11 @@ export default function VideosPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    fetchVideos();
+  }, [fetchVideos]);
 
   const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -149,10 +150,13 @@ export default function VideosPage() {
               >
                 {/* Thumbnail */}
                 <div className="relative aspect-video overflow-hidden">
-                  <img
+                  <Image
                     src={video.thumbnailUrl}
                     alt={video.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    unoptimized
                   />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <Play className="w-16 h-16 text-white" />

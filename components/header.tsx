@@ -48,11 +48,10 @@ export function Header() {
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const sessionResult = useSession();
+  const session = sessionResult?.data ?? null;
+  const status = sessionResult?.status ?? 'loading';
   const pathname = usePathname();
-  
-  // Only use useSession on client side to avoid SSR/SSG issues
-  const sessionData = isClient ? useSession() : { data: null, status: 'loading' };
-  const { data: session, status } = sessionData;
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
   const [mobileSections, setMobileSections] = useState<Record<string, boolean>>({
     products: true,

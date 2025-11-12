@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Play, Clock, Eye, Calendar, Tag, ArrowLeft } from 'lucide-react';
@@ -29,13 +29,8 @@ export default function VideoDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (slug) {
-      fetchVideo();
-    }
-  }, [slug]);
-
-  const fetchVideo = async () => {
+  const fetchVideo = useCallback(async () => {
+    if (!slug) return;
     try {
       setLoading(true);
       // First try to find by slug, then by ID
@@ -59,7 +54,11 @@ export default function VideoDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [slug]);
+
+  useEffect(() => {
+    fetchVideo();
+  }, [fetchVideo]);
 
   const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);

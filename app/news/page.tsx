@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { NewsArticle, NewsResponse } from "@/types/news";
 import { NewsCard } from "@/components/news-card";
 import { Button } from "@/components/ui/button";
@@ -46,11 +46,7 @@ export default function NewsPage() {
     { value: "title", label: "Alphabetical" }
   ];
 
-  useEffect(() => {
-    fetchNews();
-  }, [searchTerm, selectedCategory, sortBy, currentPage]);
-
-  const fetchNews = async () => {
+  const fetchNews = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
@@ -86,7 +82,11 @@ export default function NewsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, searchTerm, selectedCategory, sortBy]);
+
+  useEffect(() => {
+    fetchNews();
+  }, [fetchNews]);
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);

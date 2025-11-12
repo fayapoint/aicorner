@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { NewsArticle } from "@/types/news";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,42 +30,7 @@ export default function NewsArticlePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (params.slug) {
-      fetchArticle(params.slug as string);
-    }
-  }, [params.slug]);
-
-  const fetchArticle = async (slug: string) => {
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/news/${slug}`);
-      
-      if (!response.ok) {
-        if (response.status === 404) {
-          setError("Article not found");
-        } else {
-          setError("Failed to load article");
-        }
-        return;
-      }
-
-      const data = await response.json();
-      setArticle(data);
-      
-      // Fetch related articles
-      if (data.category) {
-        fetchRelatedArticles(data.category, data._id);
-      }
-    } catch (error) {
-      console.error("Error fetching article:", error);
-      setError("Failed to load article");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchRelatedArticles = async (category: string, excludeId: string) => {
+  const fetchRelatedArticles = useCallback(async (category: string, excludeId: string) => {
     try {
       const response = await fetch(`/api/news?category=${category}&limit=3&status=published`);
       if (response.ok) {
@@ -79,7 +44,42 @@ export default function NewsArticlePage() {
       console.error("Error fetching related articles:", error);
       setRelatedArticles([]);
     }
-  };
+  }, []);
+
+  const fetchArticle = useCallback(async (slug: string) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/news/${slug}`);
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          setError("Article not found");
+        } else {
+          setError("Failed to load article");
+        }
+        return;
+      }
+
+      const data = await response.json();
+      setArticle(data);
+
+      // Fetch related articles
+      if (data.category) {
+        fetchRelatedArticles(data.category, data._id);
+      }
+    } catch (error) {
+      console.error("Error fetching article:", error);
+      setError("Failed to load article");
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchRelatedArticles]);
+
+  useEffect(() => {
+    if (params.slug) {
+      fetchArticle(params.slug as string);
+    }
+  }, [params.slug, fetchArticle]);
 
   const formatDate = (date: Date | string) => {
     return new Date(date).toLocaleDateString('en-US', {

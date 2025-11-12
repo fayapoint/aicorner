@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo, useState, useEffect, useRef } from "react";
+import { Suspense, useMemo, useState, useEffect, useRef, useCallback } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Html, OrbitControls, Float, Sparkles, Environment } from "@react-three/drei";
 import * as THREE from "three";
@@ -165,7 +165,7 @@ function AutoPlayGame({
   // Open initial target when starting
   useEffect(() => {
     if (items.length > 0) onOpenTarget(items[0].key);
-  }, []);
+  }, [items, onOpenTarget]);
 
   // Tick loop: advance progress and trigger Arena actions
   useEffect(() => {
@@ -203,7 +203,7 @@ function AutoPlayGame({
       });
     }, 350);
     return () => clearInterval(id);
-  }, [paused, aiSpeed, items, targetIdx, actionsMap, onAct, onReward, onCloseTarget, onOpenTarget]);
+  }, [paused, aiSpeed, items, targetIdx, actionsMap, onAct, onReward, onCloseTarget, onOpenTarget, combo]);
 
   const tgt = items.length ? items[targetIdx % items.length] : undefined;
   return (
@@ -406,12 +406,12 @@ export default function ArenaCanvas({ user, tier, features, heightClass }: Props
     };
   }, []);
 
-  const nextLevelXp = (lv: number) => Math.floor(60 * lv * 1.3);
-  const grantAchievement = (name: string) => {
+  const nextLevelXp = useCallback((lv: number) => Math.floor(60 * lv * 1.3), []);
+  const grantAchievement = useCallback((name: string) => {
     setAchievements((a) => (a.includes(name) ? a : [name, ...a].slice(0, 20)));
     setLog((l) => [`🏆 Conquista: ${name}`, ...l].slice(0, 30));
-  };
-  const addXp = (amount: number, reason?: string) => {
+  }, []);
+  const addXp = useCallback((amount: number, reason?: string) => {
     if (reason) setLog((l) => [`+${amount} XP · ${reason}`, ...l].slice(0, 30));
     setXp((cur) => {
       let nxp = cur + amount;
@@ -431,18 +431,18 @@ export default function ArenaCanvas({ user, tier, features, heightClass }: Props
       }
       return nxp;
     });
-  };
+  }, [level, nextLevelXp, grantAchievement]);
 
-  const addCoins = (amount: number, reason?: string) => {
+  const addCoins = useCallback((amount: number, reason?: string) => {
     if (amount > 0) {
       setCoins((c) => c + amount);
       setLog((l) => [`+${amount} moedas${reason ? ` · ${reason}` : ""}`, ...l].slice(0, 30));
     }
-  };
+  }, []);
 
   // Server sync helpers
-  const buildProfile = () => ({ level, xp, coins, achievements });
-  const syncProfile = async (reason: string, opts?: { keepalive?: boolean }) => {
+  const buildProfile = useCallback(() => ({ level, xp, coins, achievements }), [level, xp, coins, achievements]);
+  const syncProfile = useCallback(async (reason: string, opts?: { keepalive?: boolean }) => {
     if (syncsUsed.current >= 2 || syncing.current) return;
     try {
       syncing.current = true;
@@ -465,14 +465,14 @@ export default function ArenaCanvas({ user, tier, features, heightClass }: Props
     } finally {
       syncing.current = false;
     }
-  };
-  const maybeSync = (reason: string, opts?: { keepalive?: boolean }) => {
+  }, [buildProfile]);
+  const maybeSync = useCallback((reason: string, opts?: { keepalive?: boolean }) => {
     if (syncsUsed.current >= 2) {
       setLog((l) => [`⏭️ Limite de sync atingido`, ...l].slice(0, 30));
       return;
     }
     syncProfile(reason, opts);
-  };
+  }, [syncProfile]);
 
   // Map features to 3D positions and in-world panel URLs
   const items = useMemo(
@@ -502,13 +502,13 @@ export default function ArenaCanvas({ user, tier, features, heightClass }: Props
     []
   );
 
-  const doPanelAction = (key: string, pick: string) => {
+  const doPanelAction = useCallback((key: string, pick: string) => {
     if (key === "settings") setPanel({ tab: pick });
     else if (key === "analytics") setPanel({ focus: pick });
     else if (key === "notifications") setPanel({ filter: pick });
     else setPanel({ view: pick });
-  };
-  const selectItem = (key: string | null) => {
+  }, []);
+  const selectItem = useCallback((key: string | null) => {
     if (!key) {
       setOpenPanel(null);
       setPanel({});
@@ -526,7 +526,7 @@ export default function ArenaCanvas({ user, tier, features, heightClass }: Props
       if (Math.random() < 0.15) setCoins((c) => c + 1);
       grantAchievement("Explorador I");
     }
-  };
+  }, [items, addXp, grantAchievement]);
 
   // Close panel with Escape
   useEffect(() => {
@@ -535,7 +535,7 @@ export default function ArenaCanvas({ user, tier, features, heightClass }: Props
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [openPanel]);
+  }, [openPanel, selectItem]);
 
   // User activity listeners to pause/resume AI
   useEffect(() => {
@@ -568,7 +568,7 @@ export default function ArenaCanvas({ user, tier, features, heightClass }: Props
       window.removeEventListener('mousemove', touchPassive as any);
       clearInterval(chk);
     };
-  }, [autoPlay]);
+  }, [autoPlay, grantAchievement]);
 
   // When AutoPlay starts, close panels and prep avatar
   useEffect(() => {
@@ -620,7 +620,7 @@ export default function ArenaCanvas({ user, tier, features, heightClass }: Props
       alive = false;
       clearTimeout(t);
     };
-  }, [autoPlay, aiSpeed, items, openPanel, selectedItem]);
+  }, [autoPlay, aiSpeed, items, openPanel, selectedItem, selectItem, addXp]);
 
   return (
     <div className={`relative ${heightClass ?? 'h-[70vh]'} w-full overflow-hidden rounded-xl border border-white/10 bg-black/30`}>

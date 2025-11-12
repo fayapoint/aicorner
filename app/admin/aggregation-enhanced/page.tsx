@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -110,7 +110,11 @@ export default function EnhancedAggregationPage() {
     }
   };
 
-  const handleImportSelected = async () => {
+  const getDisplayItem = useCallback((item: PreviewItem): PreviewItem => {
+    return editedItems.get(item.id) || item;
+  }, [editedItems]);
+
+  const handleImportSelected = useCallback(async () => {
     if (!previewData || selectedItems.size === 0) {
       setError('No items selected for import');
       return;
@@ -170,7 +174,7 @@ export default function EnhancedAggregationPage() {
     } finally {
       setIsImporting(false);
     }
-  };
+  }, [previewData, selectedItems, getDisplayItem]);
 
   const toggleItemSelection = (itemId: string) => {
     const newSelection = new Set(selectedItems);
@@ -243,14 +247,10 @@ export default function EnhancedAggregationPage() {
     setEditedItems(newEditedItems);
   };
 
-  const getDisplayItem = (item: PreviewItem): PreviewItem => {
-    return editedItems.get(item.id) || item;
-  };
-
   // Auto-import timer effect
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    
+
     if (timerActive && timeLeft !== null && timeLeft > 0) {
       interval = setInterval(() => {
         setTimeLeft(prev => {
@@ -274,7 +274,7 @@ export default function EnhancedAggregationPage() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [timerActive, timeLeft, previewData]);
+  }, [timerActive, timeLeft, previewData, handleImportSelected]);
 
   return (
     <div className="container mx-auto px-4 py-8">
