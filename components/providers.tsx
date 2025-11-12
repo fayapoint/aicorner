@@ -1,24 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { SessionProvider } from 'next-auth/react';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // During SSR/SSG, render children without SessionProvider to avoid context issues
-  if (!isClient) {
-    return <>{children}</>;
-  }
-
-  // On client side, provide the full SessionProvider
+  // Always render SessionProvider to avoid useContext errors
+  // The session prop can be undefined/null during SSR and will be populated on client
   return (
     <SessionProvider 
-      session={null}
+      session={undefined}
       refetchInterval={0}
       refetchOnWindowFocus={false}
     >
