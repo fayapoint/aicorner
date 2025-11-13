@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
 
 // MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://ricardofaya:3VJKNjK65tn5srSC@aicornercluster.2kiwt1o.mongodb.net/test?retryWrites=true&w=majority&appName=aicornercluster';
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  console.error('❌ Missing required MONGODB_URI environment variable.');
+  console.error('Set MONGODB_URI before running this script (see .env.example for details).');
+  process.exit(1);
+}
 
 // Sample videos data
 const sampleVideos = [

@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://ricardofaya:3VJKNjK65tn5srSC@aicornercluster.2kiwt1o.mongodb.net/test?retryWrites=true&w=majority&authSource=admin';
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  console.error('❌ Missing required MONGODB_URI environment variable.');
+  console.error('Set MONGODB_URI in your environment (e.g. via .env.local) before running this script.');
+  process.exit(1);
+}
 
 async function testConnection() {
   try {
