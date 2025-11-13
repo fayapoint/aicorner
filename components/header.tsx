@@ -114,8 +114,8 @@ export function Header() {
     if (element) {
       const rect = element.getBoundingClientRect();
       setDropdownPos({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX - 300 + rect.width / 2,
+        top: rect.bottom,
+        left: rect.left - 300 + rect.width / 2,
       });
     }
   };
