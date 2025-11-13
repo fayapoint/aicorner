@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from "react";
-import { useSession } from "next-auth/react";
+import { useClientSession } from "../hooks/useClientSession";
 
 import {
   Brain,
@@ -48,9 +48,7 @@ export function Header() {
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [isClient, setIsClient] = useState(false);
-  const sessionResult = useSession();
-  const session = sessionResult?.data ?? null;
-  const status = sessionResult?.status ?? 'loading';
+  const { data: session, status } = useClientSession();
   const pathname = usePathname();
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
   const [mobileSections, setMobileSections] = useState<Record<string, boolean>>({

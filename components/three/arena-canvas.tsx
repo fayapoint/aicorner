@@ -2,7 +2,7 @@
 
 import { Suspense, useMemo, useState, useEffect, useRef, useCallback } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Html, OrbitControls, Float, Sparkles, Environment } from "@react-three/drei";
+import { Html as DreiHtml, OrbitControls, Float, Sparkles, Environment } from "@react-three/drei";
 import * as THREE from "three";
 import Link from "next/link";
 import type { FeatureFlags, Tier } from "@/lib/tier";
@@ -70,11 +70,11 @@ function FeatureOrb({
         </mesh>
       )}
       {!dim && (
-        <Html center distanceFactor={8} wrapperClass="pointer-events-none">
+        <DreiHtml center distanceFactor={8} wrapperClass="pointer-events-none">
           <div className={`text-xs md:text-sm px-2 py-1 rounded-md border backdrop-blur ${enabled ? "border-fuchsia-400/30 bg-fuchsia-500/10 text-fuchsia-200" : "border-white/10 bg-white/5 text-gray-300"}`}>
             {label}
           </div>
-        </Html>
+        </DreiHtml>
       )}
     </Float>
   );
@@ -92,9 +92,9 @@ function EmojiBurst({ center = [0, 1, 0], emoji = "✨", count = 3 }: { center?:
     <group position={center as any}>
       {nodes.map((n, idx) => (
         <Float key={idx} speed={n.speed} rotationIntensity={0.4} floatIntensity={0.8} position={[Math.cos(n.offset) * n.radius, n.height, Math.sin(n.offset) * n.radius] as any}>
-          <Html center wrapperClass="pointer-events-none">
+          <DreiHtml center wrapperClass="pointer-events-none">
             <div className="text-xl select-none">{emoji}</div>
-          </Html>
+          </DreiHtml>
         </Float>
       ))}
     </group>
@@ -128,9 +128,9 @@ function CharacterBuddy({ name, emoji, behavior, target, patrolSpeed = 1, patrol
           <sphereGeometry args={[0.35, 32, 32]} />
           <meshStandardMaterial color="#1f2937" metalness={0.2} roughness={0.6} />
         </mesh>
-        <Html center distanceFactor={10}>
+        <DreiHtml center distanceFactor={10}>
           <div className="text-3xl select-none" title={name ?? undefined}>{emoji}</div>
-        </Html>
+        </DreiHtml>
       </Float>
     </group>
   );
