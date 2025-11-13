@@ -47,7 +47,7 @@ export default function Contato() {
       stats: [
         { label: "Pessoas impactadas", value: "+50" },
         { label: "Horas de conteúdo", value: "12h" },
-        { label: "Feedback 5★", value: "94%" }
+        { label: "Feedback 5★", value: "80%" }
       ]
     },
     {
