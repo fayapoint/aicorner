@@ -124,15 +124,6 @@ const nextConfig = {
         tls: false,
       };
     }
-    // Force React to resolve to the installed package to prevent duplicate or null React bindings
-    config.resolve = config.resolve || {};
-    config.resolve.alias = {
-      ...(config.resolve.alias || {}),
-      react: require.resolve('react'),
-      'react-dom': require.resolve('react-dom'),
-      'react/jsx-runtime': require.resolve('react/jsx-runtime'),
-      'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime'),
-    };
     return config;
   },
   // Redirect common English slugs to existing Portuguese routes
