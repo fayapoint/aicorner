@@ -1,23 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { SessionProvider } from 'next-auth/react';
+import React from 'react';
 
+// Simplified Providers component without SessionProvider to avoid SSR/SSG errors
+// All session management is now handled via useClientSession hook which fetches
+// session data client-side only
 export function Providers({ children }: { children: React.ReactNode }) {
-  // Always render SessionProvider to avoid useContext errors
-  // The session prop can be undefined/null during SSR and will be populated on client
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => { setIsClient(true); }, []);
-  if (!isClient) {
-    return <>{children}</>;
-  }
-  return (
-    <SessionProvider 
-      session={undefined}
-      refetchInterval={0}
-      refetchOnWindowFocus={false}
-    >
-      {children}
-    </SessionProvider>
-  );
+  return <>{children}</>;
 }
