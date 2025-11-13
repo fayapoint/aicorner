@@ -221,7 +221,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{user?.username || 'Admin'}</p>
-                    <p className="text-xs text-gray-400 truncate">{user?.email || 'admin@ainseconds.com'}</p>
+                    <p className="text-xs text-gray-400 truncate">{user?.email || 'ricardofaya@gmail.com'}</p>
                   </div>
                 </div>
                 <Button

@@ -1,130 +1,143 @@
-import { Sparkles, Facebook, Instagram, Linkedin, Twitter, Youtube, Dribbble } from "lucide-react";
 import Link from "next/link";
+import {
+  Sparkles,
+  Mail,
+  Phone,
+  Globe,
+  Facebook,
+  Instagram,
+  Twitter,
+  Linkedin,
+  Youtube,
+  Dribbble
+} from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="w-full bg-slate-900 border-t border-slate-800 px-6 pt-16 pb-8 mt-8">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-        <div>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
+    <footer className="relative mt-24 border-t border-white/10 bg-slate-950/90 py-16 backdrop-blur-xl">
+      <div className="pointer-events-none absolute inset-x-0 -top-40 h-64 bg-gradient-to-r from-purple-500/30 via-transparent to-pink-500/30 blur-3xl" />
+      <div className="relative mx-auto flex max-w-7xl flex-col gap-16 px-6">
+        <div className="grid gap-12 lg:grid-cols-[1.2fr_0.8fr_1fr]">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500">
+                <Sparkles className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-3xl font-black tracking-tight text-white">Ricardo Faya</h3>
+                <p className="text-sm text-white/70">Design estratégico, workshops e ativações digitais que conectam pessoas e marcas.</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-2xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Ricardo Faya
-              </h3>
-              <p className="text-sm text-gray-400">Consultor Digital &amp; Estrategista de Crescimento</p>
-            </div>
-          </div>
-          <p className="text-gray-400 mb-6 max-w-md leading-relaxed">
-            Mais de 15 anos ajudando marcas a crescer com tecnologia, marketing e automação.
-            Fale direto comigo para soluções sob medida para o seu negócio.
-          </p>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 text-sm text-gray-400">
-            <div className="flex items-center gap-2">
-              <span>📧</span>
-              <a href="mailto:ricardofaya@gmail.com" className="hover:text-purple-300 transition-colors">
+            <p className="max-w-xl text-sm leading-relaxed text-white/65">
+              Conversas profundas, dados e estética refinada para marcas que desejam experiências com impacto real. Vamos construir a próxima jornada do seu negócio?
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <a href="mailto:ricardofaya@gmail.com" className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80 transition-colors hover:bg-white/10">
+                <Mail className="h-4 w-4 text-purple-200" />
                 ricardofaya@gmail.com
               </a>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>📱</span>
-              <a href="https://wa.me/5521971908530" target="_blank" rel="noopener noreferrer" className="hover:text-purple-300 transition-colors">
+              <a href="tel:+5521971908530" className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80 transition-colors hover:bg-white/10">
+                <Phone className="h-4 w-4 text-purple-200" />
                 +55 (21) 97190-8530
+              </a>
+              <a
+                href="https://ricardofaya9.wixsite.com/ricardo-faya/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80 transition-colors hover:bg-white/10"
+              >
+                <Globe className="h-4 w-4 text-purple-200" />
+                Portfólio e projetos
               </a>
             </div>
           </div>
-        </div>
-        <div>
-          <h4 className="text-lg font-bold text-white mb-4">AI Solutions</h4>
-          <ul className="space-y-2">
-            <li><Link href="/tools" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Free AI Tools</Link></li>
-            <li><Link href="/solutions" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Business Solutions</Link></li>
-            <li><Link href="/integrations" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Integrations</Link></li>
-            <li><Link href="/api" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">API Access</Link></li>
-            <li><Link href="/learn" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Learn AI</Link></li>
-            <li><Link href="/support" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Support 24/7</Link></li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="text-lg font-bold text-white mb-4">Company</h4>
-          <ul className="space-y-2">
-            <li><Link href="/about" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">About Us</Link></li>
-            <li><Link href="/pricing" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Pricing</Link></li>
-            <li><Link href="/news" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Blog</Link></li>
-            <li><Link href="/careers" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Careers</Link></li>
-            <li><Link href="/partners" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Partners</Link></li>
-            <li><Link href="/contact" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Contact</Link></li>
-          </ul>
-        </div>
-      </div>
-      {/* Bottom Bar */}
-      <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center mt-8">
-        <div className="flex items-center gap-6 mb-4 md:mb-0">
-          <p className="text-gray-400 text-sm">© {new Date().getFullYear()} Ricardo Faya. Todos os direitos reservados.</p>
-          <div className="flex gap-4">
-            <Link href="/politica" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Privacidade</Link>
-            <Link href="/termos" className="text-gray-400 hover:text-purple-400 transition-colors text-sm">Termos</Link>
+
+          <div className="grid gap-6 text-sm text-white/70 sm:grid-cols-2 lg:grid-cols-1">
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur">
+              <h4 className="text-lg font-semibold text-white">Experiência</h4>
+              <ul className="mt-4 space-y-3">
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-purple-400" />
+                  Consultorias em branding e produto digital
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-purple-400" />
+                  Workshops de inovação e conteúdo
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-purple-400" />
+                  Lançamentos full funnel orientados a dados
+                </li>
+              </ul>
+            </div>
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur">
+              <h4 className="text-lg font-semibold text-white">Conquistas</h4>
+              <ul className="mt-4 space-y-3">
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-pink-400" />
+                  Destaque no Web Summit Rio 2024
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-pink-400" />
+                  +500 projetos entregues com alta satisfação
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-pink-400" />
+                  Mentorias e talks para líderes criativos
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <h4 className="text-lg font-semibold text-white">Conecte-se</h4>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {[
+                { href: "https://www.facebook.com/rfaya", label: "Facebook", icon: Facebook },
+                { href: "https://www.instagram.com/ricardofaya/", label: "Instagram", icon: Instagram },
+                { href: "https://twitter.com/ricardofaya", label: "Twitter", icon: Twitter },
+                { href: "https://www.linkedin.com/in/ricardo-faya-04555a/", label: "LinkedIn", icon: Linkedin },
+                { href: "https://www.youtube.com/channel/UCK6067oss263F0lOX252f1g", label: "YouTube Canal", icon: Youtube },
+                { href: "https://www.youtube.com/ricardofaya", label: "YouTube", icon: Youtube },
+                { href: "https://ricardofaya9.wixsite.com/ricardo-faya/", label: "Site Pessoal", icon: Globe },
+                { href: "https://dribbble.com/rfaya", label: "Dribbble", icon: Dribbble }
+              ].map(({ href, label, icon: Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="group flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-xs font-medium text-white/75 transition-colors hover:bg-white/15"
+                >
+                  <Icon className="h-4 w-4 text-purple-200 transition-transform duration-300 group-hover:scale-110" />
+                  <span className="hidden sm:inline">{label}</span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-400">Follow us:</span>
+
+        <div className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-gradient-to-r from-purple-500/10 to-pink-500/10 p-6 text-sm text-white/70 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-base font-semibold text-white">Pronto para a próxima conversa?</p>
+            <p>Entre em contato e vamos desenhar a jornada ideal para o seu projeto.</p>
+          </div>
           <div className="flex gap-3">
-            <a
-              href="https://www.facebook.com/rfaya"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="w-8 h-8 bg-slate-800 hover:bg-purple-500 rounded-lg flex items-center justify-center transition-colors"
-            >
-              <Facebook className="w-5 h-5 text-gray-400 hover:text-white" />
-            </a>
-            <a
-              href="https://www.instagram.com/ricardofaya/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="w-8 h-8 bg-slate-800 hover:bg-purple-500 rounded-lg flex items-center justify-center transition-colors"
-            >
-              <Instagram className="w-5 h-5 text-gray-400 hover:text-white" />
-            </a>
-            <a
-              href="https://twitter.com/ricardofaya"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Twitter"
-              className="w-8 h-8 bg-slate-800 hover:bg-purple-500 rounded-lg flex items-center justify-center transition-colors"
-            >
-              <Twitter className="w-5 h-5 text-gray-400 hover:text-white" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/ricardo-faya-04555a/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-              className="w-8 h-8 bg-slate-800 hover:bg-purple-500 rounded-lg flex items-center justify-center transition-colors"
-            >
-              <Linkedin className="w-5 h-5 text-gray-400 hover:text-white" />
-            </a>
-            <a
-              href="https://www.youtube.com/ricardofaya"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="YouTube"
-              className="w-8 h-8 bg-slate-800 hover:bg-purple-500 rounded-lg flex items-center justify-center transition-colors"
-            >
-              <Youtube className="w-5 h-5 text-gray-400 hover:text-white" />
-            </a>
-            <a
-              href="https://dribbble.com/rfaya"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Dribbble"
-              className="w-8 h-8 bg-slate-800 hover:bg-purple-500 rounded-lg flex items-center justify-center transition-colors"
-            >
-              <Dribbble className="w-5 h-5 text-gray-400 hover:text-white" />
-            </a>
+            <Link href="/contato" className="rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/20">
+              Falar agora
+            </Link>
+            <Link href="/sobre" className="rounded-2xl border border-white/10 bg-transparent px-4 py-2 text-sm font-semibold text-white/80 transition-colors hover:bg-white/10">
+              Ver jornada
+            </Link>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 py-6 text-xs text-white/60 sm:flex-row">
+          <span>© {new Date().getFullYear()} Ricardo Faya. Todos os direitos reservados.</span>
+          <div className="flex gap-4">
+            <Link href="/politica" className="hover:text-white/80">Política de Privacidade</Link>
+            <Link href="/termos" className="hover:text-white/80">Termos de Uso</Link>
           </div>
         </div>
       </div>

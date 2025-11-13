@@ -1,98 +1,193 @@
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
+import { Compass, Sparkles, Target, Users } from "lucide-react";
+
+const stats = [
+  { icon: Sparkles, label: "Experiências cocriadas", value: "+280" },
+  { icon: Users, label: "Pessoas impactadas", value: "+18k" },
+  { icon: Target, label: "Projetos guiados por estratégia", value: "97%" },
+];
+
+const milestones = [
+  {
+    year: "2024",
+    title: "Web Summit Rio",
+    description:
+      "Apresentei metodologias de design e conteúdo que aproximam marcas de pessoas, com foco em experiências imersivas e resultados medíveis.",
+    image: "/images/rwx4.jpg",
+  },
+  {
+    year: "2023",
+    title: "Comunidades & Workshops",
+    description:
+      "Mais de 1.200 horas de mentorias e workshops ajudando times a construir jornadas digitais encantadoras e baseadas em dados.",
+    image: "/images/rwx5.jpg",
+  },
+];
+
 export default function Sobre() {
   return (
-    <div className="max-w-5xl mx-auto py-16 px-4">
-      <section className="mb-12 text-center">
-        <p className="text-sm font-semibold text-purple-300 uppercase tracking-widest mb-4">
-          Sobre Ricardo Faya
-        </p>
-        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-6">
-          Conectando estratégia, tecnologia e crescimento real
-        </h1>
-        <p className="text-lg text-gray-300 max-w-3xl mx-auto">
-          Sou Ricardo Faya, consultor digital e estrategista de crescimento. Há mais de 15 anos ajudo marcas a escalar resultados usando tecnologia, automação, branding e marketing orientado por dados. Minha missão é transformar ideias em operações lucrativas e sustentáveis.
-        </p>
-      </section>
+    <main className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+      <div className="pointer-events-none absolute -top-40 right-0 h-[28rem] w-[28rem] rounded-full bg-purple-500/20 blur-[160px]" />
+      <div className="pointer-events-none absolute bottom-0 left-0 h-[26rem] w-[26rem] rounded-full bg-pink-500/20 blur-[140px]" />
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        {[{
-          title: "+500 projetos entregues",
-          description: "Produtos digitais, plataformas SaaS, funis de vendas e experiências omnichannel."
-        }, {
-          title: "15+ anos liderando times",
-          description: "Atuação em agências, startups e consultorias com foco em performance e inovação."
-        }, {
-          title: "Tecnologia & storytelling",
-          description: "Integro dados, automação e narrativas de marca para gerar conexão e conversão."
-        }].map((item, index) => (
-          <div
-            key={index}
-            className="bg-slate-800/50 border border-slate-700/40 rounded-2xl p-6 shadow-lg shadow-purple-900/20"
-          >
-            <h3 className="text-xl font-semibold text-purple-200 mb-3">{item.title}</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
+      <div className="relative mx-auto flex max-w-6xl flex-col gap-24 px-6 pb-24 pt-32">
+        <section className="relative overflow-hidden rounded-[3rem] border border-white/10 bg-white/5 p-10 shadow-[0_45px_120px_-45px_rgba(124,58,237,0.65)] backdrop-blur-3xl md:p-16">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-purple-500/15 opacity-40" />
+          <div className="relative grid gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+            <div className="space-y-6">
+              <Badge className="w-fit bg-white/15 text-purple-100 backdrop-blur">
+                Ricardo Faya • Experiências com impacto
+              </Badge>
+              <h1 className="text-4xl font-black drop-shadow-2xl md:text-6xl">
+                Design estratégico para conectar pessoas, marcas e histórias reais
+              </h1>
+              <p className="text-lg leading-relaxed text-slate-200/85">
+                Trago 15 anos construindo narrativas digitais que combinam branding, conteúdo e tecnologia. Cada projeto nasce de conversas profundas para descobrir o que emociona, resolve problemas e gera valor sustentável.
+              </p>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                {stats.map((item) => (
+                  <div
+                    key={item.label}
+                    className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-purple-500/15 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                    <div className="relative flex flex-col gap-2 text-left">
+                      <item.icon className="h-5 w-5 text-purple-200" />
+                      <span className="text-2xl font-semibold text-white">{item.value}</span>
+                      <span className="text-xs uppercase tracking-wide text-white/60">{item.label}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative flex items-center justify-center">
+              <div className="relative grid gap-6">
+                <div className="relative h-72 w-full overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/40 shadow-[0_25px_80px_-45px_rgba(168,85,247,0.9)]">
+                  <Image
+                    src="/images/rwx1.jpg"
+                    alt="Ricardo Faya apresentando experiências digitais"
+                    fill
+                    sizes="(min-width: 1024px) 32vw, 90vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/85 via-slate-900/10 to-transparent" />
+                  <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between rounded-2xl bg-white/10 px-4 py-3 text-sm text-white backdrop-blur">
+                    <span>Web Summit Rio • Demonstrando soluções</span>
+                    <Compass className="h-4 w-4 text-white/70" />
+                  </div>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="relative h-56 overflow-hidden rounded-[1.8rem] border border-white/10 bg-white/5">
+                    <Image
+                      src="/images/rwx2.jpg"
+                      alt="Ricardo Faya em networking estratégico"
+                      fill
+                      sizes="(min-width: 1024px) 15vw, 45vw"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+                    <div className="absolute bottom-4 left-4 text-xs font-semibold uppercase tracking-wide text-white/70">
+                      Networking estratégico
+                    </div>
+                  </div>
+
+                  <div className="relative h-56 overflow-hidden rounded-[1.8rem] border border-white/10 bg-white/5">
+                    <Image
+                      src="/images/rwx6.jpg"
+                      alt="Equipe celebrando destaque no Web Summit"
+                      fill
+                      sizes="(min-width: 1024px) 15vw, 45vw"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+                    <div className="absolute bottom-4 left-4 text-xs font-semibold uppercase tracking-wide text-white/70">
+                      Experiências memoráveis
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        ))}
-      </section>
+        </section>
 
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
-        <div className="space-y-6">
-          <div>
-            <h2 className="text-3xl font-bold text-white mb-3">Minha jornada</h2>
-            <p className="text-gray-300 leading-relaxed">
-              Comecei como designer e desenvolvedor front-end, evoluí para liderar squads multidisciplinares e hoje atuo como consultor hands-on. Já liderei lançamentos de produtos em larga escala, construí times de growth e implantei rotinas de automação que destravaram milhões em receita.
+        <section className="relative space-y-10 rounded-[3rem] border border-white/10 bg-slate-900/60 p-10 shadow-[0_25px_90px_-45px_rgba(236,72,153,0.55)] backdrop-blur-3xl">
+          <div className="space-y-4 text-center">
+            <Badge className="mx-auto w-fit bg-white/10 text-pink-100">Propósito</Badge>
+            <h2 className="text-3xl font-bold md:text-4xl">
+              Pessoas no centro, tecnologia como ponte
+            </h2>
+            <p className="mx-auto max-w-3xl text-base text-slate-200/80 md:text-lg">
+              Cada projeto é desenhado para criar conexões significativas. Da identidade visual à jornada multicanal, cada detalhe é pensado para encantar, resolver dores reais e gerar valor constante.
             </p>
           </div>
-          <div className="space-y-3">
-            <h3 className="text-xl font-semibold text-purple-200">Especialidades</h3>
-            <ul className="space-y-2 text-gray-300">
-              <li>• Estratégia digital e posicionamento de marca</li>
-              <li>• Product discovery, UX e crescimento orientado a dados</li>
-              <li>• Automação de marketing, CRM e jornadas omnichannel</li>
-              <li>• Monetização, lançamento de ofertas e playbooks comerciais</li>
-            </ul>
-          </div>
-        </div>
-        <div className="bg-slate-800/50 border border-slate-700/40 rounded-2xl p-8 space-y-6">
-          <h3 className="text-2xl font-semibold text-white">Como trabalho</h3>
-          <div className="space-y-4 text-gray-300">
-            <div>
-              <p className="font-semibold text-purple-200">Diagnóstico profundo</p>
-              <p className="text-sm leading-relaxed">Entendo o negócio, os números e a cultura para definir prioridades claras.</p>
-            </div>
-            <div>
-              <p className="font-semibold text-purple-200">Estratégias acionáveis</p>
-              <p className="text-sm leading-relaxed">Transformo visão em planos de execução com owners, metas e rituais definidos.</p>
-            </div>
-            <div>
-              <p className="font-semibold text-purple-200">Acompanhamento contínuo</p>
-              <p className="text-sm leading-relaxed">Caminho junto com o time para garantir implementação, aprendizado e escala.</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="bg-gradient-to-br from-purple-600/20 to-pink-500/20 border border-purple-500/20 rounded-3xl p-10 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Vamos construir o próximo case juntos?</h2>
-        <p className="text-gray-200 max-w-2xl mx-auto mb-8">
-          Seja para lançar um novo produto, acelerar vendas, otimizar campanhas ou profissionalizar sua operação digital, conte comigo para liderar a estratégia e entregar resultado.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="/contato"
-            className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-8 py-4 text-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg shadow-purple-500/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400/60"
-          >
-            Falar com Ricardo
-          </a>
-          <a
-            href="https://www.linkedin.com/in/ricardo-faya-04555a/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-8 py-4 text-lg border border-purple-400/60 text-purple-200 hover:bg-purple-500/10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400/60"
-          >
-            Ver perfil no LinkedIn
-          </a>
-        </div>
-      </section>
-    </div>
+          <div className="grid gap-8 md:grid-cols-2">
+            {milestones.map((item) => (
+              <div
+                key={item.year}
+                className="relative overflow-hidden rounded-[2.2rem] border border-white/10 bg-white/5 p-6 backdrop-blur"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-purple-500/15 opacity-0 transition-opacity duration-500 hover:opacity-100" />
+                <div className="relative flex flex-col gap-4">
+                  <div className="flex items-center justify-between text-sm uppercase tracking-[0.3em] text-white/60">
+                    <span>{item.year}</span>
+                    <span>Impacto real</span>
+                  </div>
+                  <div className="relative h-48 overflow-hidden rounded-[1.5rem] border border-white/10">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="(min-width: 1024px) 40vw, 90vw"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+                  </div>
+                  <h3 className="text-2xl font-semibold text-white">{item.title}</h3>
+                  <p className="text-sm leading-relaxed text-white/75">{item.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="relative overflow-hidden rounded-[3rem] border border-white/10 bg-white/5 p-10 backdrop-blur-3xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-purple-500/15" />
+          <div className="relative grid gap-12 lg:grid-cols-[0.6fr_1.4fr]">
+            <div className="space-y-6">
+              <Badge className="w-fit bg-white/10 text-purple-100">Parcerias humanas</Badge>
+              <h2 className="text-3xl font-bold md:text-4xl">
+                Conversas que viram impacto
+              </h2>
+              <p className="text-base leading-relaxed text-slate-200/80">
+                Acredito em processos colaborativos. Começo com escuta ativa, co-crio com o time e garanto que cada entrega tenha indicadores claros de sucesso. A tecnologia só faz sentido quando traduz a visão das pessoas que ela toca.
+              </p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              {[
+                "Design System & Identidade",
+                "Jornadas de Conteúdo Multicanal",
+                "Lançamentos e Ativações Imersivas",
+                "Workshops de Inovação",
+                "Mentorias para líderes criativos",
+                "Estratégias orientadas por dados",
+              ].map((skill) => (
+                <div
+                  key={skill}
+                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white/80 transition-colors duration-300 hover:bg-white/10"
+                >
+                  {skill}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
   );
 }

@@ -1,9 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { GlassGallery } from "@/components/glass-gallery"
 import {
   MapPin,
   Phone,
@@ -18,7 +20,7 @@ import {
   Shield,
   Award,
   Calendar,
-  Headphones,
+  Globe,
   Share2
 } from "lucide-react"
 
@@ -34,6 +36,45 @@ export default function Contato() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+
+  const galleryItems = useMemo(() => ([
+    {
+      src: "/images/rwx1.jpg",
+      alt: "Ricardo Faya apresentando soluções digitais no Web Summit Rio",
+      title: "Experiências Imersivas",
+      description: "Demonstrando estratégias e experiências digitais ao vivo, com foco em engajamento humano e resultados tangíveis.",
+      badge: "Web Summit Rio",
+      stats: [
+        { label: "Pessoas impactadas", value: "+50" },
+        { label: "Horas de conteúdo", value: "12h" },
+        { label: "Feedback 5★", value: "94%" }
+      ]
+    },
+    {
+      src: "/images/rwx2.jpg",
+      alt: "Ricardo Faya no pavilhão principal do Web Summit",
+      title: "Networking Estratégico",
+      description: "Conversas com líderes do mercado para gerar parcerias e oportunidades alinhadas à transformação digital.",
+      badge: "Connections",
+      stats: [
+        { label: "Novas conexões", value: "+120" },
+        { label: "Startups mapeadas", value: "37" },
+        { label: "Workshops", value: "4" }
+      ]
+    },
+    {
+      src: "/images/rwx3.jpg",
+      alt: "Painel destacando a Ultimate Social Suite no evento",
+      title: "Curadoria & Estratégia",
+      description: "Planejamento e execução de jornadas digitais que colocam pessoas no centro de cada experiência.",
+      badge: "Curadoria",
+      stats: [
+        { label: "Campanhas ativas", value: "18" },
+        { label: "ROI médio", value: "316%" },
+        { label: "Mercados", value: "7" }
+      ]
+    }
+  ]), [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -93,7 +134,62 @@ export default function Contato() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto py-16 px-4">
+    <div className="max-w-7xl mx-auto py-16 px-4 space-y-16">
+      {/* Hero Spotlight */}
+      <section className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-slate-900/70 shadow-[0_35px_120px_-35px_rgba(124,58,237,0.6)] backdrop-blur-3xl">
+        <div className="pointer-events-none absolute -top-32 left-10 h-80 w-80 rounded-full bg-purple-500/30 blur-[120px]" />
+        <div className="pointer-events-none absolute bottom-0 right-0 h-96 w-96 rounded-full bg-pink-500/20 blur-[140px]" />
+
+        <div className="relative grid gap-10 lg:grid-cols-[1.1fr_0.9fr] p-10 md:p-14">
+          <div className="flex flex-col justify-center space-y-6">
+            <Badge className="w-fit bg-white/10 text-purple-100 backdrop-blur">
+              Evento • Web Summit Rio 2024
+            </Badge>
+            <h1 className="text-4xl md:text-5xl font-black text-white drop-shadow-2xl">
+              Conectando marcas a pessoas com experiências memoráveis
+            </h1>
+            <p className="text-lg text-slate-200/85 leading-relaxed">
+              Cada projeto começa com conversas reais. Estive no Web Summit Rio apresentando caminhos para transformar ideias em vivências digitais inesquecíveis. Vamos criar algo extraordinário juntos?
+            </p>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[
+                { label: "Consultorias", value: "+200" },
+                { label: "Workshops", value: "38" },
+                { label: "Anos de experiência", value: "15" }
+              ].map((stat) => (
+                <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center text-slate-100 shadow-inner">
+                  <div className="text-sm font-semibold text-white">{stat.value}</div>
+                  <div className="text-xs uppercase tracking-wide text-white/60">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_25px_80px_-40px_rgba(168,85,247,0.9)]">
+            <Image
+              src="/images/rwx6.jpg"
+              alt="Ricardo Faya e equipe no Web Summit Rio segurando o destaque do evento"
+              fill
+              priority
+              className="object-cover"
+              sizes="(min-width: 1024px) 45vw, 90vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/10 to-transparent" />
+            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between rounded-2xl bg-white/10 px-5 py-3 text-sm text-white backdrop-blur">
+              <span className="font-medium">Web Summit Rio • Experiências Digitais</span>
+              <span className="text-white/70">2024</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <GlassGallery
+        title="Momentos que inspiram novas jornadas"
+        subtitle="Bastidores reais que mostram como criatividade, estratégia e tecnologia caminham juntas em cada parceria."
+        items={galleryItems}
+      />
+
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-6">
@@ -359,6 +455,18 @@ export default function Contato() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-purple-400 mt-1" />
+                <div>
+                  <p className="text-white font-semibold">Endereço</p>
+                  <p className="text-gray-400 text-sm">
+                    Rio de Janeiro - RJ<br />
+                    Brasil<br />
+                    Atendimento consultivo remoto
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
                 <Phone className="w-5 h-5 text-purple-400 mt-1" />
                 <div>
                   <p className="text-white font-semibold">Telefone &amp; WhatsApp</p>
@@ -375,7 +483,7 @@ export default function Contato() {
                       rel="noopener noreferrer"
                       className="hover:text-purple-300 transition-colors"
                     >
-                      Enviar mensagem pelo WhatsApp
+                      Conversar no WhatsApp
                     </a>
                   </div>
                 </div>
@@ -391,17 +499,6 @@ export default function Contato() {
                   >
                     ricardofaya@gmail.com
                   </a>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-purple-400 mt-1" />
-                <div>
-                  <p className="text-white font-semibold">Localização</p>
-                  <p className="text-gray-400 text-sm">
-                    Atendimento remoto a partir do Rio de Janeiro, Brasil<br />
-                    Consultorias online para clientes no mundo todo
-                  </p>
                 </div>
               </div>
 
@@ -425,31 +522,44 @@ export default function Contato() {
               <CardTitle className="text-xl text-white">Ações Rápidas</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <a
-                href="https://wa.me/5521971908530"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400/60 bg-green-600 hover:bg-green-700 text-white px-4 py-3"
+              <Button asChild className="w-full bg-green-600 hover:bg-green-700 text-white">
+                <a
+                  href="https://wa.me/5521971908530"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Conversar diretamente pelo WhatsApp"
+                >
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  Conversar no WhatsApp
+                </a>
+              </Button>
+
+              <Button
+                asChild
+                variant="outline"
+                className="w-full border-purple-500/50 text-purple-300 hover:bg-purple-500/20"
               >
-                <MessageSquare className="w-4 h-4" />
-                Conversar no WhatsApp
-              </a>
-              
-              <a
-                href="mailto:ricardofaya@gmail.com?subject=Agendar%20Consultoria%20com%20Ricardo%20Faya"
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400/60 border border-purple-500/50 text-purple-300 hover:bg-purple-500/20 px-4 py-3"
+                <a href="mailto:ricardofaya@gmail.com?subject=Agendar%20Consultoria" aria-label="Enviar e-mail para agendar consultoria">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Agendar Consultoria
+                </a>
+              </Button>
+
+              <Button
+                asChild
+                variant="outline"
+                className="w-full border-purple-500/50 text-purple-300 hover:bg-purple-500/20"
               >
-                <Calendar className="w-4 h-4" />
-                Agendar Consultoria
-              </a>
-              
-              <a
-                href="tel:+5521971908530"
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400/60 border border-purple-500/50 text-purple-300 hover:bg-purple-500/20 px-4 py-3"
-              >
-                <Headphones className="w-4 h-4" />
-                Suporte Técnico Imediato
-              </a>
+                <a
+                  href="https://ricardofaya9.wixsite.com/ricardo-faya/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Visitar portfólio de Ricardo Faya"
+                >
+                  <Globe className="w-4 h-4 mr-2" />
+                  Visitar Portfólio
+                </a>
+              </Button>
             </CardContent>
           </Card>
 

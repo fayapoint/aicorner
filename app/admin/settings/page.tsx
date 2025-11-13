@@ -25,10 +25,10 @@ import { motion } from "framer-motion";
 export default function AdminSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [siteSettings, setSiteSettings] = useState({
-    siteName: "AI Corner",
-    siteDescription: "Your AI Safe Haven - Comprehensive AI solutions for everyone",
-    siteUrl: "https://aicorner.com",
-    contactEmail: "admin@aicorner.com",
+    siteName: "Ricardo Faya",
+    siteDescription: "Consultoria criativa, workshops e projetos digitais para marcas com impacto.",
+    siteUrl: "https://ricardofaya9.wixsite.com/ricardo-faya/",
+    contactEmail: "ricardofaya@gmail.com",
     maintenanceMode: false,
     allowRegistration: true,
     enableComments: true,
@@ -50,8 +50,8 @@ export default function AdminSettingsPage() {
     smtpPort: "587",
     smtpUsername: "",
     smtpPassword: "",
-    fromEmail: "noreply@ainseconds.com",
-    fromName: "AInSeconds",
+    fromEmail: "ricardofaya@gmail.com",
+    fromName: "Ricardo Faya",
     enableEmailNotifications: true
   });
 
