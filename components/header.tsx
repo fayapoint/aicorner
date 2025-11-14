@@ -185,7 +185,7 @@ export function Header() {
 
   const renderDropdown = (menuTitle: string) => {
     const config = menuConfig[menuTitle as keyof typeof menuConfig];
-    if (!config || !dropdownPos) return null;
+    if (!config || !dropdownPos || !isClient || typeof document === 'undefined') return null;
 
     return createPortal(
       <div
