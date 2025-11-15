@@ -47,6 +47,10 @@ function getClientPromise(): Promise<MongoClient> {
 export default new Proxy({} as Promise<MongoClient>, {
   get(target, prop) {
     const promise = getClientPromise();
-    return (promise as any)[prop];
+    const value = (promise as any)[prop];
+    if (typeof value === "function") {
+      return value.bind(promise);
+    }
+    return value;
   }
 }) as Promise<MongoClient>;
