@@ -1,6 +1,6 @@
 # Netlify configuration for Next.js 14 with App Router
 [build]
-  command = "npm ci && npm run build"
+  command = "npm install && npm run build"
   publish = ".next"
 
 [build.environment]
