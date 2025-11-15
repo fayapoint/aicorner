@@ -25,29 +25,31 @@ const getUri = () => {
 
 const dbName = process.env.MONGODB_USS_DB || process.env.MONGODB_DB;
 
-let clientPromise: Promise<MongoClient>;
+let clientPromise: Promise<MongoClient> | null = null;
 
 function getClientPromise(): Promise<MongoClient> {
-  if (process.env.NODE_ENV === "development") {
-    if (!global._ussMongoClientPromise) {
+  // True lazy initialization - only create connection when first accessed
+  if (!clientPromise) {
+    if (process.env.NODE_ENV === "development") {
+      if (!global._ussMongoClientPromise) {
+        const client = new MongoClient(getUri());
+        global._ussMongoClientPromise = client.connect();
+      }
+      clientPromise = global._ussMongoClientPromise;
+    } else {
       const client = new MongoClient(getUri());
-      global._ussMongoClientPromise = client.connect();
+      clientPromise = client.connect();
     }
-    return global._ussMongoClientPromise;
-  } else {
-    const client = new MongoClient(getUri());
-    return client.connect();
   }
+  return clientPromise;
 }
 
-// Lazy initialization - only connect when actually needed
-clientPromise = getClientPromise();
-
-export default clientPromise;
+// Export the promise-returning function (not the promise itself)
+export default getClientPromise;
 
 export async function getUssDb(): Promise<Db> {
   try {
-    const client = await clientPromise;
+    const client = await getClientPromise();
     return client.db(dbName);
   } catch (error) {
     console.error("Failed to connect to USS database:", error);

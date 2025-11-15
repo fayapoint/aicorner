@@ -23,18 +23,30 @@ const getUri = () => {
   return uri;
 };
 
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
+let clientPromise: Promise<MongoClient> | null = null;
 
-if (process.env.NODE_ENV !== "production") {
-  if (!global._mongoClientPromise) {
-    client = new MongoClient(getUri());
-    global._mongoClientPromise = client.connect();
+function getClientPromise(): Promise<MongoClient> {
+  // True lazy initialization - only create connection when first accessed
+  if (!clientPromise) {
+    if (process.env.NODE_ENV !== "production") {
+      if (!global._mongoClientPromise) {
+        const client = new MongoClient(getUri());
+        global._mongoClientPromise = client.connect();
+      }
+      clientPromise = global._mongoClientPromise;
+    } else {
+      const client = new MongoClient(getUri());
+      clientPromise = client.connect();
+    }
   }
-  clientPromise = global._mongoClientPromise;
-} else {
-  client = new MongoClient(getUri());
-  clientPromise = client.connect();
+  return clientPromise;
 }
 
-export default clientPromise;
+// Export the promise (NextAuth MongoDB adapter expects a Promise, not a function)
+// But we defer the actual connection until the promise is first awaited
+export default new Proxy({} as Promise<MongoClient>, {
+  get(target, prop) {
+    const promise = getClientPromise();
+    return (promise as any)[prop];
+  }
+}) as Promise<MongoClient>;
