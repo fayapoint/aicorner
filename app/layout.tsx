@@ -9,9 +9,16 @@ export const metadata = {
   },
 };
 
-import { Header } from "@/components/header";
+import dynamic from "next/dynamic";
 import { Footer } from "@/components/footer";
 import { Providers } from "@/components/providers";
+
+const Header = dynamic(() => import("@/components/header").then(mod => ({ default: mod.Header })), {
+  ssr: false,
+  loading: () => (
+    <header className="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur-lg h-20" />
+  ),
+});
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
