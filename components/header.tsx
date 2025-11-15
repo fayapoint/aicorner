@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useClientSession } from "../hooks/useClientSession";
 
+import type { LucideIcon } from "lucide-react";
 import {
   Brain,
   Menu,
@@ -44,13 +45,12 @@ export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [menuTimeouts, setMenuTimeouts] = useState<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null);
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [isClient, setIsClient] = useState(false);
   const { data: session, status } = useClientSession();
   const pathname = usePathname();
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [mobileSections, setMobileSections] = useState<Record<string, boolean>>({
     products: true,
     learn: false,
@@ -73,9 +73,11 @@ export function Header() {
 
   useEffect(() => {
     return () => {
-      menuTimeouts.forEach(timeout => clearTimeout(timeout));
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
     };
-  }, [menuTimeouts]);
+  }, []);
 
   useEffect(() => {
     setIsOpen(false);
@@ -102,41 +104,50 @@ export function Header() {
     }
   }, [isOpen]);
 
-  const handleMenuEnter = (menu: string, element: HTMLElement) => {
-    if (menuTimeouts.has(menu)) {
-      clearTimeout(menuTimeouts.get(menu)!);
-      menuTimeouts.delete(menu);
+  const clearHoverTimeout = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
     }
-    
+  };
+
+  const scheduleClose = () => {
+    clearHoverTimeout();
+    hoverTimeoutRef.current = setTimeout(() => {
+      setActiveMenu(null);
+      setDropdownPos(null);
+    }, 120);
+  };
+
+  const handleMenuEnter = (menu: string, element: HTMLElement) => {
+    clearHoverTimeout();
     setActiveMenu(menu);
-    setAnchorEl(element);
-    
     if (element) {
       const rect = element.getBoundingClientRect();
+      const config = menuConfig[menu as keyof typeof menuConfig];
+      const dropdownWidth = config?.cols === 1 ? 300 : config?.cols === 2 ? 520 : 640;
+      const viewportWidth = window.innerWidth;
+      const padding = 24;
+      const idealLeft = rect.left + rect.width / 2 - dropdownWidth / 2;
+      const clampedLeft = Math.max(padding, Math.min(idealLeft, viewportWidth - dropdownWidth - padding));
+
       setDropdownPos({
-        top: rect.bottom,
-        left: rect.left - 300 + rect.width / 2,
+        top: rect.bottom + 1,
+        left: clampedLeft,
       });
     }
   };
-  
-  const handleMenuLeave = (menu: string) => {
-    const timeout = setTimeout(() => {
-      setActiveMenu(prev => prev === menu ? null : prev);
-    }, 100);
-    
-    setMenuTimeouts(prev => new Map(prev).set(menu, timeout));
+
+  const handleMenuLeave = () => {
+    scheduleClose();
   };
-  
-  const handleDropdownEnter = (menu: string) => {
-    if (menuTimeouts.has(menu)) {
-      clearTimeout(menuTimeouts.get(menu)!);
-      menuTimeouts.delete(menu);
-    }
+
+  const handleDropdownEnter = () => {
+    clearHoverTimeout();
   };
-  
-  const handleDropdownLeave = (menu: string) => {
-    handleMenuLeave(menu);
+
+  const handleDropdownLeave = () => {
+    scheduleClose();
   };
 
   const toggleMobileSection = (section: string) => {
@@ -146,64 +157,126 @@ export function Header() {
     }));
   };
 
-  // Menu configuration
-  const products = [
-    { title: "AI Agents", desc: "Custom AI agents for your business", href: "/agents", icon: BrainIcon },
-    { title: "Chatbots", desc: "Intelligent conversational agents", href: "/chatbots", icon: MessageSquare },
-    { title: "Process Automation", desc: "Streamline your workflows", href: "/automation", icon: Zap },
-    { title: "Custom Development", desc: "Tailored AI solutions", href: "/development", icon: Code },
-    { title: "Data Solutions", desc: "AI-powered data processing", href: "/data", icon: Database },
-    { title: "Integration Services", desc: "Connect AI to your systems", href: "/integration", icon: Layers },
-  ];
-
-  const learn = [
-    { title: "Documentation", desc: "Guides and resources", href: "/docs", icon: FileText },
-    { title: "API Reference", desc: "Integrate with our API", href: "/api-docs", icon: Code },
-    { title: "Tutorials", desc: "Step-by-step learning", href: "/tutorials", icon: PlayCircle },
-    { title: "Case Studies", desc: "Success stories", href: "/cases", icon: Target },
-    { title: "Blog", desc: "Insights and updates", href: "/blog", icon: Puzzle },
-  ];
-
-  const company = [
-    { title: "About Us", desc: "Our mission and vision", href: "/about", icon: Users },
-    { title: "Careers", desc: "Join our team", href: "/careers", icon: Rocket },
-    { title: "Contact", desc: "Get in touch", href: "/contact", icon: MessageSquare },
-  ];
-
-  const pricing = [
-    { title: "Starter", desc: "For small teams", href: "/pricing#starter", icon: Lightbulb },
-    { title: "Professional", desc: "For growing businesses", href: "/pricing#professional", icon: Rocket },
-    { title: "Enterprise", desc: "For organizations", href: "/pricing#enterprise", icon: Globe },
-  ];
-
-  const menuConfig = {
-    products: { items: products, cols: 3 },
-    learn: { items: learn, cols: 3 },
-    company: { items: company, cols: 1 },
-    pricing: { items: pricing, cols: 2 },
+  type MegaMenuItem = {
+    title: string;
+    desc: string;
+    href: string;
+    icon: LucideIcon;
+    accentFrom?: string;
+    accentTo?: string;
+    pill?: { label: string; tone: string };
   };
+
+  type MenuConfig = Record<string, { items: MegaMenuItem[]; cols: number }>;
+
+  // Menu configuration
+  const products: MegaMenuItem[] = [
+    { title: "Free Tools", desc: "Try our AI tools for free", href: "/tools", icon: BrainIcon, accentFrom: "#f472b6", accentTo: "#a855f7" },
+    { title: "API Access", desc: "Integrate AI into your apps", href: "/docs/api/chat-completions", icon: Code, accentFrom: "#34d399", accentTo: "#0ea5e9" },
+    { title: "AI Solutions", desc: "Complete AI solutions", href: "/solutions", icon: Layers, accentFrom: "#93c5fd", accentTo: "#6366f1" },
+    { title: "Integrations", desc: "Connect with your tools", href: "/integrations", icon: Puzzle, accentFrom: "#fbbf24", accentTo: "#fb7185" },
+  ];
+
+  const learn: MegaMenuItem[] = [
+    { title: "Docs", desc: "Guides & resources", href: "/docs", icon: FileText, accentFrom: "#a5b4fc", accentTo: "#818cf8" },
+    { title: "Tutorials", desc: "Step-by-step lessons", href: "/tutorials", icon: PlayCircle, accentFrom: "#fb7185", accentTo: "#f472b6" },
+    { title: "Case Studies", desc: "Success stories", href: "/cases", icon: Target, accentFrom: "#fcd34d", accentTo: "#f97316" },
+    { title: "News", desc: "Insights & updates", href: "/news", icon: MessageSquare, accentFrom: "#34d399", accentTo: "#22d3ee" },
+  ];
+
+  const company: MegaMenuItem[] = [
+    { title: "About", desc: "Our mission", href: "/sobre", icon: Users, accentFrom: "#f472b6", accentTo: "#ec4899" },
+    { title: "Careers", desc: "Join the team", href: "/carreiras", icon: Rocket, accentFrom: "#93c5fd", accentTo: "#60a5fa" },
+    { title: "Community", desc: "Meet other builders", href: "/community", icon: Globe, accentFrom: "#5eead4", accentTo: "#2dd4bf" },
+    { title: "Contact", desc: "Talk to us", href: "/contato", icon: MessageSquare, accentFrom: "#fecdd3", accentTo: "#fb7185" },
+  ];
+
+  const pricing: MegaMenuItem[] = [
+    { title: "View All Plans", desc: "Compare features & pricing", href: "/pricing", icon: Lightbulb, accentFrom: "#fcd34d", accentTo: "#f97316" },
+    { title: "Starter", desc: "Kickstart in minutes", href: "/pricing#starter", icon: Sparkles, pill: { label: "$0/mo", tone: "text-emerald-300" }, accentFrom: "#34d399", accentTo: "#0ea5e9" },
+    { title: "Growth", desc: "Scale your impact", href: "/pricing#professional", icon: TrendingUp, pill: { label: "$47/mo", tone: "text-sky-300" }, accentFrom: "#c084fc", accentTo: "#7c3aed" },
+    { title: "Enterprise", desc: "Tailored partnership", href: "/pricing#enterprise", icon: Shield, pill: { label: "Custom", tone: "text-amber-300" }, accentFrom: "#fb923c", accentTo: "#ea580c" },
+  ];
+
+  const menuConfig: MenuConfig = {
+    products: { items: products, cols: 1 },
+    learn: { items: learn, cols: 1 },
+    company: { items: company, cols: 1 },
+    pricing: { items: pricing, cols: 1 },
+  };
+
+  const menuOrder = ["products", "learn", "company", "pricing"] as const;
+
+  const getGradient = (item: MegaMenuItem) => `linear-gradient(135deg, ${item.accentFrom ?? '#8b5cf6'}, ${item.accentTo ?? '#ec4899'})`;
+
+  const renderMenuCards = (items: MegaMenuItem[], variant: 'desktop' | 'mobile' = 'desktop') => (
+    items.map((item, i) => (
+      <Link
+        key={`${item.title}-${item.href}`}
+        href={item.href}
+        className={`relative block rounded-[18px] overflow-hidden transition-all duration-300 group ${variant === 'mobile' ? 'w-full' : ''}`}
+      >
+        <div
+          className="absolute inset-0 opacity-45"
+          style={{ background: getGradient(item) }}
+        />
+        <div className="absolute inset-[2px] rounded-[16px] bg-white/6 backdrop-blur-[34px] border border-white/18 shadow-[0_18px_32px_rgba(6,1,20,0.4)] group-hover:border-white/30 transition-all" />
+        <div className={`relative flex items-center justify-between gap-4 ${variant === 'mobile' ? 'px-4 py-3.5' : 'px-5 py-3.5'}`}>
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-white/20 border border-white/30 shadow-inner">
+              <item.icon className="w-4 h-4 text-white/95" />
+            </div>
+            <div>
+              <p className="font-semibold text-white tracking-tight flex items-center gap-2">
+                {item.title}
+                {i === 0 && variant === 'desktop' && (
+                  <span className="text-[10px] font-semibold text-white/80 uppercase tracking-wide">Featured</span>
+                )}
+              </p>
+              <p className="text-sm text-white/80">{item.desc}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2.5">
+            {item.pill && (
+              <span className={`text-xs font-semibold ${item.pill.tone}`}>
+                {item.pill.label}
+              </span>
+            )}
+            {variant === 'desktop' && (
+              <ArrowRight className="w-4 h-4 text-white/80 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition" />
+            )}
+          </div>
+        </div>
+      </Link>
+    ))
+  );
 
   const renderDropdown = (menuTitle: string) => {
     const config = menuConfig[menuTitle as keyof typeof menuConfig];
     if (!config || !dropdownPos || !isClient || typeof document === 'undefined') return null;
 
+    const gridColsClass = 
+      config.cols === 1 ? 'grid-cols-1' :
+      config.cols === 2 ? 'grid-cols-2' :
+      'grid-cols-3';
+
     return createPortal(
       <div
-        className="fixed z-50 bg-gray-900/80 backdrop-blur-lg border border-white/10 rounded-lg shadow-2xl p-6 text-white animate-fade-in-fast"
-        style={{ top: `${dropdownPos.top}px`, left: `${dropdownPos.left}px` }}
-        onMouseEnter={() => handleDropdownEnter(menuTitle)}
-        onMouseLeave={() => handleDropdownLeave(menuTitle)}
+        className="fixed z-50"
+        style={{ 
+          top: `${dropdownPos.top}px`, 
+          left: `${dropdownPos.left}px`,
+          width: config.cols === 1 ? 320 : config.cols === 2 ? 520 : 640
+        }}
+        onMouseEnter={handleDropdownEnter}
+        onMouseLeave={handleDropdownLeave}
       >
-        <div className={`grid grid-cols-${config.cols} gap-x-8 gap-y-4`}>
-          {config.items.map((item, i) => (
-            <Link key={i} href={item.href} className="flex items-start gap-4 p-2 rounded-lg hover:bg-white/5 transition-colors">
-              <item.icon className="w-5 h-5 mt-1 text-purple-400 flex-shrink-0" />
-              <div>
-                <p className="font-semibold">{item.title}</p>
-                <p className="text-sm text-gray-400">{item.desc}</p>
-              </div>
-            </Link>
-          ))}
+        <div className="rounded-[26px] bg-gradient-to-br from-white/25 via-purple-500/25 to-transparent p-[1px] shadow-[0_28px_90px_rgba(6,0,22,0.5)]">
+          <div className="rounded-[24px] bg-[#0b0420]/55 backdrop-blur-[45px] border border-white/18 px-5 py-5 text-white/90">
+            <div className={`grid ${gridColsClass} gap-2.5`}>
+              {renderMenuCards(config.items)}
+            </div>
+          </div>
         </div>
       </div>,
       document.body
@@ -217,9 +290,15 @@ export function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <div className="flex-shrink-0">
-              <div className="flex items-center gap-2 text-white">
-                <Brain className="w-8 h-8 text-purple-500" />
-                <span className="text-2xl font-bold">Fayza</span>
+              <div className="flex items-center gap-3 text-white">
+                <div className="relative">
+                  <Brain className="w-10 h-10 text-purple-500" />
+                  <Sparkles className="w-4 h-4 text-purple-400 absolute -top-1 -right-1 animate-pulse" />
+                </div>
+                <div>
+                  <span className="text-2xl font-bold block leading-tight">AInSeconds</span>
+                  <span className="text-xs text-gray-400 block leading-tight">AI Solutions in Seconds</span>
+                </div>
               </div>
             </div>
             {/* Placeholder for session-dependent UI */}
@@ -238,31 +317,38 @@ export function Header() {
   }
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? 'bg-black/80 backdrop-blur-lg border-b border-white/10' : 'bg-transparent'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? 'bg-black/85 backdrop-blur-xl shadow-[0_12px_35px_rgba(0,0,0,0.45)]' : 'bg-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center gap-2 text-white">
-              <Brain className="w-8 h-8 text-purple-500" />
-              <span className="text-2xl font-bold">Fayza</span>
+            <Link href="/" className="flex items-center gap-3 text-white group">
+              <div className="relative">
+                <Brain className="w-10 h-10 text-purple-500 group-hover:text-purple-400 transition-colors" />
+                <Sparkles className="w-4 h-4 text-purple-400 absolute -top-1 -right-1 animate-pulse" />
+              </div>
+              <div>
+                <span className="text-2xl font-bold block leading-tight">AInSeconds</span>
+                <span className="text-xs text-gray-400 block leading-tight">AI Solutions in Seconds</span>
+              </div>
             </Link>
           </div>
 
           <nav className="hidden md:flex items-center gap-8">
-            {Object.keys(menuConfig).map(menuTitle => (
+            {menuOrder.map(menuTitle => (
               <button
                 key={menuTitle}
                 onMouseEnter={(e) => handleMenuEnter(menuTitle, e.currentTarget)}
-                onMouseLeave={() => handleMenuLeave(menuTitle)}
-                className="capitalize flex items-center gap-1 text-gray-300 hover:text-white transition-colors"
+                onMouseLeave={handleMenuLeave}
+                className={`capitalize flex items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 ${
+                  activeMenu === menuTitle 
+                    ? 'text-white bg-white/10' 
+                    : 'text-gray-300 hover:text-white hover:bg-white/5'
+                }`}
               >
                 {menuTitle}
-                <ChevronDown className="w-4 h-4" />
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeMenu === menuTitle ? 'rotate-180' : ''}`} />
               </button>
             ))}
-            <Link href="/pricing" className="text-gray-300 hover:text-white transition-colors">
-              Pricing
-            </Link>
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
@@ -317,9 +403,15 @@ export function Header() {
       <div className={`md:hidden ${isOpen ? 'block' : 'hidden'} fixed inset-0 z-50 bg-black/95 h-full w-full overflow-y-auto`}>
         <div className="px-4 py-8">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 text-white">
-              <Brain className="w-8 h-8 text-purple-500" />
-              <span className="text-2xl font-bold">Fayza</span>
+            <Link href="/" className="flex items-center gap-3 text-white">
+              <div className="relative">
+                <Brain className="w-10 h-10 text-purple-500" />
+                <Sparkles className="w-4 h-4 text-purple-400 absolute -top-1 -right-1 animate-pulse" />
+              </div>
+              <div>
+                <span className="text-2xl font-bold block leading-tight">AInSeconds</span>
+                <span className="text-xs text-gray-400 block leading-tight">AI Solutions in Seconds</span>
+              </div>
             </Link>
             <button
               onClick={() => setIsOpen(false)}
@@ -344,16 +436,8 @@ export function Header() {
                 )}
               </button>
               {mobileSections.products && (
-                <div className="mt-4 ml-4 space-y-6">
-                  {products.map((item, i) => (
-                    <Link key={i} href={item.href} className="flex items-start gap-3">
-                      <item.icon className="w-5 h-5 mt-1 text-purple-400" />
-                      <div>
-                        <p className="font-medium">{item.title}</p>
-                        <p className="text-sm text-gray-400">{item.desc}</p>
-                      </div>
-                    </Link>
-                  ))}
+                <div className="mt-4 ml-2 space-y-4">
+                  {renderMenuCards(products, 'mobile')}
                 </div>
               )}
             </div>
@@ -372,16 +456,8 @@ export function Header() {
                 )}
               </button>
               {mobileSections.learn && (
-                <div className="mt-4 ml-4 space-y-6">
-                  {learn.map((item, i) => (
-                    <Link key={i} href={item.href} className="flex items-start gap-3">
-                      <item.icon className="w-5 h-5 mt-1 text-purple-400" />
-                      <div>
-                        <p className="font-medium">{item.title}</p>
-                        <p className="text-sm text-gray-400">{item.desc}</p>
-                      </div>
-                    </Link>
-                  ))}
+                <div className="mt-4 ml-2 space-y-4">
+                  {renderMenuCards(learn, 'mobile')}
                 </div>
               )}
             </div>
@@ -400,16 +476,8 @@ export function Header() {
                 )}
               </button>
               {mobileSections.company && (
-                <div className="mt-4 ml-4 space-y-6">
-                  {company.map((item, i) => (
-                    <Link key={i} href={item.href} className="flex items-start gap-3">
-                      <item.icon className="w-5 h-5 mt-1 text-purple-400" />
-                      <div>
-                        <p className="font-medium">{item.title}</p>
-                        <p className="text-sm text-gray-400">{item.desc}</p>
-                      </div>
-                    </Link>
-                  ))}
+                <div className="mt-4 ml-2 space-y-4">
+                  {renderMenuCards(company, 'mobile')}
                 </div>
               )}
             </div>
@@ -428,16 +496,8 @@ export function Header() {
                 )}
               </button>
               {mobileSections.pricing && (
-                <div className="mt-4 ml-4 space-y-6">
-                  {pricing.map((item, i) => (
-                    <Link key={i} href={item.href} className="flex items-start gap-3">
-                      <item.icon className="w-5 h-5 mt-1 text-purple-400" />
-                      <div>
-                        <p className="font-medium">{item.title}</p>
-                        <p className="text-sm text-gray-400">{item.desc}</p>
-                      </div>
-                    </Link>
-                  ))}
+                <div className="mt-4 ml-2 space-y-4">
+                  {renderMenuCards(pricing, 'mobile')}
                 </div>
               )}
             </div>
